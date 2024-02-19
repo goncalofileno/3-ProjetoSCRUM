@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title class="registerTitle">Register</title>
+        <link rel="icon" href="resources/Logos/tab_logo.png">
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body class="register-body">
+        <container class="register-container">
+
+            
+            <form id="registerForm">
+                <h2 class="registerH2" id="register-page-title">Register Page</h2>
+                <label class="registerLabel"
+                    for="username">Username:</label><br>
+                <input class="registerInput" type="text" id="username"
+                    name="username"><br>
+                <label class="registerLabel"
+                    for="password">Password:</label><br>
+                <input class="registerInput" type="password" id="password"
+                    name="password"><br>
+                <label class="registerLabel" for="email">Email:</label><br>
+                <input class="registerInput" type="email" id="email"
+                    name="email"><br>
+                <label class="registerLabel" for="firstname">First
+                    name:</label><br>
+                <input class="registerInput" type="text" id="firstname"
+                    name="firstname"><br>
+                <label class="registerLabel" for="lastname">Last
+                    name:</label><br>
+                <input class="registerInput" type="text" id="lastname"
+                    name="lastname"><br>
+                <label class="registerLabel" for="phone">Phone
+                    Number:</label><br>
+                <input class="registerInput" type="tel" id="phone"
+                    name="phone"><br>
+                <label class="registerLabel" for="photo">Photo URL:</label><br>
+                <input class="registerInput" type="url" id="photo"
+                    name="photo"><br>
+                <img id="photoPreviewRegister"
+                    src="https://cdn-icons-png.flaticon.com/512/6388/6388000.png"
+                    alt="Photo Preview" style="width: 200px; height: 200px;">
+                <button type="submit" id="registerButton">Register</button>
+                <button type="button" id="cancelButtonRegister">Cancel</button>
+            </form>
+
+        </container>
+        <script src="register.js"></script>
+    </body>
+</html>

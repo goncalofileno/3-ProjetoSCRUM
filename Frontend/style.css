@@ -1,0 +1,1073 @@
+body {
+  background-image: url("resources/Backgrounds/background1.jpg"); /* Define a imagem de fundo */
+  background-size: cover; /* Ajusta o tamanho da imagem de fundo para cobrir completamente a página */
+  overflow: hidden; /*impede que apareça o scroll, mantendo o conteúdo dentro dos limites visíveis.*/
+  position: relative;
+  font-family: "Arial", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  margin: 0;
+}
+/* escurece a imagem de fundo */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(206, 200, 200, 0.5);
+  z-index: -1;
+}
+/*escurece a imagem de fundo quando um modal é aberto*/
+body.modal-open::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#modalOverlay2 {
+  display: none; 
+  position: fixed; 
+  z-index: 3; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0, 0, 0, 0.5); 
+}
+/* Imagem do Logo que aparece na tela de login */
+#logoIni {
+  width: 70%; /* Define o tamanho */
+  display: block; /*para centrar a imagem*/
+  margin: auto; /* Centraliza o logo horizontalmente usando margens automáticas */
+  filter: brightness(70%); /*reduz a intensidade do brilho para 70% */
+  margin-top: 10%;
+}
+/* Imagem do Logo no aside (canto superior esquerdo)*/
+#logo {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 170px; 
+  height: 120px;
+  margin: 30px; 
+  filter: brightness(70%);
+  z-index: 1; 
+  pointer-events: none; 
+  user-select: none; /* Impede que o user selecione a imagem */
+}
+/* container do login */
+.container {
+  width: 60%; /* Define o tamanho (20% da largura do body)  */
+  padding: 2%; /* Adiciona um preenchimento interno a toda a volta */
+  background-color: rgba(255, 255, 255, 0.6);
+  margin: auto; /* Centraliza o container*/
+  margin-top: 1%; /* Adiciona uma margem superior*/
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra*/
+  font-size: medium; /* Define o tamanho da fonte como médio */
+  font-family: sans-serif; /* Define a fonte*/
+  border-radius: 10px; /* Adiciona bordas arredondadas */
+}
+/* Define a cor das labels */
+.container label {
+  color: #205d88;
+  
+}
+/* Adiciona bordas arredondadas aos campos de entrada de texto */
+#username,
+#password {
+  border-radius: 10px; 
+}
+
+/* Elementos de entrada de texto */
+input[type="text"],
+input[type="password"] {
+  width: 100%; /* Define a largura dos campos para ocupar 100% da largura do container */
+  padding: 5% 10%; /* Define o preenchimento interno dos campos */
+  margin: 3% 0; /* Define a margem dos campos(em relação às labels)*/
+  border: 1px solid #ccc; /* margem dos campos*/
+  box-sizing: border-box; /* Garante que a largura e a altura definidas náo ultrapassem o container */
+}
+/* Define as características gerais dos botões */
+button {
+  background-color: #205d88;
+  color: #205d88;
+  border: none; /* Remove as margens do botão */
+  cursor: pointer; /* Altera a imagem do ponteiro ao passar sobre o botão para indicar que é clicável */
+  border-radius: 10px;
+  width: 30%;
+  height: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button:hover {
+  opacity: 0.8; /*Altera a opacidade dos botões quando se passa sobre eles */
+}
+
+footer {
+  background-color: rgba(168, 146, 124, 0.4);
+  color: #fff;
+  padding: 1.33%;
+  display: flex;
+  align-items: center; /* Alinha os itens verticalmente */
+  position: absolute;
+  bottom: 0; /* Alinha o rodapé na parte inferior da página */
+  left: 0; /* Alinha o rodapé à esquerda da página */
+  right: 0; /* Alinha o rodapé à direita da página */
+  width: 100%;
+  max-height: 5%; /* Define a altura máxima do rodapé */
+  font-size: 0.7vw;
+  font-family: sans-serif;
+  gap: 12%; /* Define o espaçamento entre os elementos do rodapé */
+}
+
+footer a {
+  color: #fff; /* Define a cor do link para branco */
+}
+
+.social-link {
+  margin: 0; /* Remove a margem dos parágrafos */
+}
+/*botão de login*/
+#loginButton {
+  margin-top: 2%; /* Adiciona uma margem superior ao botão */
+  height: 2.5rem;
+  width: 21.2rem;
+  color: white;
+}
+
+#registerButton {
+  margin-top: 2%; /* Adiciona uma margem superior ao botão */
+  height: 2.5rem;
+  width: 21.2rem;
+  color: white;
+}
+/*data e hora*/
+#dateTimeDisplay {
+  position: fixed;
+  top: 1rem;
+  left: 16.5rem;
+  color: #205d88;
+  font-weight: bold;
+  font-size: 12px;
+}
+/* label, username e botão logout*/
+#userDisplay {
+  position: fixed;
+  top: 1.5rem;
+  right: 5.8rem;
+  font-weight: bold;
+}
+
+#labelWelcome{
+  position: fixed;
+  top: 2.5rem;
+  right: 7rem;
+}
+/*label "welcome"*/
+#labelUser {
+  position: relative;
+  top: -0.2rem;
+  color: #205d88;
+}
+/*username*/
+#displayUsername {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #1d2d38;
+  text-decoration: underline;
+  max-width: 80%; /* Limita a largura para evitar sobreposição */
+  display: inline-block; /* Permite que o elemento tenha uma largura máxima */
+}
+
+/*avatar do usuário*/
+#userIcon {
+  position: fixed;
+  top: 0.5rem;
+  right: 1rem;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+}
+/*botão de logout*/
+#logoutButton {
+  position: absolute;
+  top: 3rem;
+  right: -3.9rem;
+  margin-top: 0%;
+  background-color: transparent;
+  color: #205d88;
+  border: none;
+  width: 3rem;
+  height: 3rem;
+  font-size: 15px;
+  font-weight: bold;
+  transition: font-size 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+#editProfileButton{
+  position: absolute;
+  top: 5.5rem;
+  right: -3.9rem;
+  margin-top: 0%;
+  background-color: transparent;
+  color: #205d88;
+  border: none;
+  width: 3rem;
+  height: 3rem;
+  font-size: 15px;
+  font-weight: bold;
+  transition: font-size 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+/*aumenta o tamanho do botão de logout quando se passa sobre ele*/
+#logoutButton:hover {
+  transform: scale(1.2); 
+}
+
+/*caracteristicas comuns das argolas*/
+#argola1,
+#argola2,
+#argola3,
+#argola4,
+#argola5,
+#argola6,
+#argola7,
+#argola8,
+#argola9,
+#argola10,
+#argola11,
+#argola12 {
+  position: fixed;
+  top: 6.5rem;
+  z-index: 1;
+  height: 2.2rem;
+}
+/*posiçao de cada argola*/
+#argola1 {
+  left: 25%;
+}
+
+#argola2 {
+  left: 30%;
+}
+
+#argola3 {
+  left: 35%;
+}
+
+#argola4 {
+  left: 40%;
+}
+
+#argola5 {
+  left: 50%;
+}
+
+#argola6 {
+  left: 55%;
+}
+
+#argola7 {
+  left: 60%;
+}
+
+#argola8 {
+  left: 65%;
+}
+
+#argola9 {
+  left: 74%
+}
+
+#argola10 {
+  left: 79%;
+}
+
+#argola11 {
+  left: 84%;
+}
+
+#argola12 {
+  left: 89%;
+}
+/* botão de adicionar tarefa*/
+#addTaskButton {
+  position: relative;
+  top: 15rem; 
+  left: 0%;
+  margin-left: 0;
+  width: 12rem;
+  font-family: inherit;
+  font-size: inherit;
+  background: white;
+  border: 3px solid #205d88;
+  margin-right: 2.6rem;
+  box-shadow: 0 0 0 #205d88;
+  transition: all 0.2s;
+  border-radius: 10px;
+}
+
+/*caracteristicas do botão de adicionar tarefa quando se passa sobre ele*/
+#addTaskButton:hover {
+  box-shadow: 0.4rem 0.4rem 0 #205d88;/* Adiciona uma sombra */
+  transform: translate(-0.4rem, -0.4rem);/* Move o elemento para cima e para a esquerda */
+}
+/*caracteristicas do botão de adicionar tarefa quando é clicado*/
+#addTaskButton:active {
+  box-shadow: 0 0 0 #205d88;/* Remove a sombra */
+  transform: translate(0, 0);/* Volta o elemento para a posição original */
+}
+/*caracteristicas dos títulos das colunas (To Do, Doing, Done)*/
+.titulos > h2 {
+  position: relative;
+  top: 40px;
+  left: 270px;
+  color: #205d88;
+  font-size: 2em;
+  font-weight: bold;
+}
+/*caracteristicas das colunas (To Do, Doing, Done)*/
+.taskArea {
+  position: relative;
+  width: 18%;
+  height: 500px;
+  border: 4px solid #205d88;
+  border-left: 10px solid #205d88;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #060606;
+  background: linear-gradient(to right, black 50%, transparent 50%);
+  background-size: 1px 100%;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-color: rgba(248, 233, 219, 0.7);
+  margin-top: 120px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  border-radius: 10px;
+  overflow: auto;
+  transform: translateX(80px);
+  box-shadow: -10px 0 20px rgba(0, 0, 0, 0.5), -1px 0 0 0 black;
+  padding-top: 10px;
+}
+
+/*caracteristicas das tarefas*/
+.task {
+  background-color: #fff;
+  border: 2px solid #000;
+  margin: 0px;
+  padding: 5px;
+  box-sizing: border-box;
+}
+/*caracteristicas da area onde cada tarefa é exibida*/
+.taskArea > div {
+  width: 90%;
+  background-color: #fff;
+  border: 2px solid #205d88;
+  margin: 12px;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/*adiciona uma sombra quando se passa sobre a tarefa*/
+.taskArea > div:hover {
+  background-color: rgba(0, 0, 0, 0.2); 
+}
+/*caracteristicas da area da tarefa quando é clicada*/
+.taskArea div:active {
+  border-width: 4px; /* Aumenta a largura da borda da div quando clicada */
+  transition: border-width 0.3s ease; /* Adiciona um efeito de transição */
+}
+/*titulo da tarefa*/
+.task-element .title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+/*icon prioridade*/
+.priority-icon {
+  width: 2em;
+  height: 2em;
+  flex-shrink: 0;
+}
+/*caracteristicas gerais dos modals*/
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.6rem 3rem;
+  border: 3px solid #205d88;
+  border-radius: 10px;
+  background: rgb(255, 255, 255);
+  box-shadow: 8px 8px 0 rgba(32, 93, 136, 0.2);
+  font-family: "Arial", sans-serif;
+  color: #205d88;
+}
+/*caracteristas dos botões dos modals*/	
+.modal button {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  background: white;
+  padding: 0.3rem 3.4rem;
+  border: 3px solid #205d88;
+  margin-right: 2.6rem;
+  box-shadow: 0 0 0 #205d88;
+  transition: all 0.2s;
+  border-radius: 10px;
+}
+/*caracteristicas dos botões dos modals quando o cursor passa sobre eles*/
+.modal button:hover {
+  box-shadow: 0.4rem 0.4rem 0 #205d88;
+  transform: translate(-0.4rem, -0.4rem);
+}
+/*caracteristicas dos botões dos modals quando são clicados*/
+.modal button:active {
+  box-shadow: 0 0 0 #205d88;
+  transform: translate(0, 0);
+}
+/*caracteristicas dos campos de entrada de texto dos modals*/
+.modal textarea {
+  background-color: rgba(168, 146, 124, 0.3);
+  resize: none;
+  border-color: #205d88;
+  border-radius: 5px;
+}
+
+/*caracteristicas do modal adicionar tarefa*/
+#newTaskModal {
+    justify-content: center;
+    height: 57%;
+    width: 40%;
+    z-index: 3;
+}
+/*container no modal (titulo e descrição da tarefa)*/
+#newTaskModal .input-container {
+  display: flex;
+  flex-direction: column;
+  margin: 3% 0;
+}
+/*tamanho do campo de entrada da descrição da tarefa*/
+.modal textarea#taskDescription {
+  height: 170px;
+}
+/*container dos botões do modal*/
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+
+/*caracteristicas do modal de detalhes da tarefa*/
+#taskDetailsModal {
+max-width: 50%;
+}
+
+/*caracteristicas para os componentes do modal*/
+#taskDetailsModal .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/*caracteristicas do titulo e botão da tarefa no modal de detalhes da tarefa*/
+#taskDetailsModal h4.taskTitleInfo,
+#taskDetailsModal #modalOkButton {
+  text-align: center;
+  margin: auto;
+  margin-top: 1.6rem;
+}
+
+/*Permite partir o titulo caso seja muito grande*/
+#taskTitleinfo {
+  word-wrap: break-word;
+  word-break: break-all; 
+}
+
+/*Permite partir a descrição caso seja muito grande*/
+#taskDescriptioninfo {
+  word-wrap: break-word;
+  word-break: break-all; 
+}
+
+/*Posiciona o trashIcon*/
+#trashIcon {
+  display: none;
+  position: fixed;
+  bottom: 7rem;
+  left: 59rem;
+  width: 3rem;
+  height: 3rem;
+}
+
+/*mostra o trashIcon*/
+#trashIcon.show {
+  display: block;
+}
+
+/*animacao do trashIcon*/
+#trashIcon.highlightTrash {
+  position: fixed;
+  bottom: 7rem;
+  left: 59rem;
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+/*caracteristicas do aside*/
+aside {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  height: 100vh; 
+  background-color: rgba(
+    240,
+    240,
+    240,
+    0.2
+  ); 
+  padding: 20px; 
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); 
+  width: 200px; 
+}
+/*linha azul que divide o aside*/
+aside::after {
+  content: "";
+  position: absolute;
+  top: 230px;
+  left: 0;
+  width: 100%;
+  height: 3px; /* Espessura da linha */
+  background-color: rgba(
+    32,
+    93,
+    136,
+    0.5
+  ); /* Cor da linha azul com transparência */
+}
+/*caracteristicas do modal de confirmação de exclusão de tarefa*/
+#deleteWarning {
+  color: #205d88;
+  display: none; 
+  position: fixed;
+  z-index: 1; 
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  max-width: 20%;
+  height: 10%; 
+  overflow: auto; 
+  flex-direction: column;
+  align-items: center;
+  padding: 1.6rem 3rem;
+  border: 3px solid #205d88;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 8px 8px 0 rgba(32, 93, 136, 0.2);
+  border-radius: 10px;
+  z-index: 3;
+}
+/*caracteristicas do texto do modal de confirmação de exclusão de tarefa*/
+#deleteWarning .message {
+  font-size: 1.1rem;
+  margin-bottom: 1.6rem;
+  margin-top: 0;
+}
+/*caracteristicas dos botões do modal de confirmação de exclusão de tarefa*/
+#deleteWarning .options {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/*pop-up menu que aparece quando o botão direito é clicado sobre a tarefa*/
+#contextMenu {
+  display: none;
+  position: fixed;
+  width: 9%;
+  height: 7%;
+  z-index: 1;
+  background: white;
+  border: 3px solid #205d88;
+  border-radius: 5px; 
+  padding: 0.5rem 1rem;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2); 
+}
+/*caracteristicas das opções do pop-up menu*/
+#contextMenu div {
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  color: #205d88;
+}
+/*caracteristicas das opções do pop-up menu quando se passa por cima delas*/
+#contextMenu div:hover {
+  background-color: #ddd;
+  border-radius: 5px;
+}
+/*caracteristicas do primeiro elemento das opções do pop-up menu (icons)*/
+#deleteTask::before,
+#editTask::before {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  content: "";
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin-left: 10px;
+  filter: invert(1) grayscale(1) brightness(0.5);
+}
+/*icon da opção de excluir tarefa*/
+#deleteTask::before {
+  background-image: url("resources/Icons/trash_context.png");
+}
+/*icon da opção de editar tarefa*/
+#editTask::before {
+  background-image: url("resources/Icons/edit_context.png");
+}
+
+/*modal que aparece quando não são preenchidos os campos necessários para a criação de uma tarefa*/
+#warningModal {
+  z-index: 4;
+}
+/*caracteristicas do modal que aparece quando não são preenchidos os campos necessários para a criação de uma tarefa*/
+#warningModal .modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+/*dropdown de status*/
+#editTaskStatus {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    color: #205d88;
+    background-color: rgba(168, 146, 124, 0.3);
+    margin-bottom: 1.2rem;
+    margin-right: 2rem;
+  }
+  /*caracteristicas do dropdown de status quando se passar sobre as opções*/
+  #editTaskStatus:focus {
+    outline: none;
+    border-color: #205d88;
+  }
+  /*margens das opções do dropdown de status*/
+  #editTaskStatus option {
+    padding: 10px;
+  }
+/* dropdown de prioridade */
+#editTaskPriority {
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  color: #205d88;
+  background-color: rgba(168, 146, 124, 0.3);
+  margin-bottom: 1.2rem;
+}
+/*caracteristicas do dropdown de prioridade quando se passar sobre as opções*/
+#editTaskPriority:focus {
+  outline: none;
+  border-color: #205d88;
+}
+/*margens das opções do dropdown de prioridade*/
+#editTaskPriority option {
+  padding: 10px;
+}
+/*caracteristicas do container da escolha da prioridade*/
+.center-container {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+}
+/*caracteristicas do modal editar tarefa*/
+#editTaskModal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+/*caracteristicas dos botões do modal editar tarefa*/
+#editTaskModal .modal-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+/*caracteristicas dos botões de confirmação e cancelamento do modal de edição de tarefa*/
+.modal #modal-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+/*caracteristicas do campo de edição da descrição da tarefa*/
+#editarTarefaDescricao {
+  height: 150px;
+}
+
+/*caraacteristicas do botão de confirmação e cancelamento do modal de edição de tarefa*/
+#GuardaEditarTarefa, #CancelaEditarTarefa {
+  width: 50%;
+  height: 20%;
+}
+
+/*caracteristicas do container do titulo e descrição da tarefa*/
+.input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+/*ajuste de tamanho e margem dos containers do titulo e descrição da tarefa*/
+.input-container label,
+.input-container textarea {
+  width: 100%;
+  margin-bottom: 10px;
+}
+/*caracteristicas do modal de confirmação que surge quando se altera a tarefa*/
+#confirmationModal {
+  display: none;
+  position: fixed;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  max-width: 20%;
+  overflow: auto;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.6rem 3rem;
+  border: 3px solid #205d88;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 8px 8px 0 rgba(32, 93, 136, 0.2);
+  height: 150px;
+  border-radius: 10px;
+}
+/*caracteristas do texto do modal de confirmação que surge quando se altera a tarefa*/
+#confirmationModal .message {
+  font-size: 1.1rem;
+  margin-bottom: 1.6rem;
+  margin-top: 0;
+}
+/*caracteristicas dos botões do modal de confirmação que surge quando se altera a tarefa*/
+#confirmationModal .modal-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+/*Caracteristicas para os botoes do modal de editar tarefa*/
+#editTaskModal .modal-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/*Caracteristicas para a dropdown list de section*/
+#editTaskStatus {
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  color: #205d88;
+  background-color: rgba(168, 146, 124, 0.3);
+  margin-bottom: 1.2rem;
+  margin-right: 2rem;
+}
+
+/*Caracteristicas para a dropdown list de section quando se passa sobre as opções*/
+#editTaskStatus:focus {
+  outline: none;
+  border-color: #205d88;
+}
+
+/*Margens das opções do dropdown list de section*/
+#editTaskStatus option {
+  padding: 10px;
+}
+
+.edit-profile-body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+.edit-profile-body h2 {
+  text-align: center;
+  padding: 20px;
+  color: #205d88;
+  margin-bottom: -10px;
+}
+
+#editProfileForm {
+  position:absolute;
+  top: -100px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 100px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+
+#editProfileForm label {
+  display: block;
+  margin: 5px 0 0 0;
+  margin-bottom: -25px;
+  color: #205d88;
+}
+
+#editProfileForm input {
+  width: 150%;
+  padding: 10px;
+  margin-bottom: -20px;
+  border-radius: 5px;
+  border: 1px solid #205d88;
+  box-sizing: border-box;
+  background-color: rgba(168, 146, 124, 0.3);
+}
+
+#photoPreview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 0px;
+  margin-top: 10px;
+  object-fit: cover;
+  border: 5px solid #205d88;  
+}
+
+#saveChanges, #changePassword, #cancelButton {
+  position: relative;
+  top: -10px;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #205d88;
+  color: #fff;
+  cursor: pointer;
+}
+
+#saveChanges:hover, #changePassword:hover, #cancelButton:hover {
+  background-color: #444;
+}
+
+ .modal #updatePassword {
+  display: none;
+  position: fixed;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  max-width: 20%;
+  overflow: auto;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.6rem 3rem;
+  border: 3px solid #205d88;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 8px 8px 0 rgba(32, 93, 136, 0.2);
+  height: 150px;
+  border-radius: 10px;
+}
+
+
+#updatePassword .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#updatePassword label {
+  color: #205d88;
+  font-size: 16px; /* Adjust as needed */
+  font-weight: bold; /* Adjust as needed */
+  margin-bottom: 10px; /* Adjust as needed */
+  margin-top: -10px;
+}
+
+#updatePassword input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-top: -20px;
+  border-radius: 5px;
+  border: 1px solid #205d88;
+  box-sizing: border-box;
+  background-color: rgba(168, 146, 124, 0.3);
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+}
+
+#backdrop {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.register-body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 100px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+
+.register-body h2 {
+  text-align: center;
+  padding: 20px;
+  color: #205d88;
+  margin-bottom: -10px;
+}
+
+#registerForm {
+  position:absolute;
+  top: -100px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 100px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+
+#registerForm label{
+  display: block;
+  margin: 5px 0 0 0;
+  margin-bottom: -25px;
+  color: #205d88;
+}
+
+#registerForm input {
+  width: 150%;
+  padding: 10px;
+  margin-bottom: -20px;
+  border-radius: 5px;
+  border: 1px solid #205d88;
+  box-sizing: border-box;
+  background-color: rgba(168, 146, 124, 0.3);
+}
+
+#photoPreviewRegister {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 0px;
+  margin-top: 10px;
+  object-fit: cover;
+  border: 5px solid #205d88;  
+}
+
+#registerButton, #cancelButtonRegister {
+  position: relative;
+  top: 10px;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #205d88;
+  color: #fff;
+  cursor: pointer;
+}
+
+#registerButton:hover, #cancelButtonRegister:hover {
+  background-color: #444;
+}
+
+

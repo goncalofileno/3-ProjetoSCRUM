@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>TaskCraft</title>
+    <link rel="icon" href="resources/Logos/tab_logo.png">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@2.1.0/css/boxicons.min.css">
+  </head>
+
+  <body>
+    <header>
+      <div id="dateTimeDisplay"></div>
+      <div id="userDisplay">
+        <div id="labelWelcome">
+          <span id="labelUser">Welcome, </span><span
+            id="displayUsername"></span>
+        </div>
+        <img id="userIcon" src="resources/Avatars/avatar1.png" alt="User Icon"
+          draggable="false">
+        <button id="logoutButton">Logout<i class='bx bx-power-off'></i></button>
+        <button id="editProfileButton">Edit Profile<i
+            class='bx bx-edit'></i></button>
+      </div>
+    </header>
+
+    <img id="argola1" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola2" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola3" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola4" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola5" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola6" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola7" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola8" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola9" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola10" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola11" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+    <img id="argola12" src="resources/Elements/argola.png" alt="argola"
+      draggable="false">
+
+    <div class="titulos">
+      <h2>To Do</h2>
+    </div>
+    <div id="todo" class="taskArea" ondrop="drop(event)"
+      ondragover="allowDrop(event)">
+      <div class="tasks-container">
+        <!--Tarefas ficam por aqui-->
+      </div>
+    </div>
+
+    <div class="titulos">
+      <h2>Doing</h2>
+    </div>
+    <div id="doing" class="taskArea" ondrop="drop(event)"
+      ondragover="allowDrop(event)">
+      <div class="tasks-container"></div>
+      <!--Tarefas ficam por aqui-->
+    </div>
+
+    <div class="titulos">
+      <h2>Done</h2>
+    </div>
+    <div id="done" class="taskArea" ondrop="drop(event)"
+      ondragover="allowDrop(event)">
+      <div class="tasks-container">
+        <!--Tarefas ficam por aqui-->
+      </div>
+    </div>
+    <img id="trashIcon" src="resources/Icons/trash.png" alt="Trash Icon">
+    <aside>
+      <img id="logo" src="resources/Logos/logo.png" alt="Logo">
+      <button id="addTaskButton">Add Task</button>
+    </aside>
+
+    <div id="newTaskModal" class="modal">
+      <div class="modal-content">
+        <h1>New Task</h1>
+        <div class="input-container">
+          <label for="taskTitle">Task Title:</label>
+          <textarea id="taskTitle" name="taskTitle"
+            placeholder="Insert title here" required></textarea>
+        </div>
+        <div class="input-container">
+          <label for="taskDescription">Task Description:</label>
+          <textarea id="taskDescription" name="taskDescription"
+            placeholder="Insert description here" required></textarea>
+        </div>
+        <div class="input-container">
+          <label for="initialDate">Initial Date:</label>
+          <input type="date" id="initialDate" name="initialDate" required>
+        </div>
+        <div class="input-container">
+          <label for="finalDate">Final Date:</label>
+          <input type="date" id="finalDate" name="finalDate" required>
+        </div>
+        <div class="center-container">
+          <label for="editTaskPriority">Priority:</label>
+          <select id="editTaskPriority" name="priority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div class="buttons-container">
+          <button id="cancelTaskButton">Cancel</button>
+          <button id="submitTaskButton">Add Task</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="taskDetailsModal" class="modal">
+      <div class="modal-content">
+        <h4 id="taskTitleinfo"></h4>
+        <p id="taskDescriptioninfo"></p>
+        <p>Initial Date:</p>
+        <p id="taskInitialDateinfo"></p>
+        <p>Final Date:</p>
+        <p id="taskFinalDateinfo"></p>
+        <button id="modalOkButton">OK</button>
+      </div>
+    </div>
+
+    <div id="warningModal" class="modal">
+      <div class="modal-content">
+        <p id="warningMessage">All fields must be filled.</p>
+        <button id="modalWarningOkButton">OK</button>
+      </div>
+    </div>
+
+    <div class="modal" id="deleteWarning">
+      <p class="message">Do you want to delete this task?</p>
+      <div class="options">
+        <button class="btn" id="noButtonDelete">No</button>
+        <button class="btn" id="yesButtonDelete">Yes</button>
+      </div>
+    </div>
+
+    <div id="contextMenu">
+      <div id="deleteTask"> Delete Task</div>
+      <div id="editTask"> Edit Task</div>
+    </div>
+
+    <div id="modalOverlay2"></div>
+
+    <script src="interfacescript.js"></script>
+  </body>
+
+</html>

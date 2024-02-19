@@ -1,0 +1,1516 @@
+{
+	"info": {
+		"_postman_id": "040cf67f-b1cb-4074-ac9f-561ea78f8868",
+		"name": "SCRUM 2ºProjeto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32810800"
+	},
+	"item": [
+		{
+			"name": "Generic Requests",
+			"item": [
+				{
+					"name": "GetsDetailsAllUsers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "username",
+								"value": "goncalo",
+								"type": "text"
+							},
+							{
+								"key": "password",
+								"value": "goncalo",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"user",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetsDetailsUserValid",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "username",
+								"value": "goncalo",
+								"type": "text"
+							},
+							{
+								"key": "password",
+								"value": "goncalo",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/goncalo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"user",
+								"goncalo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetsDetailsUsersInvalid",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "username",
+								"value": "goncalo",
+								"type": "text"
+							},
+							{
+								"key": "password",
+								"value": "goncalo",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/pedro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"user",
+								"pedro"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Get Tasks",
+					"item": [
+						{
+							"name": "invalidAuthentication",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo12",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "validGetTasks",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"all"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This folder contains all API Get Tasks validations."
+				},
+				{
+					"name": "Update Task Status (Drag)",
+					"item": [
+						{
+							"name": "invalidAuthentication",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo12",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/updateStatus?id=1&status=100",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"updateStatus"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										},
+										{
+											"key": "status",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "taskDontBelongToUser",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/updateStatus?id=7&status=100",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"updateStatus"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "7"
+										},
+										{
+											"key": "status",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This folder contains all validations for Updating Task Status API."
+				},
+				{
+					"name": "Delete Task",
+					"item": [
+						{
+							"name": "invalidAuthentication",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo12",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/delete?id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"delete"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "taskDontBelongToUser",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/delete?id=10",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"delete"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "validDelete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/delete?id=3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"delete"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This folder contains all API Delete validations."
+				},
+				{
+					"name": "Add New Task",
+					"item": [
+						{
+							"name": "invalidAuthentication",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo12",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n      \"title\": \"Task 2\",\n      \"description\": \"22222\",\n      \"priority\": \"100\",\n      \"initialDate\": \"2024-02-12\",\n      \"finalDate\": \"2024-02-13\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "invalidParameter",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n      \"title\": \"Task 2\",\n      \"description\": \"22222\",\n      \"priority\": \"100\",\n      \"initialDate\": \"2024-dsfsd2-12\",\n      \"finalDate\": \"2024-02-13\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "validTask",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Task 10\", \n    \"description\": \"10101010\", \n    \"priority\": \"300\", \n    \"initialDate\": \"2024-02-14\", \n    \"finalDate\": \"2024-02-13\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "emptyParameter",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n      \"title\": \"Task 2\",\n      \"description\": \"\",\n      \"priority\": \"100\",\n      \"initialDate\": \"2024-02-12\",\n      \"finalDate\": \"2024-02-13\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "nullParameter",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n      \"title\": \"Task 2\",\n      \"description\": \"2222\",\n      \n      \"initialDate\": \"2024-02-12\",\n      \"finalDate\": \"2024-02-13\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"add"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This folder contains all Add New Task API validations."
+				},
+				{
+					"name": "UpdateTask",
+					"item": [
+						{
+							"name": "InvalidAuthentication",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo11",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"editedTitulo\",\n    \"description\": \"editedDescricao\",\n    \"priority\": \"100\",\n    \"status\": \"200\",\n    \"initialDate\": \"2024-09-11\",\n    \"finalDate\": \"2024-09-12\"\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/update?id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"update"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ValidUpdate",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"editedTitulo\",\n    \"description\": \"editedDescricao\",\n    \"priority\": \"100\",\n    \"status\": \"200\",\n    \"initialDate\": \"2024-09-11\",\n    \"finalDate\": \"2024-09-12\"\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/update?id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"update"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidUpdate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"editedTitulo\",\n    \n    \"priority\": \"100\",\n    \"status\": \"200\",\n    \"initialDate\": \"2024-09-11\",\n    \"finalDate\": \"2024-09-12\"\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/update?id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"task",
+										"update"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "Contains all Tasks API validations."
+		},
+		{
+			"name": "Login & Register",
+			"item": [
+				{
+					"name": "Login",
+					"item": [
+						{
+							"name": "validUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "invalidUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo12",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "wrongPassword",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo13",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This folder contains all Login API validations."
+				},
+				{
+					"name": "Register",
+					"item": [
+						{
+							"name": "validRegister",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"jorge\",\n    \"password\": \"jorge\",\n    \"email\": \"jorge@gmail.com\",\n    \"firstname\": \"Jorge\",\n    \"lastname\": \"Martins\",\n    \"phone\": \"914438462\",\n    \"photoURL\": \"https://www.google.pt/\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "nullParameter",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \n    \"password\": \"jorge\",\n    \"email\": \"jorge@gmail.com\",\n    \"firstname\": \"Jorge\",\n    \"lastname\": \"Martins\",\n    \"phone\": \"914438462\",\n    \"photoURL\": \"https://www.google.pt/\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "emptyParameter",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"jorge\",\n    \"password\": \"jorge\",\n    \"email\": \"jorge@gmail.com\",\n    \"firstname\": \"\",\n    \"lastname\": \"Martins\",\n    \"phone\": \"914438462\",\n    \"photoURL\": \"https://www.google.pt/\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "usernameExists",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"jorge\",\n    \"password\": \"jorge\",\n    \"email\": \"jorge@gmail.com\",\n    \"firstname\": \"Jorge\",\n    \"lastname\": \"Martins\",\n    \"phone\": \"914438462\",\n    \"photoURL\": \"https://www.google.pt/\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "mailExists",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"jorge12\",\n    \"password\": \"jorge\",\n    \"email\": \"jorge@gmail.com\",\n    \"firstname\": \"Jorge\",\n    \"lastname\": \"Martins\",\n    \"phone\": \"914438462\",\n    \"photoURL\": \"https://www.google.pt/\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"add"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This folder contains all the Register API Endpoint validation."
+				}
+			],
+			"description": "Contains all Login & Register API validations."
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "GetUser",
+					"item": [
+						{
+							"name": "ValidGetUser",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/get/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"get",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ValidGetUserDetails",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/goncalo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"goncalo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidGetUser",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo12",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/get",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"get"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GetPartial",
+					"item": [
+						{
+							"name": "ValidGetUserPartial",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getPartial",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"getPartial"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidGetUserPartial",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo12",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/get",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"get"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"item": [
+						{
+							"name": "ValidUpdate",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"goncalo\",\n    \"email\": \"goncalofileno@gmail.com\",\n    \"firstname\": \"Gonçalo\",\n    \"lastname\": \"Fileno\",\n    \"phone\": \"914438462\",\n    \"photoURL\": \"https://www.famousbirthdays.com/faces/castro-carlos-image.jpg\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/update",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidUpdateAuthentication",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo23",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"goncalo\",\n    \"oldpassword\": \"\",\n    \"newpassword\": \"\",\n    \"confirmnewpassword\": \"\",\n    \"email\": \"\",\n    \"firstname\": \"\",\n    \"lastname\": \"\",\n    \"phone\": \"914438462\",\n    \"photoURL\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/update",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidParameter",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"goncalo\",\n    \"oldpassword\": \"\",\n    \"newpassword\": \"\",\n    \"confirmnewpassword\": \"\",\n    \"email\": \"\",\n    \"firstname\": \"\",\n    \"lastname\": \"\",\n    \"phone\": \"\",\n    \"photoURL\": \"asdasdsadasdsa\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/update",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"update"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "UpdatePassword",
+					"item": [
+						{
+							"name": "validPasswordUpdate",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"oldPassword\": \"goncalo11\",\n    \"newPassword\": \"goncalo11\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/updatePassword",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"updatePassword"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "invalidPasswordUpdate",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "username",
+										"value": "goncalo",
+										"type": "text"
+									},
+									{
+										"key": "password",
+										"value": "goncalo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"oldPassword\": \"goncalo12\",\n    \"newPassword\": \"goncalo\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/updatePassword",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"demo-1.0-SNAPSHOT",
+										"rest",
+										"user",
+										"updatePassword"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "Contains all Users API validations."
+		}
+	]
+}
