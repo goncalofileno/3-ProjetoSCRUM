@@ -163,7 +163,7 @@ public class UserService {
         }
     }
 
-    //Service that receives a UserUpdateDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user checking the parameteres
+    //Servicee that receives a UserUpdateDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user checking the parameteres
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
