@@ -4,13 +4,18 @@ import java.util.List;
 
 import aor.paj.bean.UserBean;
 import aor.paj.dto.*;
+import aor.paj.entity.UserEntity;
 import aor.paj.responses.ResponseMessage;
 import aor.paj.utils.JsonUtils;
 import aor.paj.validator.UserValidator;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.stream.Collectors;
 
@@ -19,6 +24,9 @@ public class UserService {
 
     @Inject
     UserBean userBean;
+
+    @PersistenceContext
+    EntityManager em;
 
     //Service that sends the list of all users
     //Serviço que possivelmente não será utilizado nesta fase 2
@@ -105,6 +113,22 @@ public class UserService {
         return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("A new user is created"))).build();
     }
 
+    //Service that adds a user to the database using UserEntity table
+
+    @POST
+    @Path("/addUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response addUser(UserEntity u) {
+        if (userBean.userExists(u)) {
+            return Response.status(409).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Username or Email already exists"))).build();
+        }
+        userBean.addUser(u);
+        return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("A new user is created"))).build();
+    }
+
+
     //Service that manages the login of the user
     @POST
     @Path("/login")
@@ -115,6 +139,58 @@ public class UserService {
             return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Valid Login"))).build();
         }
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Login"))).build();
+    }
+
+    //Service that receives a username and password via header and if its a valid user and password match it sends a token
+    @POST
+    @Path("/loginToken")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response loginTokenDatabase(@HeaderParam("username") String username, @HeaderParam("password") String password) {
+        // Get the user from the database
+        UserEntity user = em.createNamedQuery("User.findUserByUsername", UserEntity.class)
+                .setParameter("username", username).getSingleResult();
+
+        // Check if the user exists and the password matches
+        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+            // Generate a token and update it in the database
+            String token = userBean.generateToken(username);
+
+            // Create a new DTO with the token and the role
+            TokenAndRoleDto tokenAndRoleDto = new TokenAndRoleDto(token, user.getRole());
+
+            // Return the DTO in the response
+            return Response.status(200).entity(JsonUtils.convertObjectToJson(tokenAndRoleDto)).build();
+        }
+
+        // If the user doesn't exist or the password doesn't match, return an error
+        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Login"))).build();
+    }
+
+    //Service that loggoutsthe user and sets the token of the user that its logged to null
+    @POST
+    @Path("/logoutToken")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response logoutToken(@HeaderParam("token") String token) {
+        // Get the user from the database
+        UserEntity user = em.createNamedQuery("User.findUserByToken", UserEntity.class)
+                .setParameter("token", token).getSingleResult();
+
+        // Check if the user exists
+        if (user != null) {
+            // Set the token to null
+            user.setToken(null);
+
+            // Update the user in the database
+            em.persist(user);
+
+            // Return a success message
+            return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User is logged out"))).build();
+        }
+
+        // If the user doesn't exist, return an error
+        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Token"))).build();
     }
 
     //Service that receives username and password and sends the user object
@@ -163,7 +239,7 @@ public class UserService {
         }
     }
 
-    //Servicee that receives a UserUpdateDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user checking the parameteres
+    //Service that receives a UserUpdateDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user checking the parameteres
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
