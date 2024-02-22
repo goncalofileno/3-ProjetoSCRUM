@@ -30,126 +30,90 @@
         </button>
       </div>
     </header>
-
-    <img
-      id="argola1"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola2"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola3"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola4"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola5"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola6"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola7"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola8"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola9"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola10"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola11"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-    <img
-      id="argola12"
-      src="resources/Elements/argola.png"
-      alt="argola"
-      draggable="false"
-    />
-
-    <div class="titulos">
-      <h2>To Do</h2>
-    </div>
-    <div
-      id="todo"
-      class="taskArea"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-    >
-      <div class="tasks-container">
-        <!--Tarefas ficam por aqui-->
+    <!--Container prinicpal-->
+    <div class="container-main">
+      <!--CONTAINER DAS ARGOLAS-->
+      <div class="container-wrings">
+        <img
+          id="argola1"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola2"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola3"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola4"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola5"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola6"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola7"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola8"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola9"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola10"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola11"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
+        <img
+          id="argola12"
+          src="resources/Elements/argola.png"
+          alt="argola"
+          draggable="false"
+        />
       </div>
-    </div>
-
-    <div class="titulos">
-      <h2>Doing</h2>
-    </div>
-    <div
-      id="doing"
-      class="taskArea"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-    >
-      <div class="tasks-container"></div>
-      <!--Tarefas ficam por aqui-->
-    </div>
-
-    <div class="titulos">
-      <h2>Done</h2>
-    </div>
-    <div
-      id="done"
-      class="taskArea"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-    >
-      <div class="tasks-container">
-        <!--Tarefas ficam por aqui-->
-      </div>
+      <!-- CONTAINER DA TABLE -->
+      <div class="container-users t-design" id="users"></div>
     </div>
     <img id="trashIcon" src="resources/Icons/trash.png" alt="Trash Icon" />
     <aside>
       <img id="logo" src="resources/Logos/logo.png" alt="Logo" />
-      <button id="addTaskButton" class="btn-interface">Add Task</button>
-      <button id="usersButton" class="btn-interface">Users</button>
-      <button class="btn-interface">Task Category</button>
+      <button id="addTaskButton">Add User</button>
     </aside>
 
     <div id="newTaskModal" class="modal">
@@ -230,6 +194,6 @@
 
     <div id="modalOverlay2"></div>
 
-    <script src="interfacescript.js"></script>
+    <script src="interfaceUsersscript.js"></script>
   </body>
 </html>
