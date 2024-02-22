@@ -13,6 +13,7 @@ public class TaskDto {
     private int id;
     private String title;
     private String description;
+
     private LocalDate initialDate;
     private LocalDate finalDate;
     private Integer status;

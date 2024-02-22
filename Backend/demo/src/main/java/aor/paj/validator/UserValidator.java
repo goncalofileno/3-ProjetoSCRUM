@@ -3,6 +3,8 @@ package aor.paj.validator;
 import aor.paj.dto.UserDto;
 import aor.paj.dto.UserPasswordUpdateDto;
 import aor.paj.dto.UserUpdateDto;
+import aor.paj.entity.UserEntity;
+import jakarta.persistence.EntityManager;
 
 import java.util.List;
 import java.util.regex.Matcher;
