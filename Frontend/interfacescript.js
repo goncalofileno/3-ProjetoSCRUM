@@ -1,8 +1,10 @@
 //Listener para quando todas as acções de quando a página carrega
 window.onload = async function () {
+  /*
   if (localStorage.getItem("username") === null) {
     window.location.href = "index.html";
   }
+  */
 
   await getUserPartial();
 
@@ -33,6 +35,8 @@ window.onclose = function () {
 const trashIcon = document.getElementById("trashIcon");
 //Obtem o botão Add Task
 const addTaskButton = document.getElementById("addTaskButton");
+//Obtem os Users
+const usersButton = document.getElementById("usersButton");
 //Obtem a modal para adicionar uma nova tarefa
 const newTaskModal = document.getElementById("newTaskModal");
 //Obtem o botao para cancelar a adição de uma nova tarefa
@@ -189,6 +193,10 @@ addTaskButton.addEventListener("click", function () {
   newTaskModal.style.display = "block";
   //Escurece o fundo da página
   document.body.classList.add("modal-open");
+});
+
+usersButton.addEventListener("click", function () {
+  window.location.href = "interfaceUsers.html";
 });
 
 //Listener para quando o botão de cancelar da modal de adicionar uma nova tarefa é clicado
