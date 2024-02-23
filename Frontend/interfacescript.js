@@ -1,10 +1,9 @@
 //Listener para quando todas as acções de quando a página carrega
 window.onload = async function () {
-  /*
-  if (localStorage.getItem("username") === null) {
+  if (!localStorage.getItem("token")) {
     window.location.href = "index.html";
   }
-  */
+  
 
   await getUserPartial();
 
@@ -619,14 +618,13 @@ async function getUserPartial() {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        username: localStorage.getItem("username"),
-        password: localStorage.getItem("password"),
+        token: localStorage.getItem("token"),
       },
     }
   );
 
-  if (!response.ok) {
-    alert("Failed to fetch user partial data");
+  if (response.status === 401) {
+    alert("Unauthorized");
     return;
   }
 
@@ -637,27 +635,35 @@ async function getUserPartial() {
   sessionStorage.setItem("userPartial", JSON.stringify(userPartial));
 }
 
-async function logout() {
+async function logout(token) {
   fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/logout", {
     method: "POST",
     headers: {
       Accept: "*/*",
       "Content-Type": "application/json",
-      username: localStorage.getItem("username"),
-      password: localStorage.getItem("password"),
+      token: localStorage.getItem("token"),
     },
   })
     .then((response) => {
-      if (response.ok) {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.message === "User is logged out") {
         localStorage.clear();
         sessionStorage.clear();
         // Replace the current history entry
         window.history.replaceState(null, null, "index.html");
         // Reload the page to reflect the changes
         window.location.reload();
-      } else {
-        alert("Failed to logout");
       }
     })
-    .catch((error) => console.error("Error:", error));
+    .catch((error) => {
+      console.error("Error:", error);
+      if (error.message.includes("401")) {
+        alert("Unauthorized");
+      }
+    });
 }
