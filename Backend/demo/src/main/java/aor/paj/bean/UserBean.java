@@ -4,87 +4,127 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import aor.paj.dao.UserDao;
 import aor.paj.dto.UserDto;
 import aor.paj.dto.UserPartialDto;
 import aor.paj.dto.UserPasswordUpdateDto;
 import aor.paj.dto.UserUpdateDto;
 import aor.paj.entity.UserEntity;
+import aor.paj.mapper.UserMapper;
 import aor.paj.utils.JsonUtils;
+import jakarta.ejb.EJB;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.mindrot.jbcrypt.BCrypt;
 
 @ApplicationScoped
 public class UserBean {
     private ArrayList<UserDto> userDtos;
 
-    @PersistenceContext
-    EntityManager em;
+    @EJB
+    UserDao userDao;
 
-    public void addUser(UserEntity user) {
-        user.setRole("dev");
-        user.setId(generateIdDataBase());
-        user.setToken(null);
-        user.setActive(true);
-        em.persist(user);
-    }
 
     //Function that generates a unique id for new user checking in database mysql if the id already exists
     public int generateIdDataBase() {
         int id = 1;
         boolean idAlreadyExists;
+
         do {
             idAlreadyExists = false;
-            UserEntity user = em.find(UserEntity.class, id);
-            if (user != null) {
+            UserEntity userEntity = userDao.findUserById(id);
+            if (userEntity != null) {
                 id++;
                 idAlreadyExists = true;
             }
         } while (idAlreadyExists);
         return id;
     }
-
-    //Function that receives a UserEntity and checks in database mysql if username or email already exists
-    public  boolean userExists(UserEntity user) {
-
-        List<UserEntity> usersByUsername = em.createNamedQuery("User.findUserByUsername", UserEntity.class)
-                .setParameter("username", user.getUsername()).getResultList();
-        List<UserEntity> usersByEmail = em.createNamedQuery("User.findUserByEmail", UserEntity.class)
-                .setParameter("email", user.getEmail()).getResultList();
-
-        return !((List<?>) usersByUsername).isEmpty() || !usersByEmail.isEmpty();
-    }
-
-    public String generateToken(String username) {
-        // Generate a token. This is a simple example, you should use a more secure way to generate tokens.
-        String token = UUID.randomUUID().toString();
-
-        // Get the user from the database
-        UserEntity user = em.createNamedQuery("User.findUserByUsername", UserEntity.class)
-                .setParameter("username", username).getSingleResult();
-
-        // Set the token to the user
-        user.setToken(token);
-
-        // Update the user in the database
-        em.persist(user);
-
-        // Return the generated token
-        return token;
-    }
-
     public UserBean() {
         this.userDtos = JsonUtils.getUsers();
     }
 
-    //Add a user to the list of users
-    public void addUser(UserDto u) {
+    //Add a user to the database mysql, encrypting the password, role to "dev" and generating a id
+    public boolean addUser(UserDto user) {
 
-        u.setId(generateId());
-        u.setTasks(new ArrayList<>());
+            UserEntity userEntity = UserMapper.convertUserDtoToUserEntity(user);
+            //Encrypt the password
+            userEntity.setPassword(BCrypt.hashpw(userEntity.getPassword(), BCrypt.gensalt()));
 
-        userDtos.add(u);
-        JsonUtils.writeIntoJsonFile(userDtos);
+            userEntity.setId(generateIdDataBase());
+            userEntity.setRole("dev");
+            userEntity.setActive(true);
+            userDao.persist(userEntity);
+
+            return true;
+    }
+
+    //Function that validates a user in database by token
+    public boolean isValidUserByToken(String token) {
+        return userDao.findUserByToken(token) != null;
+    }
+
+    //Function that receives a UserDto and checks in database mysql if the username and email already exists
+    public boolean userExists(UserDto user) {
+        UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
+        if (userEntity != null) {
+            return true;
+        }
+        userEntity = userDao.findUserByEmail(user.getEmail());
+        if (userEntity != null) {
+            return true;
+        }
+        return false;
+    }
+
+    //Function that receives the username and password and checks in database mysql if the user exists and if the password is correct, then if so returns the token generated
+    public String login(String username, String password) {
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        System.out.println(userEntity.toString());
+        if (userEntity != null) {
+            if (BCrypt.checkpw(password, userEntity.getPassword())) {
+                System.out.println("password correct");
+                String token = generateNewToken();
+                userEntity.setToken(token);
+                userDao.merge(userEntity);
+                return token;
+            }
+        }
+        return null;
+    }
+
+    //Fubction that receives username, retrieves the user from the database and returns the userDto object
+    public UserDto getUserByUsername(String username) {
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        if (userEntity != null) {
+            return UserMapper.convertUserEntityToUserDto(userEntity);
+        }
+        return null;
+    }
+    //Function that receives the token and retrieves the user from the database and returns the userDto object
+    public UserDto getUserByToken(String token) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+        if (userEntity != null) {
+            return UserMapper.convertUserEntityToUserDto(userEntity);
+        }
+        return null;
+    }
+
+    //Function that receives the token and sets it to null, logging out the user
+    public void logout(String token) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+        System.out.println(userEntity.toString());
+        if (userEntity != null) {
+            userEntity.setToken(null);
+            userDao.merge(userEntity);
+        }
+    }
+
+    //Function that generates a new token
+    private String generateNewToken() {
+        return UUID.randomUUID().toString();
     }
 
     //generate a unique id for users checking if the id already exists

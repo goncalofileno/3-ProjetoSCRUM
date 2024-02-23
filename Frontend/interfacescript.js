@@ -1,6 +1,6 @@
 //Listener para quando todas as acções de quando a página carrega
 window.onload = async function () {
-  if (localStorage.getItem("username") === null) {
+  if (!localStorage.getItem("token")) {
     window.location.href = "index.html";
   }
 
@@ -611,14 +611,13 @@ async function getUserPartial() {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        username: localStorage.getItem("username"),
-        password: localStorage.getItem("password"),
+        token: localStorage.getItem("token"),
       },
     }
   );
 
-  if (!response.ok) {
-    alert("Failed to fetch user partial data");
+  if (response.status === 401) {
+    alert("Unauthorized");
     return;
   }
 
@@ -635,20 +634,20 @@ async function logout() {
     headers: {
       Accept: "*/*",
       "Content-Type": "application/json",
-      username: localStorage.getItem("username"),
-      password: localStorage.getItem("password"),
+      token: localStorage.getItem("token"),
     },
   })
-    .then((response) => {
-      if (response.ok) {
+    .then((response) => response.json())
+    .then((data) => {
+      if (response.status === 200 && data.message === "User is logged out") {
         localStorage.clear();
         sessionStorage.clear();
         // Replace the current history entry
         window.history.replaceState(null, null, "index.html");
         // Reload the page to reflect the changes
         window.location.reload();
-      } else {
-        alert("Failed to logout");
+      } else if (response.status === 401) {
+        alert("Unauthorized");
       }
     })
     .catch((error) => console.error("Error:", error));

@@ -30,8 +30,6 @@ document
   });
 
   function loginUser(username, password) {
-    localStorage.removeItem("username");
-    localStorage.removeItem("password");
     fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/login", {
       method: "POST",
       headers: {
@@ -42,16 +40,22 @@ document
       },
       credentials: "include",
     })
-      .then((response) => response.json()) // parse the response as JSON
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+        }
+        return response.json(); // parse the response as JSON
+      })
       .then((data) => {
         console.log(data); // log the data
-        if (data.message === "Valid Login") {
-          localStorage.setItem("username", username);
-          localStorage.setItem("password", password);
-          window.location.href = "interface.html";
-        } else {
-          alert(data.message);
-        }
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+        window.location.href = "interface.html";
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => {
+        console.error("Error:", error);
+        if (error.message.includes("401")) {
+          alert("Unauthorized");
+        }
+      });
   }

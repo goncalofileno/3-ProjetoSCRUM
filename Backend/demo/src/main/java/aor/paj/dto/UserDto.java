@@ -15,6 +15,10 @@ public class UserDto {
     private String lastname;
     private String phone;
     private String photoURL;
+    private String role;
+    private boolean active;
+
+
     private ArrayList<TaskDto> taskDtos;
 
     // Constructors
@@ -71,6 +75,15 @@ public class UserDto {
     public String getPhotoURL() {
         return photoURL;
     }
+    @XmlElement
+    public String getRole() {
+        return role;
+    }
+
+    @XmlElement
+    public boolean isActive() {
+        return active;
+    }
 
     @XmlElementWrapper
     @XmlElement(name = "task")
@@ -109,6 +122,14 @@ public class UserDto {
 
     public void setPhotoURL(String photoURL) {
         this.photoURL = photoURL;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void setTasks(ArrayList<TaskDto> taskDtos) {

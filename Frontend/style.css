@@ -1070,4 +1070,19 @@ aside::after {
   background-color: #444;
 }
 
+.registerForm{
+  width: 150%;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: -1.2rem;
+  border: 1px solid #205d88;
+  box-sizing: border-box;
+  background-color: rgba(168, 146, 124, 0.3);
+}
+
+.ownerOption{
+  display: none !important;
+}
+
+
 
