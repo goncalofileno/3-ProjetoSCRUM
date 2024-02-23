@@ -85,7 +85,11 @@ public class UserBean {
         UserEntity userEntity = userDao.findUserByUsername(username);
         System.out.println(userEntity.toString());
         if (userEntity != null) {
-            if (BCrypt.checkpw(password, userEntity.getPassword())) {
+            String salt = BCrypt.gensalt();
+            System.out.println(salt);
+            String hashedPassword = BCrypt.hashpw(password, salt);
+            System.out.println(hashedPassword);
+            if (BCrypt.checkpw(password, hashedPassword)) {
                 System.out.println("password correct");
                 String token = generateNewToken();
                 userEntity.setToken(token);
