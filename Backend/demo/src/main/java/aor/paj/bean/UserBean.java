@@ -52,7 +52,6 @@ public class UserBean {
             UserEntity userEntity = UserMapper.convertUserDtoToUserEntity(user);
             //Encrypt the password
             userEntity.setPassword(BCrypt.hashpw(userEntity.getPassword(), BCrypt.gensalt()));
-
             userEntity.setId(generateIdDataBase());
             userEntity.setRole("dev");
             userEntity.setActive(true);
@@ -83,13 +82,9 @@ public class UserBean {
     //Function that receives the username and password and checks in database mysql if the user exists and if the password is correct, then if so returns the token generated
     public String login(String username, String password) {
         UserEntity userEntity = userDao.findUserByUsername(username);
-        System.out.println(userEntity.toString());
         if (userEntity != null) {
-            String salt = BCrypt.gensalt();
-            System.out.println(salt);
-            String hashedPassword = BCrypt.hashpw(password, salt);
-            System.out.println(hashedPassword);
-            if (BCrypt.checkpw(password, hashedPassword)) {
+            System.out.println(userEntity.getPassword() + " UserBean password");
+            if (BCrypt.checkpw(password, userEntity.getPassword())) {
                 System.out.println("password correct");
                 String token = generateNewToken();
                 userEntity.setToken(token);

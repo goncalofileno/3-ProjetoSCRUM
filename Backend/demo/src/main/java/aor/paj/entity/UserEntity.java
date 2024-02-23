@@ -73,7 +73,8 @@ public class UserEntity implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        this.password = password;//BCrypt.hashpw(password, BCrypt.gensalt());
+        System.out.println(password + " UserEntity password");
     }
 
     public String getEmail() {
