@@ -78,9 +78,11 @@ public class UserService {
 
     //Service that receives a token and loggout setting the token to null
     @POST
+
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout(@HeaderParam("token") String token) {
+        System.out.println(token);
         if (userBean.isValidUserByToken(token)) {
             userBean.logout(token);
             return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User is logged out")).toString()).build();

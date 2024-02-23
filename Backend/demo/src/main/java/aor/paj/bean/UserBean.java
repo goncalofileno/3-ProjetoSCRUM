@@ -63,6 +63,7 @@ public class UserBean {
 
     //Function that validates a user in database by token
     public boolean isValidUserByToken(String token) {
+        userDao.flush();
         return userDao.findUserByToken(token) != null;
     }
 
@@ -89,6 +90,7 @@ public class UserBean {
                 String token = generateNewToken();
                 userEntity.setToken(token);
                 userDao.merge(userEntity);
+                userDao.flush();
                 return token;
             }
         }

@@ -628,7 +628,7 @@ async function getUserPartial() {
   sessionStorage.setItem("userPartial", JSON.stringify(userPartial));
 }
 
-async function logout() {
+async function logout(token) {
   fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/logout", {
     method: "POST",
     headers: {
@@ -637,18 +637,26 @@ async function logout() {
       token: localStorage.getItem("token"),
     },
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.json();
+    })
     .then((data) => {
-      if (response.status === 200 && data.message === "User is logged out") {
+      if (data.message === "User is logged out") {
         localStorage.clear();
         sessionStorage.clear();
         // Replace the current history entry
         window.history.replaceState(null, null, "index.html");
         // Reload the page to reflect the changes
         window.location.reload();
-      } else if (response.status === 401) {
-        alert("Unauthorized");
       }
     })
-    .catch((error) => console.error("Error:", error));
+    .catch((error) => {
+      console.error("Error:", error);
+      if (error.message.includes("401")) {
+        alert("Unauthorized");
+      }
+    });
 }
