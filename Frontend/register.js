@@ -58,7 +58,13 @@ document
       photoURL: photoURL,
     };
 
-    addUser(user);
+    if (
+      localStorage.getItem("role") == "po" &&
+      localStorage.getItem("token") != null
+    ) {
+      let roleChoice = document.getElementById("role").value;
+      addUserPO(user, roleChoice);
+    } else addUser(user);
     //Redireciona para a página de login
     //window.location.href = "index.html";
   });
@@ -71,6 +77,52 @@ async function addUser(user) {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    }
+  );
+
+  const data = await response.json();
+
+  if (response.status === 200 && data.message === "A new user is created") {
+    alert("User is added successfully :)");
+    window.location.href = "index.html";
+  } else {
+    alert(data.message); // show the error message
+    if (response.status === 400) {
+      if (data.message === "One or more parameters are null or blank") {
+        // clear all fields
+        document.getElementById("username").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("photoURL").value = "";
+      } else if (data.message === "Invalid email format") {
+        document.getElementById("email").value = "";
+      } else if (data.message === "Invalid phone number format") {
+        document.getElementById("phone").value = "";
+      } else if (data.message === "Invalid URL format") {
+        document.getElementById("photoURL").value = "";
+      }
+    } else if (
+      response.status === 409 &&
+      data.message === "Invalid Username or Email"
+    ) {
+      document.getElementById("username").value = "";
+      document.getElementById("email").value = "";
+    }
+  }
+}
+
+async function addUserPO(user, roleChoice) {
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add",
+    {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+        role: roleChoice,
       },
       body: JSON.stringify(user),
     }
