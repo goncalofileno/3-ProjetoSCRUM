@@ -90,6 +90,31 @@ public class UserService {
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized")).toString()).build();
     }
 
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllUsers(@HeaderParam("token") String token) {
+
+        if (token == null || token.isEmpty()) {
+            System.out.println("Token is null or empty");
+            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
+        }
+
+        if (!userBean.isValidUserByToken(token)) {
+            System.out.println("Token is invalid");
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+
+        System.out.println("Token is valid");
+        List<UserDto> userDtos = userBean.getAllUsersDB();
+
+        if (userDtos == null || userDtos.isEmpty()) {
+            System.out.println("No users found");
+            return Response.status(404).entity(JsonUtils.convertObjectToJson(new ResponseMessage("No users found"))).build();
+        }
+
+        return Response.status(200).entity(userDtos).build();
+    }
     //Service that receives the token to validate and sends the userPartialDto object
     @GET
     @Path("/getPartial")

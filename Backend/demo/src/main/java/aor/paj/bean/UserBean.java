@@ -63,6 +63,7 @@ public class UserBean {
     //Function that validates a user in database by token
     public boolean isValidUserByToken(String token) {
         userDao.flush();
+        System.out.println("isValidUserByToken");
         return userDao.findUserByToken(token) != null;
     }
 
@@ -167,8 +168,13 @@ public class UserBean {
     }
 
     //Return the list of users in the json file
-    public ArrayList<UserDto> getUsers() {
-        userDtos = JsonUtils.getUsers();
+    public List<UserDto> getAllUsersDB() {
+        List<UserEntity> userEntities = userDao.findAllUsers();
+        List<UserDto> userDtos = new ArrayList<>();
+        for(UserEntity ue : userEntities){
+            userDtos.add(UserMapper.convertUserEntityToUserDto(ue));
+        }
+        System.out.println(userDtos);
         return userDtos;
     }
 

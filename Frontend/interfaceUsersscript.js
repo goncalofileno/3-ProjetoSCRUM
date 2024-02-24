@@ -37,8 +37,7 @@ function getUsers() {
     headers: {
       Accept: "*/*",
       "Content-Type": "application/json",
-      username: "admin",
-      password: "admin",
+      token: localStorage.getItem("token"),
     },
   })
     .then((response) => response.json())
