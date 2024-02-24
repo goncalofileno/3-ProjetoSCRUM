@@ -275,20 +275,21 @@ yesButton.addEventListener("click", async function () {
 
   // Make a DELETE request to the server
   const response = await fetch(
-    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/delete?id=${taskId}`,
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/desactivate?id=${taskId}&role=${localStorage.getItem("role")}`,
     {
-      method: "DELETE",
+      method: "PUT",
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        username: localStorage.getItem("username"),
-        password: localStorage.getItem("password"),
+        token: localStorage.getItem("token"),
       },
     }
   );
-
+  
+  const data = await response.json(); // parse the response body
+  
   if (!response.ok) {
-    alert("Failed to delete task");
+    alert(`Failed to deactivate task: ${data.message}`); // display the message from the service
     return;
   }
 
@@ -443,7 +444,9 @@ async function displayTasks() {
     alert("Failed to fetch tasks");
     return;
   }
-  const tasks = await response.json();
+  let tasks = await response.json();
+
+  tasks = tasks.filter((task) => task.active === true);
 
   tasks.sort((a, b) => {
     // Sort by priority first
