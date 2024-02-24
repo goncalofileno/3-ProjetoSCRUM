@@ -1,44 +1,90 @@
 package aor.paj.bean;
 
+import aor.paj.dao.CategoryDao;
+import aor.paj.dao.TaskDao;
+import aor.paj.dao.UserDao;
 import aor.paj.dto.TaskDto;
 import aor.paj.dto.UserDto;
+import aor.paj.entity.CategoryEntity;
+import aor.paj.entity.TaskEntity;
+import aor.paj.entity.UserEntity;
+import aor.paj.mapper.TaskMapper;
 import aor.paj.utils.JsonUtils;
 import aor.paj.utils.State;
+import jakarta.ejb.EJB;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import java.util.ArrayList;
 
 @ApplicationScoped
 public class TaskBean {
+
+    @EJB
+    UserDao userDao;
+
+    @EJB
+    TaskDao taskDao;
+
+    @EJB
+    CategoryDao categoryDao;
+
     private ArrayList<UserDto> userDtos;
 
     public TaskBean() {
         this.userDtos = JsonUtils.getUsers();
     }
 
+
+   //Function that receives a token and a taskdto and creates a task with the user token as owner and adds the task to the database mysql
+    public boolean addTask(String token, TaskDto taskDto) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(taskDto.getCategory());
+        TaskEntity taskEntity = TaskMapper.convertTaskDtoToTaskEntity(taskDto);
+
+        taskEntity.setOwner(userEntity);
+        taskEntity.setActive(true);
+        taskEntity.setId(generateTaskId());
+        taskEntity.setStatus(State.TODO.getValue());
+        taskEntity.setCategory(categoryEntity);
+        System.out.println("TaskEntity: " + taskEntity);
+        taskDao.persist(taskEntity);
+        return true;
+    }
+
+    //Function that receives a taskdto and checks in database mysql if a task with the same title already exists
+    public boolean taskTitleExists(TaskDto taskDto) {
+        TaskEntity taskEntity = taskDao.findTaskByTitle(taskDto.getTitle());
+        if (taskEntity != null) {
+            return true;
+        }
+        return false;
+    }
+
+    //Function that generates a unique id for new task checking in database mysql if the id already exists
+    public int generateTaskId() {
+        int id = 1;
+        boolean idAlreadyExists;
+
+        do {
+            idAlreadyExists = false;
+            TaskEntity taskEntity = taskDao.findTaskById(id);
+            if (taskEntity != null) {
+                id++;
+                idAlreadyExists = true;
+            }
+        } while (idAlreadyExists);
+
+        return id;
+    }
+
+
     //Return the list of users in the json file
     public ArrayList<UserDto> getUsers() {
         userDtos = JsonUtils.getUsers();
         return userDtos;
     }
-    //generate a unique id for tasks checking if the id already exists
-    public int generateTaskId() {
-        int id = 1;
-        boolean idAlreadyExists;
-        do {
-            idAlreadyExists = false;
-            for (UserDto userDto : userDtos) {
-                for (TaskDto taskDto : userDto.getTasks()) {
-                    if (taskDto.getId() == id) {
-                        id++;
-                        idAlreadyExists = true;
-                        break;
-                    }
-                }
-            }
-        } while (idAlreadyExists);
-        return id;
-    }
+
 
     //Receives the username and task id and removes the task from the user
     public boolean removeTask(String username, int taskId) {
@@ -81,20 +127,6 @@ public class TaskBean {
                         return true;
                     }
                 }
-            }
-        }
-        return false;
-    }
-
-    //Receives the username and task object and adds the task to the user
-    public boolean addTask(String username, TaskDto taskDto) {
-        for (UserDto u : userDtos) {
-            if (u.getUsername().equals(username)) {
-                taskDto.setId(generateTaskId());
-                taskDto.setStatus(State.TODO.getValue());
-                u.getTasks().add(taskDto);
-                JsonUtils.writeIntoJsonFile(userDtos);
-                return true;
             }
         }
         return false;

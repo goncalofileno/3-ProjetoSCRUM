@@ -1,0 +1,41 @@
+package aor.paj.mapper;
+
+import aor.paj.dao.CategoryDao;
+import aor.paj.dto.TaskDto;
+import aor.paj.entity.TaskEntity;
+
+public class TaskMapper {
+
+    public TaskMapper() {
+    }
+
+    public static TaskEntity convertTaskDtoToTaskEntity(TaskDto taskDto) {
+
+        CategoryDao categoryDao = new CategoryDao();
+
+        TaskEntity taskEntity = new TaskEntity();
+
+        taskEntity.setTitle(taskDto.getTitle());
+        taskEntity.setDescription(taskDto.getDescription());
+        taskEntity.setInitialDate(taskDto.getInitialDate());
+        taskEntity.setFinalDate(taskDto.getFinalDate());
+        taskEntity.setStatus(taskDto.getStatus());
+        taskEntity.setPriority(taskDto.getPriority());
+
+        return taskEntity;
+    }
+
+//    public TaskDto convertTaskEntityToTaskDto(TaskEntity taskEntity) {
+//        TaskDto taskDto = new TaskDto();
+//
+//        taskDto.setTitle(taskEntity.getTitle());
+//        taskDto.setDescription(taskEntity.getDescription());
+//        taskDto.setInitialDate(taskEntity.getInitialDate());
+//        taskDto.setFinalDate(taskEntity.getFinalDate());
+//        taskDto.setStatus(taskEntity.getStatus());
+//        taskDto.setPriority(taskEntity.getPriority());
+//        taskDto.setCategory(taskEntity.getCategory());
+//
+//        return taskDto;
+//    }
+}

@@ -62,7 +62,6 @@ public class UserBean {
 
     //Function that validates a user in database by token
     public boolean isValidUserByToken(String token) {
-        userDao.flush();
         return userDao.findUserByToken(token) != null;
     }
 

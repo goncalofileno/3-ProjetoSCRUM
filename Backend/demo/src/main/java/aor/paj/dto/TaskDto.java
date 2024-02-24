@@ -13,11 +13,11 @@ public class TaskDto {
     private int id;
     private String title;
     private String description;
-    
     private LocalDate initialDate;
     private LocalDate finalDate;
     private Integer status;
     private Integer priority;
+    private String category;
 
     public TaskDto() {
 
@@ -136,6 +136,15 @@ public class TaskDto {
         } catch (NumberFormatException e) {
             this.priority = 0;
         }
+    }
+
+    @XmlElement
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override
