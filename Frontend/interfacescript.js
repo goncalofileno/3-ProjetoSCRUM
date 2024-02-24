@@ -21,6 +21,9 @@ window.onload = async function () {
 
   displayDateTime(); // Adiciona a exibição da data e hora
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
+
+  populateCategories();
+
   //Chama a função para mostrar as tarefas
   displayTasks();
 };
@@ -224,6 +227,7 @@ submitTaskButton.addEventListener("click", async function () {
   let priority = document.getElementById("editTaskPriority").value;
   let initialDate = document.getElementById("initialDate").value;
   let finalDate = document.getElementById("finalDate").value;
+  let category = document.getElementById("taskCategory").value;
 
   if (priority === "low") {
     priority = 100;
@@ -238,7 +242,8 @@ submitTaskButton.addEventListener("click", async function () {
     description === "" ||
     priority === "" ||
     initialDate === "" ||
-    finalDate === ""
+    finalDate === "" ||
+    category === ""
   ) {
     // Show the warning modal
     warningModal.style.display = "block";
@@ -254,6 +259,7 @@ submitTaskButton.addEventListener("click", async function () {
       priority: priority,
       initialDate: initialDate,
       finalDate: finalDate,
+      category: category,
     };
 
     console.log(newTask);
@@ -591,15 +597,12 @@ function displayDateTime() {
 }
 
 async function addTask(task) {
-  console.log("add task username: ", localStorage.getItem("username"));
-  console.log("add task password: ", localStorage.getItem("password"));
   await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/add", {
     method: "POST",
     headers: {
       Accept: "*/*",
       "Content-Type": "application/json",
-      username: localStorage.getItem("username"),
-      password: localStorage.getItem("password"),
+      token: localStorage.getItem("token"),
     },
     body: JSON.stringify(task),
   }).then((response) => {
@@ -667,4 +670,30 @@ async function logout(token) {
         alert("Unauthorized");
       }
     });
+}
+
+async function populateCategories() {
+  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all", {
+    method: "GET",
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      token: localStorage.getItem("token"),
+    },
+  });
+
+  if (!response.ok) {
+    alert("Failed to fetch categories");
+    return;
+  }
+
+  const categories = await response.json();
+  const select = document.getElementById("taskCategory");
+
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.title; // set the value to the category id
+    option.text = category.title; // set the text to the category title
+    select.appendChild(option);
+  });
 }
