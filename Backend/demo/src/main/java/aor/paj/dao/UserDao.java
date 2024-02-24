@@ -6,6 +6,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
+import java.util.List;
+
 @Stateless
 public class UserDao extends AbstractDao<UserEntity> {
 
@@ -55,5 +57,12 @@ public class UserDao extends AbstractDao<UserEntity> {
         }
     }
 
+    public List<UserEntity> findAllUsers() {
+        try{
+            return em.createNamedQuery("User.findAllUsers").getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }
 

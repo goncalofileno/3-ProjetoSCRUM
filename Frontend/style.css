@@ -1080,9 +1080,9 @@ aside::after {
 }
 .container-wrings {
   display: flex;
- height: 7.5rem;
+  height: 7.5rem;
 }
-.registerForm{
+.registerForm {
   width: 150%;
   padding: 10px;
   border-radius: 5px;
@@ -1092,16 +1092,13 @@ aside::after {
   background-color: rgba(168, 146, 124, 0.3);
 }
 
-.ownerOption{
+.ownerOption {
   display: none !important;
 }
 .container-users {
   display: flex;
   padding: 0;
   justify-content: center;
-
-
-
 
   align-items: flex-start;
   height: 100%;
@@ -1135,22 +1132,33 @@ aside::after {
   box-shadow: 0 0 0 #205d88; /* Remove a sombra */
   transform: translate(0, 0); /* Volta o elemento para a posição original */
 }
+
 table {
-  width: 100%; /*largura do container*/
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  table-layout: fixed;
 }
 
 th,
 td {
-  justify-content: flex-start;
   text-align: center;
   padding: 1rem;
 }
+tr {
+  border: #000000;
+  /*cursor: grabbing;*/
+  width: 100%;
+  flex: 1;
+}
+
 #users {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
 }
+
 .t-design {
   border: 4px solid #205d88;
   border-left: 10px solid #205d88;
@@ -1163,23 +1171,64 @@ td {
   overflow: auto;
   transform: translateX(80px);
   box-shadow: -10px 0 20px rgba(0, 0, 0, 0.5), -1px 0 0 0 black;
-  padding-top: 10px;
 }
+
 table th {
-  background-color: #496275;
+  background-color: #205d88;
   color: white;
-  position: sticky top 0;
 }
-tr {
-  border: #000000;
-  /*cursor: grabbing;*/
+th {
+  position: sticky;
+  top: 0;
+  width: 100%;
 }
+
+tbody {
+  width: 100%;
+}
+
 tr:hover {
   background-color: #f5f5f5;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  width: 100%;
+}
+
+td {
+  width: 100%;
 }
 
 td img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+
+#contextMenu1 {
+  display: none;
+  position: fixed;
+  width: 9%;
+  height: 7%;
+  z-index: 1;
+  background: white;
+  border: 3px solid #205d88;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+}
+/*caracteristicas das opções do pop-up menu*/
+#contextMenu1 div {
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  color: #205d88;
+}
+/*caracteristicas das opções do pop-up menu quando se passa por cima delas*/
+#contextMenu1 div:hover {
+  background-color: #ddd;
+  border-radius: 5px;
 }
