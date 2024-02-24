@@ -89,6 +89,13 @@ public class TaskBean {
         return taskDtos;
     }
 
+    //Function that receives a task id and a new task status and updates the task status in the database mysql
+    public void updateTaskStatus(int id, int status) {
+        TaskEntity taskEntity = taskDao.findTaskById(id);
+        taskEntity.setStatus(status);
+        taskDao.merge(taskEntity);
+    }
+
 
     //Return the list of users in the json file
     public ArrayList<UserDto> getUsers() {
@@ -104,22 +111,6 @@ public class TaskBean {
                 for (TaskDto t : u.getTasks()) {
                     if (t.getId() == taskId) {
                         u.getTasks().remove(t);
-                        JsonUtils.writeIntoJsonFile(userDtos);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    //Receives the username, task id and new status and updates the status of the task
-    public boolean updateTaskStatus(String username, int taskId, int status) {
-        for (UserDto u : userDtos) {
-            if (u.getUsername().equals(username)) {
-                for (TaskDto t : u.getTasks()) {
-                    if (t.getId() == taskId) {
-                        t.setStatus(status);
                         JsonUtils.writeIntoJsonFile(userDtos);
                         return true;
                     }

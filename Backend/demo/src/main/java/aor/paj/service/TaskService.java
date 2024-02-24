@@ -63,6 +63,20 @@ public class TaskService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
+
+    //Service that updates the task status
+    @PUT
+    @Path("/updateStatus")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateTask(@HeaderParam("token") String token, @QueryParam("id") int id, @QueryParam("status") int status) {
+        if (userBean.isValidUserByToken(token) && TaskValidator.isValidStatus(status)) {
+            taskBean.updateTaskStatus(id, status);
+            return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is updated"))).build();
+        } else {
+            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid status"))).build();
+        }
+    }
 //
 //    //Service that receives a task and its id and updates the task
 //    @PUT
