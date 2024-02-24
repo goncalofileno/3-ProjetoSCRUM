@@ -170,6 +170,64 @@ public class UserService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
+    @PUT
+    @Path("/update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(UserUpdateDto u, @HeaderParam("token") String token) {
+        if (token == null || token.isEmpty()) {
+            System.out.println("Token is null or empty");
+            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
+        }
+        if (!userBean.isValidUserByToken(token)) {
+            System.out.println("Token is invalid");
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        } else if (userBean.isValidUserByToken(token)) {
+            if (!UserValidator.isValidEmail(u.getEmail())) {
+                System.out.println("Invalid email format");
+                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid email format"))).build();
+            } else if (UserValidator.emailExists(userBean.getAllUsersDB(),u.getEmail()) && !userBean.getUserByToken(token).getEmail().equals(u.getEmail())) {
+                System.out.println("Email already exists");
+                return Response.status(409).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Email already exists"))).build();
+            //email exists
+            } else if (!UserValidator.isValidPhoneNumber(u.getPhone())) {
+                System.out.println("Invalid phone number format");
+                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid phone number format"))).build();
+            } else if (!UserValidator.isValidURL(u.getPhotoURL())) {
+                System.out.println("Invalid URL format");
+                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid URL format"))).build();
+            } else if (!UserValidator.isValidEmail(u.getEmail())) {
+                System.out.println("Invalid email format");
+                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid email format"))).build();
+            }else{
+                userBean.updateUser(u);
+                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User is updated")).toString()).build();
+            }
+        }
+        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+    }
+//        if (!UserValidator.isNullorBlank(u)) {
+//            if (UserValidator.isValidUser(userBean.getUsers(), username, password)) {
+//                if (u.getUsername().equals(username)) {
+//                    if (!UserValidator.isValidEmail(u.getEmail())) {
+//                        System.out.println("Invalid email format");
+//                        return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid email format"))).build();
+//                    }
+//                    if (!UserValidator.isValidPhoneNumber(u.getPhone())) {
+//                        System.out.println("Invalid phone number format");
+//                        return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid phone number format"))).build();
+//                    }
+//                    if (!UserValidator.isValidURL(u.getPhotoURL())) {
+//                        System.out.println("Invalid URL format");
+//                        return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid URL format"))).build();
+//                    }
+
+//                }
+//            }
+//            System.out.println("Unauthorized");
+
+
+
 
     //Service that only sends the first name of user and photo for the header
 //    @GET
@@ -186,7 +244,7 @@ public class UserService {
 //    }
 
     //Service that receives a UserUpdateDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user checking the parameteres
-//    ~
+//
 
     //Services tha receives a UserPasswordDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user password
 //    @PUT

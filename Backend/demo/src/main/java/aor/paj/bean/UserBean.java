@@ -169,7 +169,9 @@ public class UserBean {
     //Return the list of users in the json file
     public List<UserDto> getAllUsersDB() {
         List<UserEntity> userEntities = userDao.findAllUsers();
+        //cria um arraylist de userentity para devolver
         List<UserDto> userDtos = new ArrayList<>();
+        //adiciona os users à lista
         for(UserEntity ue : userEntities){
             userDtos.add(UserMapper.convertUserEntityToUserDto(ue));
         }
@@ -179,16 +181,16 @@ public class UserBean {
 
     //Function that receives a UserUpdateDto and updates the corresponding user
     public void updateUser(UserUpdateDto userUpdateDto) {
-        for (UserDto u : userDtos) {
-            if (u.getUsername().equals(userUpdateDto.getUsername())) {
-                u.setFirstname(userUpdateDto.getFirstname());
-                u.setLastname(userUpdateDto.getLastname());
-                u.setEmail(userUpdateDto.getEmail());
-                u.setPhone(userUpdateDto.getPhone());
-                u.setPhotoURL(userUpdateDto.getPhotoURL());
-                JsonUtils.writeIntoJsonFile(userDtos);
-                break;
-            }
+        UserEntity userEntity = userDao.findUserByUsername(userUpdateDto.getUsername());
+
+        if (userEntity != null) {
+            userEntity.setFirstname(userUpdateDto.getFirstname());
+            userEntity.setLastname(userUpdateDto.getLastname());
+            userEntity.setEmail(userUpdateDto.getEmail());
+            userEntity.setPhone(userUpdateDto.getPhone());
+            userEntity.setPhotoURL(userUpdateDto.getPhotoURL());
+
+            userDao.merge(userEntity);
         }
     }
 
