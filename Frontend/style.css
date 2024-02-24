@@ -312,6 +312,13 @@ footer a {
 #argola12 {
   left: 89%;
 }
+.argola {
+  position: relative;
+  top: 1rem;
+  z-index: 1;
+  height: 2.2rem;
+}
+
 /* botão de adicionar tarefa*/
 #addTaskButton {
   position: relative;
@@ -1075,11 +1082,14 @@ aside::after {
 .container-main {
   display: block;
   height: 70vh;
-  width: 70%;
+  width: 65%;
   margin: 0px;
 }
 .container-wrings {
+  flex: 1;
   display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
   height: 7.5rem;
 }
 .registerForm {
@@ -1169,7 +1179,7 @@ tr {
   border-radius: 10px;
 
   overflow: auto;
-  transform: translateX(80px);
+  /*transform: translateX(80px)*/
   box-shadow: -10px 0 20px rgba(0, 0, 0, 0.5), -1px 0 0 0 black;
 }
 
