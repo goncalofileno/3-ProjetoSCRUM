@@ -21,6 +21,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.Path;
 
+import java.util.Objects;
+
 @Path("/task")
 public class TaskService {
     //
@@ -77,6 +79,36 @@ public class TaskService {
             return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid status"))).build();
         }
     }
+
+    //Service that receives a task id, a token and a role, and checls if the user has the role to desactivate the task, and if its owner of task to desactivate it
+    @PUT
+    @Path("/desactivate")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response desactivateTask(@HeaderParam("token") String token, @QueryParam("id") int id, @QueryParam("role") String role) {
+        if (userBean.isValidUserByToken(token)){
+            if(taskBean.taskBelongsToUser(token, id)){
+                if (taskBean.desactivateTask(id)) {
+                    return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is desactivated"))).build();
+                } else {
+                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Cannot desactivate task"))).build();
+                }
+            } else if(!Objects.equals(role, "dev")){
+                if (taskBean.desactivateTask(id)) {
+                    return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is desactivated"))).build();
+                } else {
+                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Cannot desactivate task"))).build();
+                }
+            } else {
+                return Response.status(403).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Forbidden"))).build();
+            }
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
+
+
+//
 //
 //    //Service that receives a task and its id and updates the task
 //    @PUT
@@ -96,32 +128,6 @@ public class TaskService {
 //        }
 //    }
 //
-//    //Service that receives a task id and status number and updates the task status
-//    @PUT
-//    @Path("/updateStatus")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response updateTask(@HeaderParam("username") String username, @HeaderParam("password") String password, @QueryParam("id") int id, @QueryParam("status") int status) {
-//        if (UserValidator.isValidUser(taskBean.getUsers(), username, password) && taskBean.taskBelongsToUser(username, id) && TaskValidator.isValidStatus(status)) {
-//            taskBean.updateTaskStatus(username, id, status);
-//            return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is updated"))).build();
-//        } else {
-//            return getResponse(username, password, id);
-//        }
-//    }
-//
-//    //Service that sends the list of tasks of the user that is logged
-//    @GET
-//    @Path("/all")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getTasks(@HeaderParam("username") String username, @HeaderParam("password") String password) {
-//        if (UserValidator.isValidUser(taskBean.getUsers(), username, password)) {
-//            return Response.status(200).entity(taskBean.getTasks(username)).build();
-//        } else {
-//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-//        }
-//    }
 //
 //    //Service that sends a task object that has the id that is received
 //    @GET

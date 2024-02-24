@@ -95,6 +95,24 @@ public class TaskBean {
         taskEntity.setStatus(status);
         taskDao.merge(taskEntity);
     }
+    
+    //Function that receives a task id and sets the task active to false in the database mysql
+    public boolean desactivateTask(int id) {
+        TaskEntity taskEntity = taskDao.findTaskById(id);
+        taskEntity.setActive(false);
+        taskDao.merge(taskEntity);
+        return true;
+    }
+    
+    //Function that receives a task id and a token and checks if the user its the owner of task with that id
+    public boolean taskBelongsToUser(String token, int id) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+        TaskEntity taskEntity = taskDao.findTaskById(id);
+        if (taskEntity.getOwner().getId() == userEntity.getId()) {
+            return true;
+        }
+        return false;
+    }
 
 
     //Return the list of users in the json file
@@ -112,20 +130,6 @@ public class TaskBean {
                     if (t.getId() == taskId) {
                         u.getTasks().remove(t);
                         JsonUtils.writeIntoJsonFile(userDtos);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    //Receives the username and task id and sees if task belongs to the user
-    public boolean taskBelongsToUser(String username, int taskId) {
-        for (UserDto u : userDtos) {
-            if (u.getUsername().equals(username)) {
-                for (TaskDto t : u.getTasks()) {
-                    if (t.getId() == taskId) {
                         return true;
                     }
                 }
