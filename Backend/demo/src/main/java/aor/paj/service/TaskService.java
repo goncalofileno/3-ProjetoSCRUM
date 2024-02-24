@@ -50,6 +50,19 @@ public class TaskService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
+
+    //Service that gets all tasks from database
+    @GET
+    @Path("/all")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTasks(@HeaderParam("token") String token) {
+        if (userBean.isValidUserByToken(token)) {
+            return Response.status(200).entity(taskBean.getAllTasks()).build();
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
 //
 //    //Service that receives a task and its id and updates the task
 //    @PUT

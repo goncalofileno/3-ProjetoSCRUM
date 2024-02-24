@@ -18,6 +18,8 @@ public class TaskDto {
     private Integer status;
     private Integer priority;
     private String category;
+    private String owner;
+    private boolean active;
 
     public TaskDto() {
 
@@ -145,6 +147,24 @@ public class TaskDto {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    @XmlElement
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    @XmlElement
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

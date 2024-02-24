@@ -4,6 +4,9 @@ import aor.paj.entity.TaskEntity;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.NoResultException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Stateless
 public class TaskDao extends AbstractDao<TaskEntity>{
 
@@ -35,6 +38,11 @@ public class TaskDao extends AbstractDao<TaskEntity>{
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    //Function that returns all the tasks of database mysql
+    public List<TaskEntity> getAllTasks() {
+        return em.createNamedQuery("Task.getAllTasks").getResultList();
     }
 
 }

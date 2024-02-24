@@ -25,17 +25,20 @@ public class TaskMapper {
         return taskEntity;
     }
 
-//    public TaskDto convertTaskEntityToTaskDto(TaskEntity taskEntity) {
-//        TaskDto taskDto = new TaskDto();
-//
-//        taskDto.setTitle(taskEntity.getTitle());
-//        taskDto.setDescription(taskEntity.getDescription());
-//        taskDto.setInitialDate(taskEntity.getInitialDate());
-//        taskDto.setFinalDate(taskEntity.getFinalDate());
-//        taskDto.setStatus(taskEntity.getStatus());
-//        taskDto.setPriority(taskEntity.getPriority());
-//        taskDto.setCategory(taskEntity.getCategory());
-//
-//        return taskDto;
-//    }
+    public static TaskDto convertTaskEntityToTaskDto(TaskEntity taskEntity) {
+        TaskDto taskDto = new TaskDto();
+
+        taskDto.setId(taskEntity.getId());
+        taskDto.setTitle(taskEntity.getTitle());
+        taskDto.setDescription(taskEntity.getDescription());
+        taskDto.setInitialDate(taskEntity.getInitialDate());
+        taskDto.setFinalDate(taskEntity.getFinalDate());
+        taskDto.setStatus(taskEntity.getStatus());
+        taskDto.setPriority(taskEntity.getPriority());
+        taskDto.setCategory(taskEntity.getCategory().getTitle());
+        taskDto.setOwner(taskEntity.getOwner().getUsername());
+        taskDto.setActive(taskEntity.getActive());
+
+        return taskDto;
+    }
 }

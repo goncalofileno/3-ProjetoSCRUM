@@ -16,6 +16,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 public class TaskBean {
@@ -76,6 +77,16 @@ public class TaskBean {
         } while (idAlreadyExists);
 
         return id;
+    }
+
+    //Function that returns all tasks from the database mysql
+    public List<TaskDto> getAllTasks() {
+        List<TaskEntity> taskEntities = taskDao.getAllTasks();
+        ArrayList<TaskDto> taskDtos = new ArrayList<>();
+        for (TaskEntity taskEntity : taskEntities) {
+            taskDtos.add(TaskMapper.convertTaskEntityToTaskDto(taskEntity));
+        }
+        return taskDtos;
     }
 
 
