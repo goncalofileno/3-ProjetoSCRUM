@@ -59,6 +59,18 @@ public class UserBean {
 
             return true;
     }
+    public boolean addUserPO(UserDto user, String role) {
+        UserEntity userEntity = UserMapper.convertUserDtoToUserEntity(user);
+        //Encrypt the password
+        userEntity.setPassword(BCrypt.hashpw(userEntity.getPassword(), BCrypt.gensalt()));
+        userEntity.setId(generateIdDataBase());
+        userEntity.setRole("dev");
+        userEntity.setActive(true);
+        userEntity.setRole(role);
+        userDao.persist(userEntity);
+
+        return true;
+    }
 
     //Function that validates a user in database by token
     public boolean isValidUserByToken(String token) {
