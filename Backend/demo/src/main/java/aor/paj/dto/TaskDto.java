@@ -13,11 +13,13 @@ public class TaskDto {
     private int id;
     private String title;
     private String description;
-    
     private LocalDate initialDate;
     private LocalDate finalDate;
     private Integer status;
     private Integer priority;
+    private String category;
+    private String owner;
+    private boolean active;
 
     public TaskDto() {
 
@@ -136,6 +138,33 @@ public class TaskDto {
         } catch (NumberFormatException e) {
             this.priority = 0;
         }
+    }
+
+    @XmlElement
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    @XmlElement
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    @XmlElement
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

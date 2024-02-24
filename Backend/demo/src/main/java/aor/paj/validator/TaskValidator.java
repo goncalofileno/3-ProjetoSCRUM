@@ -9,6 +9,7 @@ import java.time.LocalDate;
 public class TaskValidator {
     //function that verifys if atributes of a new task are not null or empty, then verifys if initial date is before final date
     public static boolean isValidTask(TaskDto t) {
+        System.out.println("Verifica a task: " + t.getTitle() + " " + t.getDescription() + " " + t.getPriority() + " " + t.getInitialDate() + " " + t.getFinalDate() + " " + t.getCategory());
         return t != null &&
                 t.getTitle() != null &&
                 !t.getTitle().isEmpty() &&
@@ -20,7 +21,9 @@ public class TaskValidator {
                 t.getInitialDate() != null &&
                 (t.getInitialDate().isEqual(LocalDate.now()) || t.getInitialDate().isAfter(LocalDate.now())) && //initial date must be today or in the future
                 t.getFinalDate() != null &&
-                t.getInitialDate().isBefore(t.getFinalDate());
+                t.getInitialDate().isBefore(t.getFinalDate()) &&
+                t.getCategory() != null &&
+                !t.getCategory().isEmpty();
     }
 
     //function that verifys the task to edit
@@ -39,7 +42,9 @@ public class TaskValidator {
                 t.getInitialDate().isBefore(t.getFinalDate()) &&
                 t.getStatus() != null &&
                 t.getStatus() != 0 &&
-                isValidStatus(t.getStatus());
+                isValidStatus(t.getStatus()) &&
+                t.getCategory() != null &&
+                !t.getCategory().isEmpty();
     }
 
     public static boolean isValidStatus(int status) {

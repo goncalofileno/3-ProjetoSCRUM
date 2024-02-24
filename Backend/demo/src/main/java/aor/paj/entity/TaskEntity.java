@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @Table(name="task")
 @NamedQuery(name = "Task.findTaskById", query = "SELECT t FROM TaskEntity t WHERE t.id = :id")
 @NamedQuery(name = "Task.findTaskByOwner", query = "SELECT t FROM TaskEntity t WHERE t.owner = :owner")
+@NamedQuery(name = "Task.findTaskByTitle", query = "SELECT t FROM TaskEntity t WHERE t.title = :title")
+@NamedQuery(name = "Task.getAllTasks", query = "SELECT t FROM TaskEntity t")
 public class TaskEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -129,6 +131,22 @@ public class TaskEntity implements Serializable {
 
     public void setCategory(CategoryEntity category) {
         this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", initialDate=" + initialDate +
+                ", finalDate=" + finalDate +
+                ", status=" + status +
+                ", priority=" + priority +
+                ", active=" + active +
+                ", owner=" + owner +
+                ", category=" + category +
+                '}';
     }
 }
 

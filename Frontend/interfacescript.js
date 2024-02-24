@@ -391,8 +391,7 @@ async function drop(event) {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        username: localStorage.getItem("username"),
-        password: localStorage.getItem("password"),
+        token: localStorage.getItem("token"),    
       },
     }
   );
@@ -436,8 +435,7 @@ async function displayTasks() {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        username: localStorage.getItem("username"),
-        password: localStorage.getItem("password"),
+        token: localStorage.getItem("token"),
       },
     }
   );

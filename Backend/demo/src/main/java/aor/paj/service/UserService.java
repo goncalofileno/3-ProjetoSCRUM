@@ -76,9 +76,6 @@ public class UserService {
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
 
-    //Service that receives a token and loggout setting the token to null
-    @POST
-
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout(@HeaderParam("token") String token) {

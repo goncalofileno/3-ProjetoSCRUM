@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Table(name="category")
 @NamedQuery(name = "Category.findCategoryById", query = "SELECT c FROM CategoryEntity c WHERE c.id = :id")
 @NamedQuery(name = "Category.findCategoryByOwner", query = "SELECT c FROM CategoryEntity c WHERE c.owner = :owner")
+@NamedQuery(name = "Category.findCategoryByTitle", query = "SELECT c FROM CategoryEntity c WHERE c.title = :title")
 public class CategoryEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
