@@ -1033,7 +1033,7 @@ aside::after {
 }
 
 #registerForm label {
-  display: block;
+  /*display: block;*/
   margin: 5px 0 0 0;
   margin-bottom: -25px;
   color: #205d88;
@@ -1063,7 +1063,7 @@ aside::after {
 #cancelButtonRegister {
   position: relative;
   top: 10px;
-  display: block;
+  /*display: block;*/
   width: 100%;
   padding: 10px;
   margin-bottom: 5px;
@@ -1103,7 +1103,7 @@ aside::after {
 }
 
 .ownerOption {
-  display: none !important;
+  display: none;
 }
 .container-users {
   display: flex;
@@ -1241,4 +1241,34 @@ td img {
 #contextMenu1 div:hover {
   background-color: #ddd;
   border-radius: 5px;
+}
+
+#addUserButton {
+  position: relative;
+  top: 15rem;
+  left: 0%;
+  margin-left: 0;
+  width: 12rem;
+  font-family: inherit;
+  font-size: inherit;
+  background: white;
+  border: 3px solid #205d88;
+  margin-right: 2.6rem;
+  box-shadow: 0 0 0 #205d88;
+  transition: all 0.2s;
+  border-radius: 10px;
+}
+
+/*caracteristicas do botão de adicionar tarefa quando se passa sobre ele*/
+#addUserButton:hover {
+  box-shadow: 0.4rem 0.4rem 0 #205d88; /* Adiciona uma sombra */
+  transform: translate(
+    -0.4rem,
+    -0.4rem
+  ); /* Move o elemento para cima e para a esquerda */
+}
+/*caracteristicas do botão de adicionar tarefa quando é clicado*/
+#addUserButton:active {
+  box-shadow: 0 0 0 #205d88; /* Remove a sombra */
+  transform: translate(0, 0); /* Volta o elemento para a posição original */
 }
