@@ -1177,6 +1177,11 @@ table th {
   background-color: #205d88;
   color: white;
 }
+th {
+  position: sticky;
+  top: 0;
+  width: 100%;
+}
 
 tbody {
   width: 100%;

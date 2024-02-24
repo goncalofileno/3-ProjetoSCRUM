@@ -3,9 +3,17 @@ document.getElementById("addTaskButton").addEventListener("click", getUsers());
 function generateTable(data) {
   let table = "<table>";
   table +=
-    "<th>Photo</th><th>Username</th><th>Nome</th><th>Lastname</th><th>Email</th><th>phone</th><tbody>";
+    "<th>Photo</th><th>Username</th><th>Firstname</th><th>Lastname</th><th>Email</th><th>Phone</th><tbody>";
   data.forEach((item) => {
-    table += `<tr><div class="trow"><td><img src="${item.photoURL}"/></td><td>${item.username}</td><td>${item.firstname}</td><td>${item.lastname}</td><td>${item.email}</td><td>${item.phone}</td><div></tr>`;
+    table += `
+    <tr>
+      <td><img src="${item.photoURL}"/></td>
+      <td>${item.username}</td>
+      <td>${item.firstname}</td>
+      <td>${item.lastname}</td>
+      <td>${item.email}</td>
+      <td>${item.phone}</td>
+    </tr>`;
   });
   table += "</tbody></table>";
 
