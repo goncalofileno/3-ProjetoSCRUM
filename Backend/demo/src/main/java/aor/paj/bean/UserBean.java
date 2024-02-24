@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
 import aor.paj.dto.UserDto;
 import aor.paj.dto.UserPartialDto;
@@ -25,6 +26,9 @@ public class UserBean {
 
     @EJB
     UserDao userDao;
+
+    @EJB
+    TaskDao taskDao;
 
 
     //Function that generates a unique id for new user checking in database mysql if the id already exists
@@ -127,48 +131,23 @@ public class UserBean {
         return UUID.randomUUID().toString();
     }
 
-    //generate a unique id for users checking if the id already exists
-    public int generateId() {
-
-        int id = 1;
-        boolean idAlreadyExists;
-
-        do {
-            idAlreadyExists = false;
-            for (UserDto userDto : userDtos) {
-                if (userDto.getId() == id) {
-
-                    id++;
-                    idAlreadyExists = true;
-                    break;
+    //Function that receives a token and a task id and checks if the user has permission to access the task, to edit he must be role sm or po, or the be owner of the task
+    public boolean hasPermissionToEdit(String token, int taskId) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+        if (userEntity != null) {
+            if (userEntity.getRole().equals("sm") || userEntity.getRole().equals("po")) {
+                return true;
+            }
+            System.out.println("O user nao e sm ou po");
+            for(int i = 0; i < taskDao.findTaskByOwnerId(userEntity.getId()).size(); i++){
+                if(taskDao.findTaskByOwnerId(userEntity.getId()).get(i).getId() == taskId){
+                    return true;
                 }
             }
-        } while (idAlreadyExists);
-        return id;
-    }
-
-    //get the user by id
-    public UserDto getUser(int i) {
-        for (UserDto u : userDtos) {
-            if (u.getId() == i)
-                return u;
+            System.out.println("A task nao pertence ao user");
         }
-        return null;
-    }
+        return false;
 
-    //get the user by username
-    public UserDto getUser(String username) {
-        for (UserDto u : userDtos) {
-            if (u.getUsername().equals(username))
-                return u;
-        }
-        return null;
-    }
-
-    //Return the list of users in the json file
-    public ArrayList<UserDto> getUsers() {
-        userDtos = JsonUtils.getUsers();
-        return userDtos;
     }
 
     //Function that receives a UserUpdateDto and updates the corresponding user

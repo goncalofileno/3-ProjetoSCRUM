@@ -330,12 +330,28 @@ deleteTaskOption.addEventListener("click", () => {
 });
 
 //Listener para quando o botão de "Edit" do popup menu é clicado
-editTaskOption.addEventListener("click", () => {
+editTaskOption.addEventListener("click", async () => {
   //Esconde o popup menu
   contextMenu.style.display = "none";
+  const taskId = contextMenu.getAttribute("data-task-id");
 
-  //Redireciona para a página de editar tarefa
-  window.location.href = "editTaskPage.html";
+  // Fetch permission from the server
+  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/hasPermissionToEdit", {
+    method: "GET",
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      token: localStorage.getItem("token"),
+      taskId: taskId, 
+    },
+  });
+
+  if (response.ok) {
+    //Redireciona para a página de editar tarefa
+    window.location.href = "editTaskPage.html";
+  } else {
+    alert("You do not have permission to edit this task");
+  }
 });
 
 //Listener para quando o botão de "Ok" do modal de detalhes da tarefa é clicado
