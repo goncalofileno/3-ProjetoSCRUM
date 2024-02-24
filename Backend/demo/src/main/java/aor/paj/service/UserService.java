@@ -30,7 +30,7 @@ public class UserService {
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addUser(UserDto u) {
+    public Response addUser(UserDto u, @HeaderParam("token") String token, @HeaderParam("role") String roleNewUser) {
         // Check if any parameter is null or blank
         if (UserValidator.isNullorBlank(u)) {
             return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("One or more parameters are null or blank"))).build();
@@ -56,9 +56,23 @@ public class UserService {
             return Response.status(409).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Username or Email"))).build();
         }
 
+        // Check if the user is a PO & if the token is valid and create the new user
+        String userToken="";
+        userToken = token;
+        if(userToken!=null && roleNewUser != null && userBean.isValidUserByToken(userToken)){
+            String role = userBean.getUserByToken(userToken).getRole();
+            if(role.equals("po")){
+                userBean.addUserPO(u, roleNewUser);
+                System.out.println(roleNewUser);
+                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("A new user is created")).toString()).build();
+            }
+
+        }else{
         // If all checks pass, add the user
-        userBean.addUser(u);
-        return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("A new user is created"))).build();
+            userBean.addUser(u);
+            return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("A new user is created"))).build();
+        }
+        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized")).toString()).build();
     }
 
 
