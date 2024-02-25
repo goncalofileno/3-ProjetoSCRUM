@@ -107,28 +107,50 @@ public class TaskService {
         }
     }
 
+    //Service that receives a token and a task id and sends the task object that has the id that is received
+    @GET
+    @Path("/get")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTask(@HeaderParam("token") String token, @QueryParam("id") int id) {
+        if (userBean.isValidUserByToken(token)) {
+            return Response.status(200).entity(taskBean.getTaskById(id)).build();
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
 
-//
-//
-//    //Service that receives a task and its id and updates the task
-//    @PUT
-//    @Path("/update")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response updateTask(@HeaderParam("username") String username, @HeaderParam("password") String password, @QueryParam("id") int id, TaskDto t) {
-//        if (UserValidator.isValidUser(taskBean.getUsers(), username, password) && taskBean.taskBelongsToUser(username, id)) {
-//            if (TaskValidator.isValidTaskEdit(t)) {
-//                taskBean.updateTask(id, t);
-//                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is updated"))).build();
-//            } else {
-//                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid task"))).build();
-//            }
-//        } else {
-//            return getResponse(username, password, id);
-//        }
-//    }
-//
-//
+
+    //Service that receives a token, a taskdto and a task id and updates the task with the id that is received
+    @PUT
+    @Path("/update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateTask(@HeaderParam("token") String token, TaskDto t, @QueryParam("id") int id) {
+        System.out.println("A tentar editar task");
+        System.out.println("Token: " + token);
+        System.out.println("Task no serviço: " + t.toString());
+        if (userBean.isValidUserByToken(token)) {
+            System.out.println("Utilizador valido a editar");
+            if(userBean.hasPermissionToEdit(token, id)){
+                System.out.println("Utilizador tem permissao para editar em serviço");
+                if (TaskValidator.isValidTaskEdit(t)) {
+                    System.out.println("Task enviada para editar é valida");
+                    taskBean.updateTask(t, id);
+                    return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is updated"))).build();
+                } else {
+                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid task"))).build();
+                }
+            } else {
+                return Response.status(403).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Forbidden"))).build();
+            }
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
+
+
+
 //    //Service that sends a task object that has the id that is received
 //    @GET
 //    @Path("/get")

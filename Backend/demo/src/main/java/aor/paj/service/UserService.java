@@ -141,6 +141,25 @@ public class UserService {
         }
     }
 
+    //Service that receives the token, role of user, and task id and sends if the user has permission to edit the task
+    @GET
+    @Path("/hasPermissionToEdit")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response hasPermissionToEdit(@HeaderParam("token") String token, @HeaderParam("taskId") int taskId) {
+        System.out.println("Token e task id: " + token + " " + taskId);
+        if (userBean.isValidUserByToken(token)) {
+            if (userBean.hasPermissionToEdit(token, taskId)) {
+                System.out.println("User has permission to edit");
+                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User has permission to edit"))).build();
+            } else {
+                return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("You dont have permission to edit this task."))).build();
+            }
+
+        }
+        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+    }
+
+
     //Service that receives username and password and sends the user object
 //    @GET
 //    @Path("/get")

@@ -169,7 +169,7 @@ public class TaskDto {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "TaskDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
@@ -177,6 +177,9 @@ public class TaskDto {
                 ", finalDate=" + finalDate +
                 ", status=" + status +
                 ", priority=" + priority +
+                ", category='" + category + '\'' +
+                ", owner='" + owner + '\'' +
+                ", active=" + active +
                 '}';
     }
 }

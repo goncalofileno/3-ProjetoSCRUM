@@ -114,6 +114,25 @@ public class TaskBean {
         return false;
     }
 
+    //Function that receives a task id and returns the task from the database mysql
+    public TaskDto getTaskById(int id) {
+        TaskEntity taskEntity = taskDao.findTaskById(id);
+        return TaskMapper.convertTaskEntityToTaskDto(taskEntity);
+    }
+
+    public void updateTask(TaskDto taskDto, int id) {
+        TaskEntity taskEntity = taskDao.findTaskById(id);
+        taskEntity.setTitle(taskDto.getTitle());
+        taskEntity.setDescription(taskDto.getDescription());
+        taskEntity.setInitialDate(taskDto.getInitialDate());
+        taskEntity.setFinalDate(taskDto.getFinalDate());
+        taskEntity.setStatus(taskDto.getStatus());
+        taskEntity.setPriority(taskDto.getPriority());
+        taskEntity.setCategory(categoryDao.findCategoryByTitle(taskDto.getCategory()));
+        taskDao.merge(taskEntity);
+        System.out.println("a task foi editada");
+    }
+
 
     //Return the list of users in the json file
     public ArrayList<UserDto> getUsers() {
@@ -148,38 +167,7 @@ public class TaskBean {
         return null;
     }
 
-    //Function that receives the username and id of the task and returns the task
-    public TaskDto getTask(String username, int id) {
-        for (UserDto u : userDtos) {
-            if (u.getUsername().equals(username)) {
-                for (TaskDto t : u.getTasks()) {
-                    if (t.getId() == id) {
-                        return t;
-                    }
-                }
-            }
-        }
-        return null;
-    }
 
-    //function that receives the id and task and uptades the task
-    public boolean updateTask(int id, TaskDto taskDto) {
-        for (UserDto u : userDtos) {
-            for (TaskDto t : u.getTasks()) {
-                if (t.getId() == id) {
-                    t.setTitle(taskDto.getTitle());
-                    t.setDescription(taskDto.getDescription());
-                    t.setInitialDate(taskDto.getInitialDate());
-                    t.setFinalDate(taskDto.getFinalDate());
-                    t.setPriority(taskDto.getPriority());
-                    t.setStatus(taskDto.getStatus());
-                    JsonUtils.writeIntoJsonFile(userDtos);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
 
 }

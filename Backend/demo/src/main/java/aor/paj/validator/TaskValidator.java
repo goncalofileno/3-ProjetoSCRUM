@@ -1,12 +1,15 @@
 package aor.paj.validator;
 
+import aor.paj.dao.CategoryDao;
 import aor.paj.dto.TaskDto;
 import aor.paj.utils.Priority;
 import aor.paj.utils.State;
+import jakarta.ejb.EJB;
 
 import java.time.LocalDate;
 
 public class TaskValidator {
+
     //function that verifys if atributes of a new task are not null or empty, then verifys if initial date is before final date
     public static boolean isValidTask(TaskDto t) {
         System.out.println("Verifica a task: " + t.getTitle() + " " + t.getDescription() + " " + t.getPriority() + " " + t.getInitialDate() + " " + t.getFinalDate() + " " + t.getCategory());
@@ -23,12 +26,14 @@ public class TaskValidator {
                 t.getFinalDate() != null &&
                 t.getInitialDate().isBefore(t.getFinalDate()) &&
                 t.getCategory() != null &&
-                !t.getCategory().isEmpty();
+                !t.getCategory().isEmpty() &&
+                isValidCategory(t.getCategory());
     }
 
     //function that verifys the task to edit
     public static boolean isValidTaskEdit(TaskDto t) {
         System.out.println("Verifica a task a editar");
+        System.out.println(t.toString());
         return t != null &&
                 t.getTitle() != null &&
                 !t.getTitle().isEmpty() &&
@@ -44,10 +49,16 @@ public class TaskValidator {
                 t.getStatus() != 0 &&
                 isValidStatus(t.getStatus()) &&
                 t.getCategory() != null &&
-                !t.getCategory().isEmpty();
+                !t.getCategory().isEmpty() &&
+                isValidCategory(t.getCategory());
     }
 
     public static boolean isValidStatus(int status) {
         return status == State.TODO.getValue() || status == State.DOING.getValue() || status == State.DONE.getValue();
+    }
+
+    public static boolean isValidCategory(String category) {
+        CategoryDao categoryDao = new CategoryDao();
+        return categoryDao.findCategoryByTitle(category) == null;
     }
 }
