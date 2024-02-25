@@ -1,9 +1,9 @@
+//TODO - Adicioanar animação assim como no btn addtasks aos restantes btns
 //Listener para quando todas as acções de quando a página carrega
 window.onload = async function () {
   if (!localStorage.getItem("token")) {
     window.location.href = "index.html";
   }
-  
 
   await getUserPartial();
 
@@ -281,7 +281,9 @@ yesButton.addEventListener("click", async function () {
 
   // Make a DELETE request to the server
   const response = await fetch(
-    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/desactivate?id=${taskId}&role=${localStorage.getItem("role")}`,
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/desactivate?id=${taskId}&role=${localStorage.getItem(
+      "role"
+    )}`,
     {
       method: "PUT",
       headers: {
@@ -291,9 +293,9 @@ yesButton.addEventListener("click", async function () {
       },
     }
   );
-  
+
   const data = await response.json(); // parse the response body
-  
+
   if (!response.ok) {
     alert(`Failed to deactivate task: ${data.message}`); // display the message from the service
     return;
@@ -336,15 +338,18 @@ editTaskOption.addEventListener("click", async () => {
   const taskId = contextMenu.getAttribute("data-task-id");
 
   // Fetch permission from the server
-  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/hasPermissionToEdit", {
-    method: "GET",
-    headers: {
-      Accept: "*/*",
-      "Content-Type": "application/json",
-      token: localStorage.getItem("token"),
-      taskId: taskId, 
-    },
-  });
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/hasPermissionToEdit",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+        taskId: taskId,
+      },
+    }
+  );
 
   if (response.ok) {
     //Redireciona para a página de editar tarefa
@@ -414,7 +419,7 @@ async function drop(event) {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        token: localStorage.getItem("token"),    
+        token: localStorage.getItem("token"),
       },
     }
   );
@@ -689,14 +694,17 @@ async function logout(token) {
 }
 
 async function populateCategories() {
-  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all", {
-    method: "GET",
-    headers: {
-      Accept: "*/*",
-      "Content-Type": "application/json",
-      token: localStorage.getItem("token"),
-    },
-  });
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
 
   if (!response.ok) {
     alert("Failed to fetch categories");
