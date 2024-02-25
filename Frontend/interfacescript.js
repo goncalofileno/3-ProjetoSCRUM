@@ -621,7 +621,21 @@ function createTaskElement(task) {
     default:
       break;
   }
+  const infoBlock = document.createElement("div");
+  infoBlock.classList.add("info-block");
+  //Owner & Category
+  const owner = document.createElement("div");
+  owner.textContent = task.owner;
+  owner.classList.add("owner-label");
+  infoBlock.appendChild(owner);
 
+  const category = document.createElement("div");
+  category.textContent = task.category;
+  category.textContent = task.category;
+  category.classList.add("category-label");
+  infoBlock.appendChild(category);
+
+  taskElement.appendChild(infoBlock);
   //Adiciona o icon da prioridade ao elemento div
   taskElement.appendChild(priorityIcon);
 
