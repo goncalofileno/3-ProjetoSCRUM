@@ -1,6 +1,4 @@
-//TODO - Adicionar listeners aos btns editar e logout
-//TODO - Adicionar liseners às linhas da table.
-//TODO - Carregar a img e nome do user logado e data de hoje
+//TODO - Adicionar listeners às linhas da table.
 
 // dev = Developer
 // sm = Scrum Master
@@ -40,26 +38,6 @@ window.onload = function () {
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
 };
 
-function generateTable(data) {
-  let table = "<table>";
-  table +=
-    "<th>Photo</th><th>Username</th><th>Firstname</th><th>Lastname</th><th>Email</th><th>Phone</th><tbody>";
-  data.forEach((item) => {
-    table += `
-    <tr>
-      <td><img src="${item.photoURL}"/></td>
-      <td>${item.username}</td>
-      <td>${item.firstname}</td>
-      <td>${item.lastname}</td>
-      <td>${item.email}</td>
-      <td>${item.phone}</td>
-    </tr>`;
-  });
-  table += "</tbody></table>";
-
-  return table;
-}
-
 function getUsers() {
   fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/all", {
     method: "GET",
@@ -72,7 +50,8 @@ function getUsers() {
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
-      document.getElementById("users").innerHTML = generateTable(data);
+      document.getElementById("tableContainer").innerHTML =
+        generateDivTable(data);
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -160,3 +139,45 @@ async function logout() {
       }
     });
 }
+
+///////////////////////// TABLE //////////////////////////
+function generateDivTable(data) {
+  // Start of the table
+  let table = [
+    "<div class='table t-design'>",
+    "<div class='row header'><div>Photo</div><div>Username</div><div>Firstname</div><div>Lastname</div><div>Email</div><div>Phone</div></div>",
+  ];
+
+  // Generate the rows
+  let rows = data.map(
+    (item) => `
+    <div class="row">
+      <div class="row-img"><img src="${item.photoURL}"/></div>
+      <div>${item.username}</div>
+      <div>${item.firstname}</div>
+      <div>${item.lastname}</div>
+      <div>${item.email}</div>
+      <div>${item.phone}</div>
+    </div>
+  `
+  );
+
+  let rowElement = tableContainer.querySelectorAll(".row");
+  rowElement.forEach((row) => {
+    row.addEventListener("click", function (event) {
+      // This function will be called when a row is clicked
+      // `this` refers to the clicked row
+      console.log("A row was clicked:", this);
+    });
+  });
+  // Add the rows to the table
+  table.push(...rows);
+
+  // End of the table
+  table.push("</div>");
+
+  // Join the table array into a string and return it
+  return table.join("");
+}
+
+///////////////////////// TABLE //////////////////////////
