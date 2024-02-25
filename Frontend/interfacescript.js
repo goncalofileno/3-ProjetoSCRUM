@@ -25,6 +25,9 @@ window.onload = async function () {
   populateUsersOwners();
   populateActiveCategories();
 
+  document.getElementById("categoryFilter").value = '';
+  document.getElementById("ownerFilter").value = '';
+
   //Chama a função para mostrar as tarefas
   displayTasks();
 };
@@ -95,6 +98,12 @@ const dateTimeDisplay = document.getElementById("dateTimeDisplay");
 const editProfileButton = document.getElementById("editProfileButton");
 const taskInitialDateinfo = document.getElementById("taskInitialDateinfo");
 const taskFinalDateinfo = document.getElementById("taskFinalDateinfo");
+
+const categoryFilter = document.getElementById("categoryFilter");
+const ownerFilter = document.getElementById("ownerFilter");
+const applyFiltersButton = document.getElementById("applyFilters");
+
+const resetFiltersButton = document.getElementById("resetFilters");
 
 //Permite que uma tarefa seja largada sobre as secções
 /*todoSection.addEventListener("drop", drop);*/
@@ -219,6 +228,24 @@ doingSection.addEventListener("dragover", function (event) {
 });
 doneSection.addEventListener("dragover", function (event) {
   event.preventDefault();
+});
+
+applyFiltersButton.addEventListener("click", () => {
+  // Get the selected filter values
+  const selectedCategory = categoryFilter.value;
+  const selectedOwner = ownerFilter.value;
+
+  // Call displayTasks with the selected filter values
+  displayTasks(selectedCategory, selectedOwner);
+});
+
+resetFiltersButton.addEventListener("click", () => {
+  // Reset the selected filter values
+  categoryFilter.value = "";
+  ownerFilter.value = "";
+
+  // Call displayTasks without any filter values
+  displayTasks();
 });
 
 //Listener para quando o botão de adicionar uma nova tarefa é clicado
@@ -454,8 +481,8 @@ function generateUniqueID() {
 }
 
 //Função que imprime as tarefas nas secções correspondentes
-async function displayTasks() {
-  //Limpa todas as secções de tarefas
+async function displayTasks(selectedCategory = "", selectedOwner = "") {
+  // Clear all task sections
   todoSection.innerHTML = "";
   doingSection.innerHTML = "";
   doneSection.innerHTML = "";
@@ -479,6 +506,14 @@ async function displayTasks() {
   let tasks = await response.json();
 
   tasks = tasks.filter((task) => task.active === true);
+
+  // Filter tasks based on the selected filter values
+  tasks = tasks.filter((task) => {
+    return (
+      (selectedCategory === "" || task.category === selectedCategory) &&
+      (selectedOwner === "" || task.owner === selectedOwner)
+    );
+  });
 
   tasks.sort((a, b) => {
     // Sort by priority first
@@ -739,6 +774,13 @@ async function populateUsersOwners() {
       const ownerFilter = document.getElementById("ownerFilter");
       // Clear the options
       ownerFilter.innerHTML = '';
+
+      // Add default option
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.text = "Please select";
+      ownerFilter.add(defaultOption);
+
       const addedUsernames = new Set();
       data.forEach((user) => {
         if (!addedUsernames.has(user.username)) {
@@ -765,6 +807,13 @@ async function populateActiveCategories() {
       const categoryFilter = document.getElementById("categoryFilter");
       // Clear the options
       categoryFilter.innerHTML = '';
+
+      // Add default option
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.text = "Please select";
+      categoryFilter.add(defaultOption);
+
       const addedCategories = new Set();
       data.forEach((category) => {
         if (!addedCategories.has(category.title)) {
