@@ -35,7 +35,13 @@ window.onload = function () {
   //Mostra a data e hora
   displayDateTime(); // Adiciona a exibição da data e hora
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
-  getUsers();
+
+  if (localStorage.getItem("deletedTasks") === "true") {
+    document.getElementById("tableContainer").innerHTML = displayDeletedTasks();
+
+  } else {
+    getUsers();
+  }
 };
 
 function getUsers() {
@@ -167,3 +173,75 @@ function generateDivTable(data) {
   return tableHTML;
 }
 ///////////////////////// TABLE //////////////////////////
+
+async function displayDeletedTasks() {
+  // Fetch tasks from the server
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/all",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
+  if (!response.ok) {
+    alert("Failed to fetch tasks");
+    return;
+  }
+  let tasks = await response.json();
+
+  // Filter out tasks that are active
+  tasks = tasks.filter((task) => task.active === false);
+
+  // Get the tableContainer element
+  const tableContainer = document.getElementById("tableContainer");
+
+  // Start of the table
+  let table = [
+    "<div class='table t-design'>",
+    "<div class='row header'><div>Title</div><div>Description</div><div>Initial Date</div><div>Final Date</div><div>Owner</div><div>Priority</div><div>Category</div></div>",
+  ];
+
+  // Generate the rows
+  let rows = tasks.map(
+    (task) => `
+    <div class="row element">
+      <div>${task.title}</div>
+      <div>${task.description}</div>
+      <div>${task.initialDate}</div>
+      <div>${task.finalDate}</div>
+      <div>${task.owner}</div>
+      <div>${task.priority}</div>
+      <div>${task.category}</div>
+    </div>
+  `
+  );
+
+  // Add the rows to the table
+  table.push(...rows);
+  // End of the table
+  table.push("</div>");
+  // Join the table array into a string and return it
+  let tableHTML = table.join("");
+  // Add the table to the DOM
+  tableContainer.innerHTML = tableHTML;
+  // Now that the new rows are in the DOM, you can add event listeners to them
+  let rowElement = tableContainer.querySelectorAll(".row.element");
+  rowElement.forEach((row) => {
+    row.addEventListener("contextmenu", function (e) {
+      // This function will be called when a row is clicked
+      // `this` refers to the clicked row
+      e.preventDefault();
+      // Show the context menu
+      const contextMenu = document.getElementById("contextMenu");
+      contextMenu.style.top = `${e.clientY}px`;
+      contextMenu.style.left = `${e.clientX}px`;
+      contextMenu.style.display = "block";
+    });
+  });
+
+  return tableHTML;
+}

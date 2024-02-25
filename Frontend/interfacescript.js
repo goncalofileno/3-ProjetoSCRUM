@@ -5,6 +5,8 @@ window.onload = async function () {
     window.location.href = "index.html";
   }
 
+  localStorage.setItem("deletedTasks", false);
+
   // Get the role from local storage
   const role = localStorage.getItem("role");
 
@@ -128,6 +130,8 @@ const applyFiltersButton = document.getElementById("applyFilters");
 
 const resetFiltersButton = document.getElementById("resetFilters");
 
+const deletedTasksButton = document.getElementById("deletedTasksButton");
+
 //Permite que uma tarefa seja largada sobre as secções
 /*todoSection.addEventListener("drop", drop);*/
 //doingSection.addEventListener("drop", drop);
@@ -182,6 +186,14 @@ trashIcon.ondrop = function (event) {
 //Listener para quando o botão de logout é clicado
 botaoLogout.addEventListener("click", function () {
   logout();
+});
+
+deletedTasksButton.addEventListener("click", () => {
+  // Set deletedTasks to true in local storage
+  localStorage.setItem("deletedTasks", true);
+
+  // Open interfaceusers.html
+  window.location.href = "interfaceUsers.html";
 });
 
 //Listener para quando o botão Add Task é clicado
