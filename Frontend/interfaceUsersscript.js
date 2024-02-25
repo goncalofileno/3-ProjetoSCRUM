@@ -9,7 +9,6 @@ const addUserButton = document.getElementById("addUserButton");
 addUserButton.style.display = "none";
 
 window.onload = function () {
-  getUsers();
   if (localStorage.getItem("token") == null) {
     window.location.href = "http://localhost:8080/demo-1.0-SNAPSHOT/";
     //se o user é Product Owner, o botão de adicionar user é mostrado.
@@ -36,6 +35,7 @@ window.onload = function () {
   //Mostra a data e hora
   displayDateTime(); // Adiciona a exibição da data e hora
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
+  getUsers();
 };
 
 function getUsers() {
@@ -57,25 +57,6 @@ function getUsers() {
       console.error("Error:", error);
     });
 }
-
-let rows = document.getElementsByTagName("tr");
-Array.from(rows).forEach((row) => {
-  row.addEventListener("contextmenu", (e) => {
-    e.preventDefault();
-    console.log("Right click");
-
-    contextMenu.style.top = `${e.pageY}px`;
-    contextMenu.style.left = `${e.pageX}px`;
-    //Guarda o identificador e a prioridade da tarefa
-    //contextMenu.setAttribute("data-task-id", task.id);
-
-    //Guarda o identificador da tarefa no sessionStorage
-    //sessionStorage.setItem("taskID", task.id);
-
-    //Mostra o popup menu
-    contextMenu.style.display = "block";
-  });
-});
 
 // Function copied from interfacescript.js
 //Função que mostra a data e hora
@@ -103,10 +84,12 @@ editProfileButton.addEventListener("click", function () {
   //Redireciona para a página de editar perfil
   window.location.href = "editProfile.html";
 });
+
 botaoLogout = document.getElementById("logoutButton");
 botaoLogout.addEventListener("click", function () {
   logout();
 });
+
 async function logout() {
   fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/logout", {
     method: "POST",
@@ -151,7 +134,7 @@ function generateDivTable(data) {
   // Generate the rows
   let rows = data.map(
     (item) => `
-    <div class="row">
+    <div class="row element">
       <div class="row-img"><img src="${item.photoURL}"/></div>
       <div>${item.username}</div>
       <div>${item.firstname}</div>
@@ -162,22 +145,25 @@ function generateDivTable(data) {
   `
   );
 
-  let rowElement = tableContainer.querySelectorAll(".row");
+  // Add the rows to the table
+  table.push(...rows);
+  // End of the table
+  table.push("</div>");
+  // Join the table array into a string and return it
+  let tableHTML = table.join("");
+  // Add the table to the DOM
+  tableContainer.innerHTML = tableHTML;
+  // Now that the new rows are in the DOM, you can add event listeners to them
+  let rowElement = tableContainer.querySelectorAll(".row.element");
   rowElement.forEach((row) => {
-    row.addEventListener("click", function (event) {
+    row.addEventListener("click", function (e) {
       // This function will be called when a row is clicked
       // `this` refers to the clicked row
+      e.preventDefault();
       console.log("A row was clicked:", this);
     });
   });
-  // Add the rows to the table
-  table.push(...rows);
 
-  // End of the table
-  table.push("</div>");
-
-  // Join the table array into a string and return it
-  return table.join("");
+  return tableHTML;
 }
-
 ///////////////////////// TABLE //////////////////////////
