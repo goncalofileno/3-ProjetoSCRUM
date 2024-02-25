@@ -191,15 +191,19 @@ public class UserBean {
     }
 
     //Function that receives a UserPasswordUpdateDto and updates the corresponding user
-    public void updatePassword(UserPasswordUpdateDto userPasswordUpdateDto, String username) {
-        for (UserDto u : userDtos) {
-            if (u.getUsername().equals(username)) {
-                u.setPassword(userPasswordUpdateDto.getNewPassword());
-                JsonUtils.writeIntoJsonFile(userDtos);
-                break;
+    public boolean updatePassword(UserPasswordUpdateDto userPasswordUpdateDto, String token) {
+
+        UserEntity userEntity = userDao.findUserByToken(token);
+        if (userEntity != null) {
+            if (BCrypt.checkpw(userPasswordUpdateDto.getOldPassword(), userEntity.getPassword())) {
+                String encryptedPassword = BCrypt.hashpw(userPasswordUpdateDto.getNewPassword(), BCrypt.gensalt());
+                userEntity.setPassword(encryptedPassword);
+                System.out.println(userEntity.toString());
+                userDao.merge(userEntity);
+                return true;
             }
         }
-
+        return false;
     }
 
     //Function that receives a UserDto and converts it to a UserPartialDto
