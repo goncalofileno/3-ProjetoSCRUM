@@ -30,4 +30,17 @@ public class CategoryService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
+
+    //Service that sends the categorys of tasks that are active in the database mysql
+    @GET
+    @Path("/active")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getActiveCategories(@HeaderParam("token") String token) {
+        if (userBean.isValidUserByToken(token)) {
+            return Response.status(200).entity(categoryBean.getActiveCategories()).build();
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
 }

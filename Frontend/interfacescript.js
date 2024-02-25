@@ -3,7 +3,28 @@ window.onload = async function () {
   if (!localStorage.getItem("token")) {
     window.location.href = "index.html";
   }
-  
+
+  // Get the role from local storage
+  const role = localStorage.getItem("role");
+
+  // Get the labelUser element
+  const labelUser = document.getElementById("labelUser");
+
+  // Update the welcome message based on the role
+  switch (role) {
+    case "dev":
+      labelUser.textContent = "Welcome Developer, ";
+      break;
+    case "sm":
+      labelUser.textContent = "Welcome Scrum Master, ";
+      break;
+    case "po":
+      labelUser.textContent = "Welcome Product Owner, ";
+      break;
+    default:
+      labelUser.textContent = "Welcome, ";
+      break;
+  }
 
   await getUserPartial();
 
@@ -23,6 +44,11 @@ window.onload = async function () {
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
 
   populateCategories();
+  populateUsersOwners();
+  populateActiveCategories();
+
+  document.getElementById("categoryFilter").value = "";
+  document.getElementById("ownerFilter").value = "";
 
   //Chama a função para mostrar as tarefas
   displayTasks();
@@ -94,6 +120,12 @@ const dateTimeDisplay = document.getElementById("dateTimeDisplay");
 const editProfileButton = document.getElementById("editProfileButton");
 const taskInitialDateinfo = document.getElementById("taskInitialDateinfo");
 const taskFinalDateinfo = document.getElementById("taskFinalDateinfo");
+
+const categoryFilter = document.getElementById("categoryFilter");
+const ownerFilter = document.getElementById("ownerFilter");
+const applyFiltersButton = document.getElementById("applyFilters");
+
+const resetFiltersButton = document.getElementById("resetFilters");
 
 //Permite que uma tarefa seja largada sobre as secções
 /*todoSection.addEventListener("drop", drop);*/
@@ -220,6 +252,24 @@ doneSection.addEventListener("dragover", function (event) {
   event.preventDefault();
 });
 
+applyFiltersButton.addEventListener("click", () => {
+  // Get the selected filter values
+  const selectedCategory = categoryFilter.value;
+  const selectedOwner = ownerFilter.value;
+
+  // Call displayTasks with the selected filter values
+  displayTasks(selectedCategory, selectedOwner);
+});
+
+resetFiltersButton.addEventListener("click", () => {
+  // Reset the selected filter values
+  categoryFilter.value = "";
+  ownerFilter.value = "";
+
+  // Call displayTasks without any filter values
+  displayTasks();
+});
+
 //Listener para quando o botão de adicionar uma nova tarefa é clicado
 submitTaskButton.addEventListener("click", async function () {
   let title = document.getElementById("taskTitle").value;
@@ -269,6 +319,8 @@ submitTaskButton.addEventListener("click", async function () {
   }
 
   await displayTasks();
+  await populateUsersOwners();
+  await populateActiveCategories();
   console.log("Tasks are printed");
 
   // document.body.classList.remove("modal-open"); // Comment this line
@@ -281,7 +333,9 @@ yesButton.addEventListener("click", async function () {
 
   // Make a DELETE request to the server
   const response = await fetch(
-    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/desactivate?id=${taskId}&role=${localStorage.getItem("role")}`,
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/desactivate?id=${taskId}&role=${localStorage.getItem(
+      "role"
+    )}`,
     {
       method: "PUT",
       headers: {
@@ -291,9 +345,9 @@ yesButton.addEventListener("click", async function () {
       },
     }
   );
-  
+
   const data = await response.json(); // parse the response body
-  
+
   if (!response.ok) {
     alert(`Failed to deactivate task: ${data.message}`); // display the message from the service
     return;
@@ -301,6 +355,8 @@ yesButton.addEventListener("click", async function () {
 
   // Call the function to display the tasks
   await displayTasks();
+  await populateUsersOwners();
+  await populateActiveCategories();
 
   // Hide the deleteWarning modal and remove the darkening of the page background
   deleteWarning.style.display = "none";
@@ -336,15 +392,18 @@ editTaskOption.addEventListener("click", async () => {
   const taskId = contextMenu.getAttribute("data-task-id");
 
   // Fetch permission from the server
-  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/hasPermissionToEdit", {
-    method: "GET",
-    headers: {
-      Accept: "*/*",
-      "Content-Type": "application/json",
-      token: localStorage.getItem("token"),
-      taskId: taskId, 
-    },
-  });
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/hasPermissionToEdit",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+        taskId: taskId,
+      },
+    }
+  );
 
   if (response.ok) {
     //Redireciona para a página de editar tarefa
@@ -414,7 +473,7 @@ async function drop(event) {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        token: localStorage.getItem("token"),    
+        token: localStorage.getItem("token"),
       },
     }
   );
@@ -444,8 +503,8 @@ function generateUniqueID() {
 }
 
 //Função que imprime as tarefas nas secções correspondentes
-async function displayTasks() {
-  //Limpa todas as secções de tarefas
+async function displayTasks(selectedCategory = "", selectedOwner = "") {
+  // Clear all task sections
   todoSection.innerHTML = "";
   doingSection.innerHTML = "";
   doneSection.innerHTML = "";
@@ -469,6 +528,14 @@ async function displayTasks() {
   let tasks = await response.json();
 
   tasks = tasks.filter((task) => task.active === true);
+
+  // Filter tasks based on the selected filter values
+  tasks = tasks.filter((task) => {
+    return (
+      (selectedCategory === "" || task.category === selectedCategory) &&
+      (selectedOwner === "" || task.owner === selectedOwner)
+    );
+  });
 
   tasks.sort((a, b) => {
     // Sort by priority first
@@ -689,14 +756,17 @@ async function logout(token) {
 }
 
 async function populateCategories() {
-  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all", {
-    method: "GET",
-    headers: {
-      Accept: "*/*",
-      "Content-Type": "application/json",
-      token: localStorage.getItem("token"),
-    },
-  });
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
 
   if (!response.ok) {
     alert("Failed to fetch categories");
@@ -712,4 +782,70 @@ async function populateCategories() {
     option.text = category.title; // set the text to the category title
     select.appendChild(option);
   });
+}
+
+async function populateUsersOwners() {
+  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getUsersOwners", {
+    method: "GET",
+    headers: new Headers({
+      token: localStorage.getItem("token"),
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const ownerFilter = document.getElementById("ownerFilter");
+      // Clear the options
+      ownerFilter.innerHTML = "";
+
+      // Add default option
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.text = "Please select";
+      ownerFilter.add(defaultOption);
+
+      const addedUsernames = new Set();
+      data.forEach((user) => {
+        if (!addedUsernames.has(user.username)) {
+          const option = document.createElement("option");
+          option.value = user.username;
+          option.text = user.username;
+          ownerFilter.add(option);
+          addedUsernames.add(user.username);
+        }
+      });
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+async function populateActiveCategories() {
+  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/active", {
+    method: "GET",
+    headers: new Headers({
+      token: localStorage.getItem("token"),
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const categoryFilter = document.getElementById("categoryFilter");
+      // Clear the options
+      categoryFilter.innerHTML = "";
+
+      // Add default option
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.text = "Please select";
+      categoryFilter.add(defaultOption);
+
+      const addedCategories = new Set();
+      data.forEach((category) => {
+        if (!addedCategories.has(category.title)) {
+          const option = document.createElement("option");
+          option.value = category.title;
+          option.text = category.title;
+          categoryFilter.add(option);
+          addedCategories.add(category.title);
+        }
+      });
+    })
+    .catch((error) => console.error("Error:", error));
 }

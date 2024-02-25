@@ -141,6 +141,22 @@ public class UserService {
         }
     }
 
+    //Service that receives the token and sends only the users that ownes the tasks in the database mysql
+    @GET
+    @Path("/getUsersOwners")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsersOwners(@HeaderParam("token") String token) {
+        if (userBean.isValidUserByToken(token)) {
+            List<UserDto> userDtos = userBean.getUsersOwners();
+            if (userDtos == null || userDtos.isEmpty()) {
+                return Response.status(404).entity(JsonUtils.convertObjectToJson(new ResponseMessage("No users found"))).build();
+            }
+            return Response.status(200).entity(userDtos).build();
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
+
     //Service that receives the token, role of user, and task id and sends if the user has permission to edit the task
     @GET
     @Path("/hasPermissionToEdit")

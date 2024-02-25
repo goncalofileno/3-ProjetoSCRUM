@@ -6,8 +6,7 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/boxicons@2.1.0/css/boxicons.min.css"
-    />
+      href="https://cdn.jsdelivr.net/npm/boxicons@2.1.0/css/boxicons.min.css" />
   </head>
 
   <body>
@@ -15,15 +14,14 @@
       <div id="dateTimeDisplay"></div>
       <div id="userDisplay">
         <div id="labelWelcome">
-          <span id="labelUser">Welcome, </span
-          ><span id="displayUsername"></span>
+          <span id="labelUser">Welcome, </span><span
+            id="displayUsername"></span>
         </div>
         <img
           id="userIcon"
           src="resources/Avatars/avatar1.png"
           alt="User Icon"
-          draggable="false"
-        />
+          draggable="false" />
         <button id="logoutButton">Logout<i class="bx bx-power-off"></i></button>
         <button id="editProfileButton">
           Edit Profile<i class="bx bx-edit"></i>
@@ -35,74 +33,62 @@
       id="argola1"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola2"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola3"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola4"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola5"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola6"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola7"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola8"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola9"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola10"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola11"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
     <img
       id="argola12"
       src="resources/Elements/argola.png"
       alt="argola"
-      draggable="false"
-    />
+      draggable="false" />
 
     <div class="titulos">
       <h2>To Do</h2>
@@ -111,8 +97,7 @@
       id="todo"
       class="taskArea"
       ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-    >
+      ondragover="allowDrop(event)">
       <div class="tasks-container">
         <!--Tarefas ficam por aqui-->
       </div>
@@ -125,8 +110,7 @@
       id="doing"
       class="taskArea"
       ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-    >
+      ondragover="allowDrop(event)">
       <div class="tasks-container"></div>
       <!--Tarefas ficam por aqui-->
     </div>
@@ -138,18 +122,32 @@
       id="done"
       class="taskArea"
       ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-    >
+      ondragover="allowDrop(event)">
       <div class="tasks-container">
         <!--Tarefas ficam por aqui-->
       </div>
     </div>
+
     <img id="trashIcon" src="resources/Icons/trash.png" alt="Trash Icon" />
     <aside>
       <img id="logo" src="resources/Logos/logo.png" alt="Logo" />
       <button id="addTaskButton" class="btn-interface">Add Task</button>
       <button id="usersButton" class="btn-interface">Users</button>
       <button class="btn-interface">Task Category</button>
+
+      <div id="filters">
+        
+        <!-- Filter by category -->
+        <label for="categoryFilter">Filter by category:</label>
+        <select id="categoryFilter"></select>
+        <!-- Filter by owner -->
+        <label for="ownerFilter">Filter by owner:</label>
+        <select id="ownerFilter"></select>
+
+        <!-- Filter buttons -->
+        <button id="applyFilters">Apply Filters</button>
+        <button id="resetFilters">Reset Filters</button>
+      </div>
     </aside>
 
     <div id="newTaskModal" class="modal">
@@ -161,8 +159,7 @@
             id="taskTitle"
             name="taskTitle"
             placeholder="Insert title here"
-            required
-          ></textarea>
+            required></textarea>
         </div>
         <div class="input-container">
           <label for="taskDescription">Task Description:</label>
@@ -170,8 +167,7 @@
             id="taskDescription"
             name="taskDescription"
             placeholder="Insert description here"
-            required
-          ></textarea>
+            required></textarea>
         </div>
         <div class="input-container">
           <label for="initialDate">Initial Date:</label>
