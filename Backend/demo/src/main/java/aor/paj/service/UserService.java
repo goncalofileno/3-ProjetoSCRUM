@@ -237,27 +237,49 @@ public class UserService {
         }
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
+
+    //Services tha receives a UserPasswordDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user password
+    @PUT
+    @Path("/updatePassword")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updatePassword(UserPasswordUpdateDto u, @HeaderParam("token") String token) {
+        if (token == null || token.isEmpty()) {
+            System.out.println("Token is null or empty");
+            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
+        }
+        else if (!userBean.isValidUserByToken(token)) {
+            System.out.println("Token is invalid");
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }else if(userBean.isValidUserByToken(token)){
+            boolean updateTry = userBean.updatePassword(u, token);
+            System.out.println(updateTry);
+            if(!updateTry){
+                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Old password is incorrect"))).build();
+            }else{
+                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Password is updated")).toString()).build();
+            }
+        }
+        return Response .status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters")).toString()).build();
+    }
 //        if (!UserValidator.isNullorBlank(u)) {
 //            if (UserValidator.isValidUser(userBean.getUsers(), username, password)) {
-//                if (u.getUsername().equals(username)) {
-//                    if (!UserValidator.isValidEmail(u.getEmail())) {
-//                        System.out.println("Invalid email format");
-//                        return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid email format"))).build();
-//                    }
-//                    if (!UserValidator.isValidPhoneNumber(u.getPhone())) {
-//                        System.out.println("Invalid phone number format");
-//                        return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid phone number format"))).build();
-//                    }
-//                    if (!UserValidator.isValidURL(u.getPhotoURL())) {
-//                        System.out.println("Invalid URL format");
-//                        return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid URL format"))).build();
-//                    }
-
+//                if (!userBean.getUser(username).getPassword().equals(password)) {
+//                    return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
 //                }
+//                if(!u.getOldPassword().equals(userBean.getUser(username).getPassword())) {
+//                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Old password is incorrect"))).build();
+//                }
+//                if (u.getNewPassword().equals(u.getOldPassword())) {
+//                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("New password is the same as the old password"))).build();
+//                }
+//                userBean.updatePassword(u, username);
+//                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Password is updated")).toString()).build();
 //            }
-//            System.out.println("Unauthorized");
-
-
+//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+//        }
+//        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters"))).build();
+//    }
 
 
     //Service that only sends the first name of user and photo for the header
@@ -277,30 +299,7 @@ public class UserService {
     //Service that receives a UserUpdateDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user checking the parameteres
 //
 
-    //Services tha receives a UserPasswordDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user password
-//    @PUT
-//    @Path("/updatePassword")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response updatePassword(UserPasswordUpdateDto u, @HeaderParam("username") String username, @HeaderParam("password") String password) {
-//        if (!UserValidator.isNullorBlank(u)) {
-//            if (UserValidator.isValidUser(userBean.getUsers(), username, password)) {
-//                if (!userBean.getUser(username).getPassword().equals(password)) {
-//                    return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-//                }
-//                if(!u.getOldPassword().equals(userBean.getUser(username).getPassword())) {
-//                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Old password is incorrect"))).build();
-//                }
-//                if (u.getNewPassword().equals(u.getOldPassword())) {
-//                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("New password is the same as the old password"))).build();
-//                }
-//                userBean.updatePassword(u, username);
-//                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Password is updated")).toString()).build();
-//            }
-//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-//        }
-//        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters"))).build();
-//    }
+
 
     //Service that when logout its pressed, the file its updated
 //    @POST
