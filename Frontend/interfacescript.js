@@ -1,3 +1,4 @@
+//TODO - Adicioanar animação assim como no btn addtasks aos restantes btns
 //Listener para quando todas as acções de quando a página carrega
 window.onload = async function () {
   if (!localStorage.getItem("token")) {

@@ -214,8 +214,7 @@ function updatePassword(oldPassword, newPassword) {
     headers: {
       Accept: "*/*",
       "Content-Type": "application/json",
-      username: localStorage.getItem("username"),
-      password: localStorage.getItem("password"),
+      token: localStorage.getItem("token"),
     },
     body: JSON.stringify({
       oldPassword: oldPassword,

@@ -32,7 +32,12 @@ document
   .addEventListener("click", function (event) {
     event.preventDefault();
     //Redireciona para a página de login
-    window.location.href = "index.html";
+    let token = localStorage.getItem("token");
+    if (token != null) {
+      window.location.href = "interfaceUsers.html";
+    } else {
+      window.location.href = "index.html";
+    }
   });
 
 document
