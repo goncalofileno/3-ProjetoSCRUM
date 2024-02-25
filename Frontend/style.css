@@ -1270,9 +1270,6 @@ aside::after {
   background-color: #333;
 }
 
-
-
-
 /*table test */
 #tableContainer {
   height: 100%;
@@ -1341,8 +1338,41 @@ aside::after {
 .row-img {
   width: 50px !important; /* Adjust this value as needed */
 }
-
+.row-img img {
+  border-radius: 50%;
+}
 .header {
   font-weight: bold;
   background-color: #f0f0f0;
+}
+
+.category-label {
+  top: 0;
+  right: 0;
+}
+
+.task-element {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.info-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  font-size: small;
+  color: #9b9b9b;
+}
+.owner-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #205d88;
+  color: white;
+  padding: 0.02rem;
+
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 5px;
 }

@@ -156,11 +156,14 @@ function generateDivTable(data) {
   // Now that the new rows are in the DOM, you can add event listeners to them
   let rowElement = tableContainer.querySelectorAll(".row.element");
   rowElement.forEach((row) => {
-    row.addEventListener("click", function (e) {
+    row.addEventListener("contextmenu", function (e) {
       // This function will be called when a row is clicked
       // `this` refers to the clicked row
       e.preventDefault();
-      console.log("A row was clicked:", this);
+      const contextMenu = document.getElementById("contextMenu");
+      contextMenu.style.top = e.clientY + "px";
+      contextMenu.style.left = e.clientX + "px";
+      contextMenu.style.display = "block";
     });
   });
 
