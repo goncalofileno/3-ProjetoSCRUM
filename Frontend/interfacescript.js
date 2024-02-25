@@ -3,7 +3,6 @@ window.onload = async function () {
   if (!localStorage.getItem("token")) {
     window.location.href = "index.html";
   }
-  
 
   await getUserPartial();
 
@@ -23,6 +22,8 @@ window.onload = async function () {
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
 
   populateCategories();
+  populateUsersOwners();
+  populateActiveCategories();
 
   //Chama a função para mostrar as tarefas
   displayTasks();
@@ -269,6 +270,8 @@ submitTaskButton.addEventListener("click", async function () {
   }
 
   await displayTasks();
+  await populateUsersOwners();
+  await populateActiveCategories();
   console.log("Tasks are printed");
 
   // document.body.classList.remove("modal-open"); // Comment this line
@@ -281,7 +284,9 @@ yesButton.addEventListener("click", async function () {
 
   // Make a DELETE request to the server
   const response = await fetch(
-    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/desactivate?id=${taskId}&role=${localStorage.getItem("role")}`,
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/desactivate?id=${taskId}&role=${localStorage.getItem(
+      "role"
+    )}`,
     {
       method: "PUT",
       headers: {
@@ -291,9 +296,9 @@ yesButton.addEventListener("click", async function () {
       },
     }
   );
-  
+
   const data = await response.json(); // parse the response body
-  
+
   if (!response.ok) {
     alert(`Failed to deactivate task: ${data.message}`); // display the message from the service
     return;
@@ -301,6 +306,8 @@ yesButton.addEventListener("click", async function () {
 
   // Call the function to display the tasks
   await displayTasks();
+  await populateUsersOwners();
+  await populateActiveCategories();
 
   // Hide the deleteWarning modal and remove the darkening of the page background
   deleteWarning.style.display = "none";
@@ -336,15 +343,18 @@ editTaskOption.addEventListener("click", async () => {
   const taskId = contextMenu.getAttribute("data-task-id");
 
   // Fetch permission from the server
-  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/hasPermissionToEdit", {
-    method: "GET",
-    headers: {
-      Accept: "*/*",
-      "Content-Type": "application/json",
-      token: localStorage.getItem("token"),
-      taskId: taskId, 
-    },
-  });
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/hasPermissionToEdit",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+        taskId: taskId,
+      },
+    }
+  );
 
   if (response.ok) {
     //Redireciona para a página de editar tarefa
@@ -414,7 +424,7 @@ async function drop(event) {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        token: localStorage.getItem("token"),    
+        token: localStorage.getItem("token"),
       },
     }
   );
@@ -689,14 +699,17 @@ async function logout(token) {
 }
 
 async function populateCategories() {
-  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all", {
-    method: "GET",
-    headers: {
-      Accept: "*/*",
-      "Content-Type": "application/json",
-      token: localStorage.getItem("token"),
-    },
-  });
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
 
   if (!response.ok) {
     alert("Failed to fetch categories");
@@ -712,4 +725,56 @@ async function populateCategories() {
     option.text = category.title; // set the text to the category title
     select.appendChild(option);
   });
+}
+
+async function populateUsersOwners() {
+  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getUsersOwners", {
+    method: "GET",
+    headers: new Headers({
+      token: localStorage.getItem("token"),
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const ownerFilter = document.getElementById("ownerFilter");
+      // Clear the options
+      ownerFilter.innerHTML = '';
+      const addedUsernames = new Set();
+      data.forEach((user) => {
+        if (!addedUsernames.has(user.username)) {
+          const option = document.createElement("option");
+          option.value = user.username;
+          option.text = user.username;
+          ownerFilter.add(option);
+          addedUsernames.add(user.username);
+        }
+      });
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+async function populateActiveCategories() {
+  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/active", {
+    method: "GET",
+    headers: new Headers({
+      token: localStorage.getItem("token"),
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const categoryFilter = document.getElementById("categoryFilter");
+      // Clear the options
+      categoryFilter.innerHTML = '';
+      const addedCategories = new Set();
+      data.forEach((category) => {
+        if (!addedCategories.has(category.title)) {
+          const option = document.createElement("option");
+          option.value = category.title;
+          option.text = category.title;
+          categoryFilter.add(option);
+          addedCategories.add(category.title);
+        }
+      });
+    })
+    .catch((error) => console.error("Error:", error));
 }

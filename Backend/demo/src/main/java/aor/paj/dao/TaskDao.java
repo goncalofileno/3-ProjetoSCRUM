@@ -48,6 +48,15 @@ public class TaskDao extends AbstractDao<TaskEntity>{
         }
     }
 
+    //Function that returns all tasks that have active == true
+    public List<TaskEntity> getActiveTasks() {
+        try {
+            return em.createNamedQuery("Task.getActiveTasks").getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
 
     //Function that returns all the tasks of database mysql
     public List<TaskEntity> getAllTasks() {

@@ -10,6 +10,7 @@ import aor.paj.dto.UserDto;
 import aor.paj.dto.UserPartialDto;
 import aor.paj.dto.UserPasswordUpdateDto;
 import aor.paj.dto.UserUpdateDto;
+import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.mapper.UserMapper;
 import aor.paj.utils.JsonUtils;
@@ -204,6 +205,26 @@ public class UserBean {
             }
         }
         return false;
+    }
+
+    //Function that returns a list of users that own tasks
+    public List<UserDto> getUsersOwners() {
+        List<UserEntity> userEntities = userDao.findAllUsers();
+        List<UserDto> userDtos = new ArrayList<>();
+        for (UserEntity userEntity : userEntities) {
+            List<TaskEntity> tasks = taskDao.findTaskByOwnerId(userEntity.getId());
+            boolean hasActiveTask = false;
+            for (TaskEntity task : tasks) {
+                if (task.getActive()) {
+                    hasActiveTask = true;
+                    break;
+                }
+            }
+            if (hasActiveTask) {
+                userDtos.add(UserMapper.convertUserEntityToUserDto(userEntity));
+            }
+        }
+        return userDtos;
     }
 
     //Function that receives a UserDto and converts it to a UserPartialDto
