@@ -712,6 +712,26 @@ aside::after {
 #editTaskPriority option {
   padding: 10px;
 }
+
+#editTaskCategory {
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  color: #205d88;
+  background-color: rgba(168, 146, 124, 0.3);
+  margin-bottom: 1.2rem;
+  margin-right: 2rem;
+}
+
+#editTaskCategory:focus {
+  outline: none;
+  border-color: #205d88;
+}
+
+#editTaskCategory option {
+  padding: 10px;
+}
 /*caracteristicas do container da escolha da prioridade*/
 .center-container {
   display: flex;
@@ -1099,10 +1119,6 @@ aside::after {
   display: flex;
   padding: 0;
   justify-content: center;
-
-
-
-
   align-items: flex-start;
   height: 100%;
 }

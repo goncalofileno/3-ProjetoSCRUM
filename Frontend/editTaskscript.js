@@ -1,5 +1,11 @@
 //Função chamada cada vez que a página é carregada
 window.onload = async function () {
+  if (!localStorage.getItem("token")) {
+    window.location.href = "index.html";
+  }
+  
+  await getUserPartial();
+
   const userPartial = JSON.parse(sessionStorage.getItem("userPartial"));
   const firstname = userPartial.firstname;
   //Vai buscar o elemento que mostra o username
@@ -12,29 +18,14 @@ window.onload = async function () {
   const userIcon = document.getElementById("userIcon");
   userIcon.src = photoURL;
 
+  await populateCategories();
+
   // Get the task id from session storage
   const taskId = sessionStorage.getItem("taskID");
 
   let task;
 
-  await fetch(
-    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/get?id=${taskId}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        username: localStorage.getItem("username"),
-        password: localStorage.getItem("password"),
-      },
-    }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      sessionStorage.setItem("taskToEdit", JSON.stringify(data));
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+  await getTaskToEdit(taskId);  
 
   task = JSON.parse(sessionStorage.getItem("taskToEdit"));
 
@@ -44,6 +35,7 @@ window.onload = async function () {
   setPriorityAndStatus(task.priority, task.status);
   document.getElementById("initialDate").value = task.initialDate;
   document.getElementById("finalDate").value = task.finalDate;
+  document.getElementById("editTaskCategory").value = task.category;
 
   // Get the initial date input field
   const initialDateInput = document.getElementById("initialDate");
@@ -112,6 +104,7 @@ guardaEditarTarefaButton.addEventListener("click", function () {
   const originalDescricao = task.description;
   const originalPriority = setPriorityOriginal(task.priority);
   const originalSectionName = setStatusOriginal(task.status);
+  const originalCategory = task.category;
   const originalInitialDate = task.initialDate;
   const originalFinalDate = task.finalDate;
 
@@ -122,6 +115,7 @@ guardaEditarTarefaButton.addEventListener("click", function () {
   ).value;
   const selectedSectionName = document.getElementById("editTaskStatus").value;
   const selectedPriority = document.getElementById("editTaskPriority").value;
+  const selectedCategory = document.getElementById("editTaskCategory").value;
   const editedInitialDate = document.getElementById("initialDate").value;
   const editedFinalDate = document.getElementById("finalDate").value;
 
@@ -132,7 +126,8 @@ guardaEditarTarefaButton.addEventListener("click", function () {
     selectedSectionName !== originalSectionName ||
     selectedPriority !== originalPriority ||
     editedInitialDate !== originalInitialDate ||
-    editedFinalDate !== originalFinalDate
+    editedFinalDate !== originalFinalDate ||
+    selectedCategory !== originalCategory
   ) {
     //Se algum dos campos foi alterado, mostra o modal de confirmação e escurece o fundo
     const confirmationModal = document.getElementById("confirmationModal");
@@ -149,6 +144,7 @@ confirmEditButton.addEventListener("click", function () {
   ).value;
   const selectedPriority = document.getElementById("editTaskPriority").value;
   const selectedSectionName = document.getElementById("editTaskStatus").value;
+  const selectedCategory = document.getElementById("editTaskCategory").value;
   const editedInitialDate = document.getElementById("initialDate").value;
   const editedFinalDate = document.getElementById("finalDate").value;
 
@@ -158,6 +154,7 @@ confirmEditButton.addEventListener("click", function () {
     description: editedDescricao,
     priority: setIntPriority(selectedPriority),
     status: setIntStatus(selectedSectionName),
+    category: selectedCategory,
     initialDate: editedInitialDate,
     finalDate: editedFinalDate,
   };
@@ -310,15 +307,16 @@ function displayDateTime() {
 }
 
 function updateTask(task, taskId) {
+  console.log(task);
+  console.log(taskId);
   fetch(
     `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/update?id=${taskId}`,
     {
       method: "PUT",
-      headers: {
+      headers: new Headers({
         "Content-Type": "application/json",
-        username: localStorage.getItem("username"),
-        password: localStorage.getItem("password"),
-      },
+        "token": localStorage.getItem("token"),
+      }),
       body: JSON.stringify(task),
     }
   )
@@ -344,3 +342,76 @@ function updateTask(task, taskId) {
       alert("Error: " + error);
     });
 }
+
+async function populateCategories() {
+  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all", {
+    method: "GET",
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      token: localStorage.getItem("token"),
+    },
+  });
+
+  if (!response.ok) {
+    alert("Failed to fetch categories");
+    return;
+  }
+
+  const categories = await response.json();
+  const select = document.getElementById("editTaskCategory");
+
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.title; // set the value to the category id
+    option.text = category.title; // set the text to the category title
+    select.appendChild(option);
+  });
+}
+
+async function getUserPartial() {
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getPartial",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
+
+  if (response.status === 401) {
+    alert("Unauthorized");
+    return;
+  }
+
+  const userPartial = await response.json();
+  console.log(userPartial);
+
+  // Store the user partial data in the session storage
+  sessionStorage.setItem("userPartial", JSON.stringify(userPartial));
+}
+
+async function getTaskToEdit(taskId) {
+  await fetch(
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/get?id=${taskId}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      sessionStorage.setItem("taskToEdit", JSON.stringify(data));
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+
+}
+
