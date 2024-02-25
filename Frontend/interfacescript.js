@@ -4,6 +4,28 @@ window.onload = async function () {
     window.location.href = "index.html";
   }
 
+  // Get the role from local storage
+  const role = localStorage.getItem("role");
+
+  // Get the labelUser element
+  const labelUser = document.getElementById("labelUser");
+
+  // Update the welcome message based on the role
+  switch (role) {
+    case "dev":
+      labelUser.textContent = "Welcome Developer, ";
+      break;
+    case "sm":
+      labelUser.textContent = "Welcome Scrum Master, ";
+      break;
+    case "po":
+      labelUser.textContent = "Welcome Product Owner, ";
+      break;
+    default:
+      labelUser.textContent = "Welcome, ";
+      break;
+  }
+
   await getUserPartial();
 
   const userPartial = JSON.parse(sessionStorage.getItem("userPartial"));
@@ -25,8 +47,8 @@ window.onload = async function () {
   populateUsersOwners();
   populateActiveCategories();
 
-  document.getElementById("categoryFilter").value = '';
-  document.getElementById("ownerFilter").value = '';
+  document.getElementById("categoryFilter").value = "";
+  document.getElementById("ownerFilter").value = "";
 
   //Chama a função para mostrar as tarefas
   displayTasks();
@@ -773,7 +795,7 @@ async function populateUsersOwners() {
     .then((data) => {
       const ownerFilter = document.getElementById("ownerFilter");
       // Clear the options
-      ownerFilter.innerHTML = '';
+      ownerFilter.innerHTML = "";
 
       // Add default option
       const defaultOption = document.createElement("option");
@@ -806,7 +828,7 @@ async function populateActiveCategories() {
     .then((data) => {
       const categoryFilter = document.getElementById("categoryFilter");
       // Clear the options
-      categoryFilter.innerHTML = '';
+      categoryFilter.innerHTML = "";
 
       // Add default option
       const defaultOption = document.createElement("option");
