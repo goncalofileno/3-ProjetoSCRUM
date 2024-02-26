@@ -85,7 +85,11 @@ public class UserService {
         String token = userBean.login(username, password);
         System.out.println(token);
         if (token != null) {
-            return Response.status(200).entity(JsonUtils.convertObjectToJson(new TokenAndRoleDto(token, userBean.getUserByUsername(username).getRole()))).build();
+            if(userBean.getUserByUsername(username).isActive()){
+                return Response.status(200).entity(JsonUtils.convertObjectToJson(new TokenAndRoleDto(token, userBean.getUserByUsername(username).getRole()))).build();
+            }else{
+                return Response.status(403).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User is not active")).toString()).build();
+            }
         }
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
