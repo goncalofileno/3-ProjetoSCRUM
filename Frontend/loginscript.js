@@ -1,7 +1,7 @@
 window.onload = function () {
   sessionStorage.clear();
   localStorage.clear();
-}
+};
 //Ao clicar no botão de login, o username é armazenado na sessionStorage e o usuário é redirecionado para a página de interfacedocument
 document
   .getElementById("loginForm")
@@ -14,12 +14,12 @@ document
     loginUser(username, password);
   });
 
-  window.addEventListener('pageshow', function (event) {
-    if (event.persisted) {
-      var form = document.getElementById('loginForm');
-      form.reset();
-    }
-  });
+window.addEventListener("pageshow", function (event) {
+  if (event.persisted) {
+    var form = document.getElementById("loginForm");
+    form.reset();
+  }
+});
 
 document
   .getElementById("registerButton")
@@ -29,34 +29,36 @@ document
     window.location.href = "register.html";
   });
 
-  function loginUser(username, password) {
-    fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/login", {
-      method: "POST",
-      headers: {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-        username: username,
-        password: password,
-      },
-      credentials: "include",
+function loginUser(username, password) {
+  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/login", {
+    method: "POST",
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      username: username,
+      password: password,
+    },
+    credentials: "include",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.json(); // parse the response as JSON
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("HTTP error " + response.status);
-        }
-        return response.json(); // parse the response as JSON
-      })
-      .then((data) => {
-        console.log(data); // log the data
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("username", data.username);
-        window.location.href = "interface.html";
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        if (error.message.includes("401")) {
-          alert("Unauthorized");
-        }
-      });
-  }
+    .then((data) => {
+      console.log(data); // log the data
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+      localStorage.setItem("username", username);
+      window.location.href = "interface.html";
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      if (error.message.includes("401")) {
+        alert("Unauthorized");
+      } else if (error.message.includes("403")) {
+        alert("Forbidden user. Please contact the administrator.");
+      }
+    });
+}

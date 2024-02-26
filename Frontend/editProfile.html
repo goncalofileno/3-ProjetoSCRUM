@@ -1,54 +1,79 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Edit Profile</title>
-        <link rel="icon" href="resources/Logos/tab_logo.png">
-        <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
-    <body class="edit-profile-body">
-        
-        <form id="editProfileForm">
-            <h2>Edit Profile Page</h2>
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username" readonly
-                disabled="disabled"><br>
+  <head>
+    <title>Edit Profile</title>
+    <link rel="icon" href="resources/Logos/tab_logo.png" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body class="edit-profile-body">
+    <form id="editProfileForm">
+      <h2>Edit Profile Page</h2>
+      <label for="username">Username:</label><br />
+      <input
+        type="text"
+        id="username"
+        name="username"
+        readonly
+        disabled="disabled"
+      /><br />
 
-            <label for="email">Email:</label><br>
-            <input type="email" id="email" name="email"><br>
-            <label for="firstname">First name:</label><br>
-            <input type="text" id="firstname" name="firstname"><br>
-            <label for="lastname">Last name:</label><br>
-            <input type="text" id="lastname" name="lastname"><br>
-            <label for="phone">Phone Number:</label><br>
-            <input type="tel" id="phone" name="phone"><br>
-            <label for="photo">Photo URL:</label><br>
-            <input type="url" id="photo" name="photo"><br>
-            <img src="https://www.iol.pt/multimedia/oratvi/multimedia/imagem/id/13439955/600.jpg" id="photoPreview" alt="Photo Preview" style="width: 200px; height: 200px;"><br>
-            <button type="submit" class="button" id="saveChanges" value="Save Changes">Save Changes</button>
-            <button type="button" class="button" id="changePassword">Change Password</button>
-            <button type="button" class="button" id="cancelButton">Cancel</button>
-        </form>
+      <label for="email">Email:</label><br />
+      <input type="email" id="email" name="email" /><br />
+      <label for="firstname">First name:</label><br />
+      <input type="text" id="firstname" name="firstname" /><br />
+      <label for="lastname">Last name:</label><br />
+      <input type="text" id="lastname" name="lastname" /><br />
+      <label for="phone">Phone Number:</label><br />
+      <input type="tel" id="phone" name="phone" /><br />
+      <label for="photo">Photo URL:</label><br />
+      <input type="url" id="photo" name="photo" /><br />
+      <img
+        src=""
+        id="photoPreview"
+        alt="Photo Preview"
+        style="width: 200px; height: 200px"
+      />
+      <div id="roleOptions"></div>
+      <br />
 
-        <div class="modal" id="updatePassword">
+      <button
+        type="submit"
+        class="button"
+        id="saveChanges"
+        value="Save Changes"
+      >
+        Save Changes
+      </button>
+      <button type="button" class="button" id="changePassword">
+        Change Password
+      </button>
+      <button type="button" class="button" id="cancelButton">Cancel</button>
+    </form>
+    <div></div>
 
-            <container class="modal-content">
-                <label for="password">Old Password:</label><br>
-                <input type="password" id="oldPassword" name="oldPassword"><br>
-                <label for="newPassword">New Password:</label><br>
-                <input type="password" id="newPassword" name="newPassword"><br>
-                <label for="confirmPassword">Confirm New Password:</label><br>
-                <input type="password" id="confirmPassword"
-                    name="confirmPassword"><br>
+    <div class="modal" id="updatePassword">
+      <container class="modal-content">
+        <label for="password">Old Password:</label><br />
+        <input type="password" id="oldPassword" name="oldPassword" /><br />
+        <label for="newPassword">New Password:</label><br />
+        <input type="password" id="newPassword" name="newPassword" /><br />
+        <label for="confirmPassword">Confirm New Password:</label><br />
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+        /><br />
 
-                <div class="options">
-                    <button class="btn" id="confirmChangePassword">Change Password</button>
-                    <button class="btn" id="cancelChangePassword">Cancel</button>
-                </div>
-            </container>
-
+        <div class="options">
+          <button class="btn" id="confirmChangePassword">
+            Change Password
+          </button>
+          <button class="btn" id="cancelChangePassword">Cancel</button>
         </div>
-        <div id="backdrop"></div>
+      </container>
+    </div>
+    <div id="backdrop"></div>
 
-        <script src="editProfile.js"></script>
-    </body>
+    <script src="editProfile.js"></script>
+  </body>
 </html>

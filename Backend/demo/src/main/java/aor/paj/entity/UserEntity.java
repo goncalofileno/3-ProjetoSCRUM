@@ -142,6 +142,11 @@ public class UserEntity implements Serializable {
         this.active = active;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+
     @Override
     public String toString() {
         return "UserEntity{" +

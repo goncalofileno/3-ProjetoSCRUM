@@ -12,6 +12,7 @@ public class UserUpdateDto {
     private String lastname;
     private String phone;
     private String photoURL;
+    private String role;
 
     public UserUpdateDto() {
     }
@@ -69,5 +70,13 @@ public class UserUpdateDto {
 
     public void setPhotoURL(String photoURL) {
         this.photoURL = photoURL;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

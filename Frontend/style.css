@@ -315,7 +315,7 @@ footer a {
 .argola {
   position: relative;
   top: 1rem;
-  z-index: 1;
+  z-index: 11;
   height: 2.2rem;
 }
 
@@ -1310,14 +1310,15 @@ aside::after {
   color: (248, 233, 219, 0.7);
   position: sticky;
   top: 0;
+  z-index: 10; /* Sobrepor os botões*/
 }
 .row.header {
   background-color: #205d88;
   color: white;
 }
 .table img {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
 }
 .row {
   display: flex;
@@ -1326,10 +1327,19 @@ aside::after {
   width: 50px;
   flex: none;
 }
+.element div {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
 .row:nth-child(even) > div {
   /* Change the background color for even rows */
   background-color: #e9e9e9;
 }
+/*
+.row:not(.header) {
+  transition: border 0.2s ease, border-radius 0.2s ease;
+}*/
 .row:not(.header):hover {
   border: #205d88 2px solid;
   border-radius: 10px;
@@ -1340,6 +1350,8 @@ aside::after {
   min-width: 100px;
   padding: 10px;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: trasparent transparent;
 }
 
 .userPhoto {
@@ -1397,4 +1409,40 @@ aside::after {
   height: 20px;
   width: 20px;
   margin-right: 5px;
+}
+
+/*slider --------------------------------------------------------------*/
+:root {
+  --slider-pix: 16px;
+}
+
+.active-slider {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 16px;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: var(--slider-pix);
+}
+
+.active-slider::before {
+  position: absolute;
+  content: "";
+  height: var(--slider-pix);
+  width: var(--slider-pix);
+  left: 0;
+  background-color: white;
+  border-radius: 50%;
+  transition: left 0.5s;
+}
+
+.active-slider:checked {
+  background-color: #205d88;
+}
+
+.active-slider:checked::before {
+  left: calc(100% - var(--slider-pix));
 }

@@ -123,10 +123,12 @@ async function logout() {
 }
 
 ///////////////////////// TABLE //////////////////////////
-
+// contextMenu --
 const deleteUser = document.getElementById("deleteUser");
 const deleteAllTasks = document.getElementById("deleteAllTasks");
 const changeRole = document.getElementById("changeRole");
+const editUser = document.getElementById("editUser");
+const selectedUser = localStorage.getItem("selectedUser");
 
 restoreAllTasksButton.addEventListener("click", function () {
   
@@ -134,15 +136,35 @@ restoreAllTasksButton.addEventListener("click", function () {
 
 deleteUser.addEventListener("click", function (e) {
   console.log(div);
-  console.log("Delete user");
+  console.log("Delete user");});
+  
+// getItem for use the selectedUser actual
+editUser.addEventListener("click", function () {
+  console.log(localStorage.getItem("selectedUser") + " foi editado");
+});
+deleteUser.addEventListener("click", function () {
+  console.log(localStorage.getItem("selectedUser") + " foi apagado");
 });
 deleteAllTasks.addEventListener("click", function () {
-  console.log("Delete all tasks");
+  console.log(localStorage.getItem("selectedUser") + "Delete all tasks");
 });
 changeRole.addEventListener("click", function () {
-  console.log("Change role");
+  console.log(localStorage.getItem("selectedUser") + "Change role");
 });
-
+// -- -- -- -- -- -- -- -- --
+// Function to get the full role name from the role abbreviation
+function getRoleFullName(role) {
+  switch (role) {
+    case "dev":
+      return "Developer";
+    case "po":
+      return "Product Owner";
+    case "sm":
+      return "Scrum Master";
+    default:
+      return role; // return the original role if it's not one of the above
+  }
+}
 async function displayUsers() {
   // Fetch users from the server
   const response = await fetch(
@@ -165,15 +187,25 @@ async function displayUsers() {
   // Get the tableContainer element
   const tableContainer = document.getElementById("tableContainer");
 
-  // Start of the table
-  let table = [
-    "<div class='table t-design'>",
-    "<div class='row header'><div>Photo</div><div>Username</div><div>First Name</div><div>Last Name</div><div>Email</div><div>Phone</div></div>", // Change this to your user fields
-  ];
+  if (localStorage.getItem("role") === "po") {
+    // Start of the table
+    var table = [
+      "<div class='table t-design'>",
+      `<div class='row header'>
+    <div>Photo</div>
+    <div>Username</div>
+    <div>First Name</div>
+    <div>Last Name</div>
+    <div>Email</div>
+    <div>Phone</div>
+    <div>Role</div>
+    <div>Active</div>
+    </div>`, // Change this to your user fields
+    ];
 
-  // Generate the rows
-  let rows = users.map(
-    (user) => `
+    // Generate the rows
+    var rows = users.map(
+      (user) => `
     <div class="row element">
       <div><img src="${user.photoURL}" class="userPhoto"></div>
       <div>${user.username}</div>
@@ -181,9 +213,47 @@ async function displayUsers() {
       <div>${user.lastname}</div>
       <div>${user.email}</div>
       <div>${user.phone}</div>
+      <div>${getRoleFullName(user.role)}</div>
+      <div>
+        <input type="checkbox" id="active-${
+          user.username
+        }" class="active-slider" ${user.active ? "checked" : ""}>
+      </div>
     </div>
   `
-  );
+    );
+  } else {
+    // Get the only currently active users with the activeUsers
+    var activeUsers = users.filter((user) => user.active === true);
+
+    var table = [
+      "<div class='table t-design'>",
+      `<div class='row header'>
+        <div>Photo</div>
+        <div>Username</div>
+        <div>First Name</div>
+        <div>Last Name</div>
+        <div>Email</div>
+        <div>Phone</div>
+        <div>Role</div>
+      </div>`, // Change this to your user fields
+    ];
+
+    // Generate the rows
+    var rows = activeUsers.map(
+      (user) => `
+    <div class="row element">
+      <div><img src="${user.photoURL}" class="userPhoto"></div>
+      <div>${user.username}</div>
+      <div>${user.firstname}</div>
+      <div>${user.lastname}</div>
+      <div>${user.email}</div>
+      <div>${user.phone}</div>
+      <div>${getRoleFullName(user.role)}</div>
+    </div>
+  `
+    );
+  }
 
   // Add the rows to the table
   table.push(...rows);
@@ -193,6 +263,39 @@ async function displayUsers() {
   let tableHTML = table.join("");
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
+  // Add event listeners to the slider buttons
+  let sliderButtons = tableContainer.querySelectorAll(".active-slider");
+  sliderButtons.forEach((sliderButton) => {
+    sliderButton.addEventListener("change", async function (e) {
+      console.log("Slider button changed");
+      //  id="active-${user.username}  remove active- and get the username
+      let username = this.id.replace("active-", "");
+      // Get the new active status from the slider button
+      let newActiveStatus = this.checked;
+      console.log(username, newActiveStatus);
+      // Update the user's active status in the database
+      // Replace this with your actual API endpoint and method to update a user's active status
+      const response = await fetch(
+        `http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/updateactive/?username=${username}&active=${newActiveStatus}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
+
+      if (!response.ok) {
+        alert("Failed to update user's active status");
+        // Revert the slider button to its original state
+        this.checked = !newActiveStatus;
+      }
+    });
+  });
+
+  //tableContainer.innerHTML = tableHTML;
   // If the user is a Product Owner, add event listeners to the rows
   if (localStorage.getItem("role") === "po") {
     // Now that the new rows are in the DOM, you can add event listeners to them
@@ -208,6 +311,7 @@ async function displayUsers() {
         const clickedElement = e.target;
         // Get the user selected from the parent clicked element
         const userSelected = clickedElement.parentNode.children[1].textContent;
+        localStorage.setItem("selectedUser", userSelected);
         console.log(userSelected);
         /////////////////////////////////////////////////
 

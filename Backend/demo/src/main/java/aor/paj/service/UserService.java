@@ -85,7 +85,11 @@ public class UserService {
         String token = userBean.login(username, password);
         System.out.println(token);
         if (token != null) {
-            return Response.status(200).entity(JsonUtils.convertObjectToJson(new TokenAndRoleDto(token, userBean.getUserByUsername(username).getRole(), userBean.getUserByUsername(username).getUsername()))).build();
+            if(userBean.getUserByUsername(username).isActive()){
+                return Response.status(200).entity(JsonUtils.convertObjectToJson(new TokenAndRoleDto(token, userBean.getUserByUsername(username).getRole(), userBean.getUserByToken(token).getUsername()))).build();
+            }else{
+                return Response.status(403).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User is not active")).toString()).build();
+            }
         }
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
@@ -192,10 +196,7 @@ public class UserService {
     @Path("/getDetails")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserDetails(@HeaderParam("token") String token) {
-        if (token == null || token.isEmpty()) {
-            System.out.println("Token is null or empty");
-            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
-        }
+//        ~
         if (!userBean.isValidUserByToken(token)) {
             System.out.println("Token is invalid");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
@@ -222,10 +223,10 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(UserUpdateDto u, @HeaderParam("token") String token) {
-        if (token == null || token.isEmpty()) {
-            System.out.println("Token is null or empty");
-            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
-        }
+//        if (token == null || token.isEmpty()) {
+//            System.out.println("Token is null or empty");
+//            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
+//        }
         if (!userBean.isValidUserByToken(token)) {
             System.out.println("Token is invalid");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
@@ -260,11 +261,11 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePassword(UserPasswordUpdateDto u, @HeaderParam("token") String token) {
-        if (token == null || token.isEmpty()) {
-            System.out.println("Token is null or empty");
-            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
-        }
-        else if (!userBean.isValidUserByToken(token)) {
+//        if (token == null || token.isEmpty()) {
+//            System.out.println("Token is null or empty");
+//            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
+//        }
+        if (!userBean.isValidUserByToken(token)) {
             System.out.println("Token is invalid");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }else if(userBean.isValidUserByToken(token)){
@@ -276,6 +277,28 @@ public class UserService {
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Password is updated")).toString()).build();
             }
         }
+        return Response .status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters")).toString()).build();
+    }
+
+    @POST
+    @Path("/updateactive/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response changeStatus(@HeaderParam("token") String token, @QueryParam("username") String username, @QueryParam("active") boolean active) {
+        if(!userBean.isValidUserByToken(token) && !userBean.getUserByToken(token).getRole().equals("po")){
+            System.out.println("Unauthorized");
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }else if(userBean.getUserByToken(token).getRole().equals("po")){
+            System.out.println("Authorized");
+            if(userBean.changeStatus(username, active)){
+
+                System.out.println("Status changed");
+                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Status changed")).toString()).build();
+            }else{
+                System.out.println("Status not changed");
+                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Status not changed")).toString()).build();
+            }
+        }
+        System.out.println("Invalid Parameters");
         return Response .status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters")).toString()).build();
     }
 //        if (!UserValidator.isNullorBlank(u)) {

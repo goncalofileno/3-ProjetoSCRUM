@@ -79,7 +79,11 @@ public class UserBean {
 
     //Function that validates a user in database by token
     public boolean isValidUserByToken(String token) {
-        return userDao.findUserByToken(token) != null;
+        UserEntity userEntity = userDao.findUserByToken(token);
+        if(userEntity != null && userEntity.getActive()){
+            return true;
+        }
+        return false;
     }
 
     //Function that receives a UserDto and checks in database mysql if the username and email already exists
@@ -234,6 +238,15 @@ public class UserBean {
             }
         }
         return userDtos;
+    }
+    public boolean changeStatus(String username, boolean status){
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        if(userEntity != null){
+            userEntity.setActive(status);
+            userDao.merge(userEntity);
+            return true;
+        }
+        return false;
     }
 
     //Function that receives a UserDto and converts it to a UserPartialDto
