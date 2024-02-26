@@ -315,7 +315,7 @@ footer a {
 .argola {
   position: relative;
   top: 1rem;
-  z-index: 1;
+  z-index: 11;
   height: 2.2rem;
 }
 

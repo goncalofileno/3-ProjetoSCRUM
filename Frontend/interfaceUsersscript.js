@@ -109,22 +109,27 @@ async function logout() {
 }
 
 ///////////////////////// TABLE //////////////////////////
-
+// contextMenu --
 const deleteUser = document.getElementById("deleteUser");
 const deleteAllTasks = document.getElementById("deleteAllTasks");
 const changeRole = document.getElementById("changeRole");
+const editUser = document.getElementById("editUser");
+const selectedUser = localStorage.getItem("selectedUser");
 
-deleteUser.addEventListener("click", function (e) {
-  const selectedUser = localStorage.getItem("selectedUser");
-  console.log(selectedUser);
+// getItem for use the selectedUser actual
+editUser.addEventListener("click", function () {
+  console.log(localStorage.getItem("selectedUser") + " foi editado");
+});
+deleteUser.addEventListener("click", function () {
+  console.log(localStorage.getItem("selectedUser") + " foi apagado");
 });
 deleteAllTasks.addEventListener("click", function () {
-  console.log("Delete all tasks");
+  console.log(localStorage.getItem("selectedUser") + "Delete all tasks");
 });
 changeRole.addEventListener("click", function () {
-  console.log("Change role");
+  console.log(localStorage.getItem("selectedUser") + "Change role");
 });
-
+// -- -- -- -- -- -- -- -- --
 // Function to get the full role name from the role abbreviation
 function getRoleFullName(role) {
   switch (role) {
