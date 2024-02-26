@@ -1161,21 +1161,21 @@ aside::after {
   box-shadow: 0 0 0 #205d88; /* Remove a sombra */
   transform: translate(0, 0); /* Volta o elemento para a posição original */
 }
-
-#contextMenu1 {
+/* AJUSTAR AO CONTEXTBOX DAS TASKS! */
+.contextMenu-style {
   display: none;
   position: fixed;
-  width: 9%;
-  height: 7%;
+  width: 200px; /* Fixed width */
   z-index: 1;
   background: white;
   border: 3px solid #205d88;
-  border-radius: 5px;
-  padding: 0.5rem 1rem;
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 10px; /* Larger border radius */
+  padding: 1rem; /* Larger padding */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Smaller, softer shadow */
+  overflow: auto; /* Add scroll if content overflows */
 }
 /*caracteristicas das opções do pop-up menu*/
-#contextMenu1 div {
+.contextMenu-style div {
   font-size: 1.1rem;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -1183,10 +1183,11 @@ aside::after {
   color: #205d88;
 }
 /*caracteristicas das opções do pop-up menu quando se passa por cima delas*/
-#contextMenu1 div:hover {
+.contextMenu-style div:hover {
   background-color: #ddd;
   border-radius: 5px;
 }
+/* AJUSTAR AO CONTEXTBOX DAS TASKS! */
 
 #addUserButton {
   position: relative;
@@ -1270,9 +1271,6 @@ aside::after {
   background-color: #333;
 }
 
-
-
-
 /*table test */
 #tableContainer {
   height: 100%;
@@ -1338,11 +1336,60 @@ aside::after {
   padding: 10px;
   overflow: auto;
 }
-.row-img {
-  width: 50px !important; /* Adjust this value as needed */
+
+.userPhoto {
+  border-radius: 50%;
+  border: 2px solid #205d88;
 }
 
 .header {
   font-weight: bold;
   background-color: #f0f0f0;
+}
+
+.category-label {
+  top: 0;
+  right: 0;
+}
+
+.task-element {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.info-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  font-size: small;
+  color: #9b9b9b;
+}
+.owner-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #205d88;
+  color: white;
+  padding: 0.02rem;
+
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.delete-icon::before {
+  background-image: url("./resources/Icons/trash.png");
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
+}
+/*icon da opção de editar tarefa*/
+.edit-icon::before {
+  background-image: url("./resources/Icons/edit_context.png");
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
 }
