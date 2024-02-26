@@ -149,6 +149,13 @@ window.addEventListener("click", function (event) {
   }
 });
 
+categoryFilter.addEventListener("change", function () {
+  displayTasks(categoryFilter.value, ownerFilter.value);
+});
+ownerFilter.addEventListener("change", function () {
+  displayTasks(categoryFilter.value, ownerFilter.value);
+});
+
 //Função que determina o que acontece quando o cursor está sobre trashIcon
 trashIcon.ondragover = function (event) {
   //Permite que uma tarefa seja largada sobre o ícone do lixo
@@ -270,15 +277,6 @@ doneSection.addEventListener("dragover", function (event) {
   event.preventDefault();
 });
 
-applyFiltersButton.addEventListener("click", () => {
-  // Get the selected filter values
-  const selectedCategory = categoryFilter.value;
-  const selectedOwner = ownerFilter.value;
-
-  // Call displayTasks with the selected filter values
-  displayTasks(selectedCategory, selectedOwner);
-});
-
 resetFiltersButton.addEventListener("click", () => {
   // Reset the selected filter values
   categoryFilter.value = "";
@@ -339,6 +337,8 @@ submitTaskButton.addEventListener("click", async function () {
   await displayTasks();
   await populateUsersOwners();
   await populateActiveCategories();
+  categoryFilter.value = "";
+  ownerFilter.value = "";
   console.log("Tasks are printed");
 
   // document.body.classList.remove("modal-open"); // Comment this line
@@ -372,7 +372,9 @@ yesButton.addEventListener("click", async function () {
   }
 
   // Call the function to display the tasks
-  await displayTasks();
+  const category = categoryFilter.value;
+  const owner = ownerFilter.value;
+  await displayTasks(category, owner);
   await populateUsersOwners();
   await populateActiveCategories();
 
@@ -491,7 +493,9 @@ async function drop(event) {
     alert("Failed to update task status");
     return;
   } else {
-    await displayTasks();
+    const category = categoryFilter.value;
+    const owner = ownerFilter.value;
+    await displayTasks(category, owner);
   }
 
   // Call displayTasks() to update the task lists
