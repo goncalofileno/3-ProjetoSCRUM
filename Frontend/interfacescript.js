@@ -141,11 +141,6 @@ const resetFiltersButton = document.getElementById("resetFilters");
 
 const deletedTasksButton = document.getElementById("deletedTasksButton");
 
-//Permite que uma tarefa seja largada sobre as secções
-/*todoSection.addEventListener("drop", drop);*/
-//doingSection.addEventListener("drop", drop);
-//doneSection.addEventListener("drop", drop);
-
 //Listener para quando se clica na em qualquer sitio da página
 window.addEventListener("click", function (event) {
   //Se o popup menu estiver aberto e se clicar fora do popup menu, o popup menu é fechado
@@ -461,6 +456,11 @@ async function drop(event) {
   // Get the target section where the task was dropped
   let targetSection = event.target;
 
+  // If the target does not have the class 'taskArea', find the closest 'task-element' and then its parent section
+  if (!targetSection.classList.contains("taskArea")) {
+    targetSection = targetSection.closest(".task-element").closest(".taskArea");
+  }
+
   // Determine the new status based on the target section
   let newStatus;
   if (targetSection.id === "todo") {
@@ -637,8 +637,17 @@ function createTaskElement(task) {
 
   //Define que a informação do elemento arrastável é o id da tarefa
   taskElement.addEventListener("dragstart", function (event) {
+    // This will happen for all tasks
     event.dataTransfer.setData("text/plain", event.target.id);
-    trashIcon.classList.add("show");
+
+    // If the role is 'dev' and the task owner is the logged in user, or the role is not 'dev', show the trash icon
+    if (
+      (localStorage.getItem("role") === "dev" &&
+        task.owner === localStorage.getItem("username")) ||
+      localStorage.getItem("role") !== "dev"
+    ) {
+      trashIcon.classList.add("show");
+    }
   });
 
   //Define que o icon do lixo é escondido quando o elemento arrastável é largado
@@ -661,22 +670,37 @@ function createTaskElement(task) {
 
   //Adiciona um listener para quando o elemento div é clicado com o botão direito
   taskElement.addEventListener("contextmenu", (e) => {
-    //Previnir o comportamento padrão do browser
+    // Prevent the default browser context menu
     e.preventDefault();
 
-    //Estiliza o popup menu para aparecer onde o cursor é clicado com o botão direito
-    contextMenu.style.top = `${e.pageY}px`;
-    contextMenu.style.left = `${e.pageX}px`;
+    // If the role is 'dev' and the task owner is the logged in user, or the role is not 'dev', show custom context menu
+    if (
+      (localStorage.getItem("role") === "dev" &&
+        task.owner === localStorage.getItem("username")) ||
+      localStorage.getItem("role") !== "dev"
+    ) {
+      // Style the popup menu to appear where the cursor is right-clicked
+      contextMenu.style.top = `${e.pageY}px`;
+      contextMenu.style.left = `${e.pageX}px`;
 
-    //Guarda o identificador e a prioridade da tarefa
-    contextMenu.setAttribute("data-task-id", task.id);
+      // Store the task identifier and priority
+      contextMenu.setAttribute("data-task-id", task.id);
 
-    //Guarda o identificador da tarefa no sessionStorage
-    sessionStorage.setItem("taskID", task.id);
+      // Store the task identifier in sessionStorage
+      sessionStorage.setItem("taskID", task.id);
 
-    //Mostra o popup menu
-    contextMenu.style.display = "block";
+      // Show the popup menu
+      contextMenu.style.display = "block";
+    }
   });
+
+  // taskElement.addEventListener("dragover", function (event) {
+  //   event.stopPropagation(); // Prevent the event from bubbling up to the parent
+  // });
+
+  // taskElement.addEventListener("drop", function (event) {
+  //   event.stopPropagation(); // Prevent the event from bubbling up to the parent
+  // });
   //Retorna o elemento div
   return taskElement;
 }

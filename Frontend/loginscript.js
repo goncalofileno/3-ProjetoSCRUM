@@ -50,6 +50,7 @@ document
         console.log(data); // log the data
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.role);
+        localStorage.setItem("username", data.username);
         window.location.href = "interface.html";
       })
       .catch((error) => {
