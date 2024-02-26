@@ -384,20 +384,6 @@ noButton.addEventListener("click", function () {
 });
 
 //Listener para quando o botão de "Delete" do popup menu é clicado
-deleteTaskOption.addEventListener("click", () => {
-  //Esconde o popup menu
-  contextMenu.style.display = "none";
-
-  //Obtem o identificador da tarefa que foi guardado no atributo data-task-id do popup menu
-  const taskId = contextMenu.getAttribute("data-task-id");
-
-  //Guarda o identificador da tarefa no atributo data-task-id do deleteWarning modal
-  deleteWarning.setAttribute("data-task-id", taskId);
-
-  //Mostra o deleteWarning modal e escurece o fundo da página
-  deleteWarning.style.display = "block";
-  document.body.classList.add("modal-open");
-});
 
 //Listener para quando o botão de "Edit" do popup menu é clicado
 editTaskOption.addEventListener("click", async () => {

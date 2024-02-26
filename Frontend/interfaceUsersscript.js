@@ -110,6 +110,21 @@ async function logout() {
 
 ///////////////////////// TABLE //////////////////////////
 
+const deleteUser = document.getElementById("deleteUser");
+const deleteAllTasks = document.getElementById("deleteAllTasks");
+const changeRole = document.getElementById("changeRole");
+
+deleteUser.addEventListener("click", function (e) {
+  console.log(div);
+  console.log("Delete user");
+});
+deleteAllTasks.addEventListener("click", function () {
+  console.log("Delete all tasks");
+});
+changeRole.addEventListener("click", function () {
+  console.log("Change role");
+});
+
 async function displayUsers() {
   // Fetch users from the server
   const response = await fetch(
@@ -169,6 +184,15 @@ async function displayUsers() {
         // This function will be called when a row is clicked
         // `this` refers to the clicked row
         e.preventDefault();
+        /////////////////////////////////////////////////
+        // To get the main div with user info:
+        // Identify the clicked element
+        const clickedElement = e.target;
+        // Get the user selected from the parent clicked element
+        const userSelected = clickedElement.parentNode.children[1].textContent;
+        console.log(userSelected);
+        /////////////////////////////////////////////////
+
         // Show the context menu
         const contextMenu1 = document.getElementById("contextMenu1");
         contextMenu1.style.top = `${e.clientY}px`;
