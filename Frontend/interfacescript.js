@@ -10,6 +10,15 @@ window.onload = async function () {
   // Get the role from local storage
   const role = localStorage.getItem("role");
 
+  if (role === "dev") {
+    document.getElementById("usersButton").style.display = "none";
+    document.getElementById("deletedTasksButton").style.display = "none";
+    document.getElementById("taskCategoryButton").style.display = "none";
+    document.getElementById("filters").style.display = "none";
+  } else if (role === "sm") {
+    document.getElementById("taskCategoryButton").style.display = "none";
+  }
+
   // Get the labelUser element
   const labelUser = document.getElementById("labelUser");
 
