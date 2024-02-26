@@ -150,7 +150,16 @@ async function displayUsers() {
   // Start of the table
   let table = [
     "<div class='table t-design'>",
-    "<div class='row header'><div>Photo</div><div>Username</div><div>First Name</div><div>Last Name</div><div>Email</div><div>Phone</div></div>", // Change this to your user fields
+    `<div class='row header'>
+    <div>Photo</div>
+    <div>Username</div>
+    <div>First Name</div>
+    <div>Last Name</div>
+    <div>Email</div>
+    <div>Phone</div>
+    <div>Role</div>
+    <div>Active</div>
+    </div>`, // Change this to your user fields
   ];
 
   // Generate the rows
@@ -163,6 +172,12 @@ async function displayUsers() {
       <div>${user.lastname}</div>
       <div>${user.email}</div>
       <div>${user.phone}</div>
+      <div>${user.role}</div>
+      <div>
+        <input type="checkbox" id="active-${
+          user.username
+        }" class="active-slider" ${user.active ? "checked" : ""}>
+      </div>
     </div>
   `
   );
@@ -175,6 +190,39 @@ async function displayUsers() {
   let tableHTML = table.join("");
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
+  // Add event listeners to the slider buttons
+  let sliderButtons = tableContainer.querySelectorAll(".active-slider");
+  sliderButtons.forEach((sliderButton) => {
+    sliderButton.addEventListener("change", async function (e) {
+      console.log("Slider button changed");
+      //  id="active-${user.username}  remove active- and get the username
+      let username = this.id.replace("active-", "");
+      // Get the new active status from the slider button
+      let newActiveStatus = this.checked;
+      console.log(username, newActiveStatus);
+      // Update the user's active status in the database
+      // Replace this with your actual API endpoint and method to update a user's active status
+      const response = await fetch(
+        `http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/updateactive/?username=${username}&active=${newActiveStatus}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
+
+      if (!response.ok) {
+        alert("Failed to update user's active status");
+        // Revert the slider button to its original state
+        this.checked = !newActiveStatus;
+      }
+    });
+  });
+
+  //tableContainer.innerHTML = tableHTML;
   // If the user is a Product Owner, add event listeners to the rows
   if (localStorage.getItem("role") === "po") {
     // Now that the new rows are in the DOM, you can add event listeners to them

@@ -226,6 +226,15 @@ public class UserBean {
         }
         return userDtos;
     }
+    public boolean changeStatus(String username, boolean status){
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        if(userEntity != null){
+            userEntity.setActive(status);
+            userDao.merge(userEntity);
+            return true;
+        }
+        return false;
+    }
 
     //Function that receives a UserDto and converts it to a UserPartialDto
     public UserPartialDto mapUserToUserPartialDTO(UserDto userDto) {
