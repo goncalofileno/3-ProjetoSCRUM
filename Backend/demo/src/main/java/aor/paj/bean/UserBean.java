@@ -207,6 +207,15 @@ public class UserBean {
         return false;
     }
 
+    //Function that receives a token and returns the user role
+    public String getUserRole(String token) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+        if (userEntity != null) {
+            return userEntity.getRole();
+        }
+        return null;
+    }
+
     //Function that returns a list of users that own tasks
     public List<UserDto> getUsersOwners() {
         List<UserEntity> userEntities = userDao.findAllUsers();

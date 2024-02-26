@@ -133,6 +133,46 @@ public class TaskBean {
         System.out.println("a task foi editada");
     }
 
+    //Function that receives a task name and sets the task active to true in the database mysql
+    public boolean restoreTask(String title) {
+        TaskEntity taskEntity = taskDao.findTaskByTitle(title);
+        taskEntity.setActive(true);
+        taskDao.merge(taskEntity);
+        return true;
+    }
+
+    //Function that receives a task name and deletes the task from the database mysql
+    public boolean deleteTask(String title) {
+        TaskEntity taskEntity = taskDao.findTaskByTitle(title);
+        taskDao.remove(taskEntity);
+        return true;
+    }
+
+    //Function that checks all tasks active = false and sets them to true
+    public boolean restoreAllTasks() {
+        List<TaskEntity> taskEntities = taskDao.getAllTasks();
+        for (TaskEntity taskEntity : taskEntities) {
+            if (!taskEntity.getActive()) {
+                taskEntity.setActive(true);
+                taskDao.merge(taskEntity);
+            }
+        }
+        return true;
+    }
+
+    //Function that deletes all tasks from the database mysql that are active = false, returns true if all tasks were deleted
+    public boolean deleteAllTasks() {
+        List<TaskEntity> taskEntities = taskDao.getAllTasks();
+        for (TaskEntity taskEntity : taskEntities) {
+            if (!taskEntity.getActive()) {
+                taskDao.remove(taskEntity);
+            }
+        }
+        return true;
+    }
+
+
+
 
     //Return the list of users in the json file
     public ArrayList<UserDto> getUsers() {
@@ -141,21 +181,7 @@ public class TaskBean {
     }
 
 
-    //Receives the username and task id and removes the task from the user
-    public boolean removeTask(String username, int taskId) {
-        for (UserDto u : userDtos) {
-            if (u.getUsername().equals(username)) {
-                for (TaskDto t : u.getTasks()) {
-                    if (t.getId() == taskId) {
-                        u.getTasks().remove(t);
-                        JsonUtils.writeIntoJsonFile(userDtos);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+
 
     //Function that returns the list of tasks of the user by username
     public ArrayList<TaskDto> getTasks(String username) {

@@ -648,6 +648,7 @@ aside::after {
   border-radius: 5px;
 }
 /*caracteristicas do primeiro elemento das opções do pop-up menu (icons)*/
+#restoreTask::before,
 #deleteTask::before,
 #editTask::before {
   display: inline-block;
@@ -667,6 +668,10 @@ aside::after {
 /*icon da opção de editar tarefa*/
 #editTask::before {
   background-image: url("resources/Icons/edit_context.png");
+}
+
+#restoreTask::before {
+  background-image: url("resources/Icons/restore.png");
 }
 
 /*modal que aparece quando não são preenchidos os campos necessários para a criação de uma tarefa*/

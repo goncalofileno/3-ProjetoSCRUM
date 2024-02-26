@@ -6,17 +6,37 @@
 
 //o id é o taskButton para usar o mesmo css
 const addUserButton = document.getElementById("addUserButton");
+const restoreAllTasksButton = document.getElementById("restoreAllTasksButton");
+const deleteAllTasksButton = document.getElementById("deleteAllTasksButton");
 addUserButton.style.display = "none";
 
 window.onload = function () {
   if (localStorage.getItem("token") == null) {
     window.location.href = "http://localhost:8080/demo-1.0-SNAPSHOT/";
     //se o user é Product Owner, o botão de adicionar user é mostrado.
-  } else if (localStorage.getItem("role") == "po") {
-    addUserButton.style.display = "block";
-    addUserButton.addEventListener("click", function () {
-      window.location.href = "register.html";
-    });
+  }
+
+  if (localStorage.getItem("deletedTasks") === "true") {
+    document.getElementById("tableContainer").innerHTML = displayDeletedTasks();
+
+    if (localStorage.getItem("role") === "sm") {
+      restoreAllTasksButton.style.display = "block";
+      deleteAllTasksButton.style.display = "none";
+      addUserButton.style.display = "none";
+    } else if (localStorage.getItem("role") === "po") {
+      restoreAllTasksButton.style.display = "block";
+      deleteAllTasksButton.style.display = "block";
+      addUserButton.style.display = "none";
+    }
+  } else {
+    document.getElementById("tableContainer").innerHTML = displayUsers();
+
+    if (localStorage.getItem("role") === "po") {
+      addUserButton.style.display = "block";
+    }
+
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
   }
 
   //Vai buscar o userPartial do sessionStorage img e nome do user logado
@@ -35,12 +55,6 @@ window.onload = function () {
   //Mostra a data e hora
   displayDateTime(); // Adiciona a exibição da data e hora
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
-
-  if (localStorage.getItem("deletedTasks") === "true") {
-    document.getElementById("tableContainer").innerHTML = displayDeletedTasks();
-  } else {
-    document.getElementById("tableContainer").innerHTML = displayUsers();
-  }
 };
 
 // Function copied from interfacescript.js
@@ -113,6 +127,10 @@ async function logout() {
 const deleteUser = document.getElementById("deleteUser");
 const deleteAllTasks = document.getElementById("deleteAllTasks");
 const changeRole = document.getElementById("changeRole");
+
+restoreAllTasksButton.addEventListener("click", function () {
+  
+});
 
 deleteUser.addEventListener("click", function (e) {
   console.log(div);
@@ -260,19 +278,31 @@ async function displayDeletedTasks() {
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
   // Now that the new rows are in the DOM, you can add event listeners to them
-  let rowElement = tableContainer.querySelectorAll(".row.element");
-  rowElement.forEach((row) => {
-    row.addEventListener("contextmenu", function (e) {
-      // This function will be called when a row is clicked
-      // `this` refers to the clicked row
-      e.preventDefault();
-      // Show the context menu
-      const contextMenu = document.getElementById("contextMenu");
-      contextMenu.style.top = `${e.clientY}px`;
-      contextMenu.style.left = `${e.clientX}px`;
-      contextMenu.style.display = "block";
-    });
+  // Now that the new rows are in the DOM, you can add event listeners to them
+let rowElement = tableContainer.querySelectorAll(".row.element");
+rowElement.forEach((row, index) => {
+  row.addEventListener("contextmenu", function (e) {
+    // This function will be called when a row is clicked
+    // `this` refers to the clicked row
+    e.preventDefault();
+    // Save the task name in local storage
+    localStorage.setItem("selectedTask", tasks[index].title);
+    // Show the context menu
+    const contextMenu = document.getElementById("contextMenu");
+    const restoreTaskOption = document.getElementById("restoreTask");
+    const deleteTaskOption = document.getElementById("deleteTask");
+
+    if (localStorage.getItem("role") === "sm") {
+      deleteTaskOption.style.display = "none";
+    } else {
+      deleteTaskOption.style.display = "block";
+    }
+
+    contextMenu.style.top = `${e.clientY}px`;
+    contextMenu.style.left = `${e.clientX}px`;
+    contextMenu.style.display = "block";
   });
+});
 
   return tableHTML;
 }

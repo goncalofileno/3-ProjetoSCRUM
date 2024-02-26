@@ -202,7 +202,6 @@ botaoLogout.addEventListener("click", function () {
 deletedTasksButton.addEventListener("click", () => {
   // Set deletedTasks to true in local storage
   localStorage.setItem("deletedTasks", true);
-
   // Open interfaceusers.html
   window.location.href = "interfaceUsers.html";
 });
