@@ -115,8 +115,8 @@ const deleteAllTasks = document.getElementById("deleteAllTasks");
 const changeRole = document.getElementById("changeRole");
 
 deleteUser.addEventListener("click", function (e) {
-  console.log(div);
-  console.log("Delete user");
+  const selectedUser = localStorage.getItem("selectedUser");
+  console.log(selectedUser);
 });
 deleteAllTasks.addEventListener("click", function () {
   console.log("Delete all tasks");
@@ -125,6 +125,19 @@ changeRole.addEventListener("click", function () {
   console.log("Change role");
 });
 
+// Function to get the full role name from the role abbreviation
+function getRoleFullName(role) {
+  switch (role) {
+    case "dev":
+      return "Developer";
+    case "po":
+      return "Product Owner";
+    case "sm":
+      return "Scrum Master";
+    default:
+      return role; // return the original role if it's not one of the above
+  }
+}
 async function displayUsers() {
   // Fetch users from the server
   const response = await fetch(
@@ -147,10 +160,11 @@ async function displayUsers() {
   // Get the tableContainer element
   const tableContainer = document.getElementById("tableContainer");
 
-  // Start of the table
-  let table = [
-    "<div class='table t-design'>",
-    `<div class='row header'>
+  if (localStorage.getItem("role") === "po") {
+    // Start of the table
+    var table = [
+      "<div class='table t-design'>",
+      `<div class='row header'>
     <div>Photo</div>
     <div>Username</div>
     <div>First Name</div>
@@ -160,11 +174,11 @@ async function displayUsers() {
     <div>Role</div>
     <div>Active</div>
     </div>`, // Change this to your user fields
-  ];
+    ];
 
-  // Generate the rows
-  let rows = users.map(
-    (user) => `
+    // Generate the rows
+    var rows = users.map(
+      (user) => `
     <div class="row element">
       <div><img src="${user.photoURL}" class="userPhoto"></div>
       <div>${user.username}</div>
@@ -172,7 +186,7 @@ async function displayUsers() {
       <div>${user.lastname}</div>
       <div>${user.email}</div>
       <div>${user.phone}</div>
-      <div>${user.role}</div>
+      <div>${getRoleFullName(user.role)}</div>
       <div>
         <input type="checkbox" id="active-${
           user.username
@@ -180,7 +194,39 @@ async function displayUsers() {
       </div>
     </div>
   `
-  );
+    );
+  } else {
+    // Get the only currently active users with the activeUsers
+    var activeUsers = users.filter((user) => user.active === true);
+
+    var table = [
+      "<div class='table t-design'>",
+      `<div class='row header'>
+        <div>Photo</div>
+        <div>Username</div>
+        <div>First Name</div>
+        <div>Last Name</div>
+        <div>Email</div>
+        <div>Phone</div>
+        <div>Role</div>
+      </div>`, // Change this to your user fields
+    ];
+
+    // Generate the rows
+    var rows = activeUsers.map(
+      (user) => `
+    <div class="row element">
+      <div><img src="${user.photoURL}" class="userPhoto"></div>
+      <div>${user.username}</div>
+      <div>${user.firstname}</div>
+      <div>${user.lastname}</div>
+      <div>${user.email}</div>
+      <div>${user.phone}</div>
+      <div>${getRoleFullName(user.role)}</div>
+    </div>
+  `
+    );
+  }
 
   // Add the rows to the table
   table.push(...rows);
@@ -238,6 +284,7 @@ async function displayUsers() {
         const clickedElement = e.target;
         // Get the user selected from the parent clicked element
         const userSelected = clickedElement.parentNode.children[1].textContent;
+        localStorage.setItem("selectedUser", userSelected);
         console.log(userSelected);
         /////////////////////////////////////////////////
 

@@ -1305,6 +1305,7 @@ aside::after {
   color: (248, 233, 219, 0.7);
   position: sticky;
   top: 0;
+  z-index: 10; /* Sobrepor os botões*/
 }
 .row.header {
   background-color: #205d88;
