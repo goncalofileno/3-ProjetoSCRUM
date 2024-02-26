@@ -244,6 +244,7 @@ addTaskButton.addEventListener("click", function () {
 
 usersButton.addEventListener("click", function () {
   window.location.href = "interfaceUsers.html";
+  localStorage.setItem("deletedTasks", false);
 });
 
 //Listener para quando o botão de cancelar da modal de adicionar uma nova tarefa é clicado

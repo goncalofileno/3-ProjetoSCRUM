@@ -38,31 +38,10 @@ window.onload = function () {
 
   if (localStorage.getItem("deletedTasks") === "true") {
     document.getElementById("tableContainer").innerHTML = displayDeletedTasks();
-
   } else {
-    getUsers();
+    document.getElementById("tableContainer").innerHTML = displayUsers();
   }
 };
-
-function getUsers() {
-  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/all", {
-    method: "GET",
-    headers: {
-      Accept: "*/*",
-      "Content-Type": "application/json",
-      token: localStorage.getItem("token"),
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      document.getElementById("tableContainer").innerHTML =
-        generateDivTable(data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
 
 // Function copied from interfacescript.js
 //Função que mostra a data e hora
@@ -130,23 +109,45 @@ async function logout() {
 }
 
 ///////////////////////// TABLE //////////////////////////
-function generateDivTable(data) {
+
+async function displayUsers() {
+  // Fetch users from the server
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/all", // Change this to your users API endpoint
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
+  if (!response.ok) {
+    alert("Failed to fetch users");
+    return;
+  }
+  let users = await response.json();
+
+  // Get the tableContainer element
+  const tableContainer = document.getElementById("tableContainer");
+
   // Start of the table
   let table = [
     "<div class='table t-design'>",
-    "<div class='row header'><div>Photo</div><div>Username</div><div>Firstname</div><div>Lastname</div><div>Email</div><div>Phone</div></div>",
+    "<div class='row header'><div>Photo</div><div>Username</div><div>First Name</div><div>Last Name</div><div>Email</div><div>Phone</div></div>", // Change this to your user fields
   ];
 
   // Generate the rows
-  let rows = data.map(
-    (item) => `
+  let rows = users.map(
+    (user) => `
     <div class="row element">
-      <div class="row-img"><img src="${item.photoURL}"/></div>
-      <div>${item.username}</div>
-      <div>${item.firstname}</div>
-      <div>${item.lastname}</div>
-      <div>${item.email}</div>
-      <div>${item.phone}</div>
+      <div><img src="${user.photoURL}" class="userPhoto"></div>
+      <div>${user.username}</div>
+      <div>${user.firstname}</div>
+      <div>${user.lastname}</div>
+      <div>${user.email}</div>
+      <div>${user.phone}</div>
     </div>
   `
   );
@@ -159,20 +160,23 @@ function generateDivTable(data) {
   let tableHTML = table.join("");
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
-  // Now that the new rows are in the DOM, you can add event listeners to them
-  let rowElement = tableContainer.querySelectorAll(".row.element");
-  rowElement.forEach((row) => {
-    row.addEventListener("contextmenu", function (e) {
-      // This function will be called when a row is clicked
-      // `this` refers to the clicked row
-      e.preventDefault();
-      const contextMenu = document.getElementById("contextMenu");
-      contextMenu.style.top = e.clientY + "px";
-      contextMenu.style.left = e.clientX + "px";
-      contextMenu.style.display = "block";
+  // If the user is a Product Owner, add event listeners to the rows
+  if (localStorage.getItem("role") === "po") {
+    // Now that the new rows are in the DOM, you can add event listeners to them
+    let rowElement = tableContainer.querySelectorAll(".row.element");
+    rowElement.forEach((row) => {
+      row.addEventListener("contextmenu", function (e) {
+        // This function will be called when a row is clicked
+        // `this` refers to the clicked row
+        e.preventDefault();
+        // Show the context menu
+        const contextMenu1 = document.getElementById("contextMenu1");
+        contextMenu1.style.top = `${e.clientY}px`;
+        contextMenu1.style.left = `${e.clientX}px`;
+        contextMenu1.style.display = "block";
+      });
     });
-  });
-
+  }
   return tableHTML;
 }
 ///////////////////////// TABLE //////////////////////////
@@ -248,3 +252,13 @@ async function displayDeletedTasks() {
 
   return tableHTML;
 }
+
+window.addEventListener("click", function (event) {
+  //Se o popup menu estiver aberto e se clicar fora do popup menu, o popup menu é fechado
+  if (contextMenu.style.display === "block") {
+    contextMenu.style.display = "none";
+  }
+  if (contextMenu1.style.display === "block") {
+    contextMenu1.style.display = "none";
+  }
+});
