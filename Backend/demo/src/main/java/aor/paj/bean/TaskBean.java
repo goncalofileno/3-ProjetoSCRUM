@@ -164,6 +164,7 @@ public class TaskBean {
     public boolean deleteAllTasks() {
         List<TaskEntity> taskEntities = taskDao.getAllTasks();
         for (TaskEntity taskEntity : taskEntities) {
+            System.out.println("TaskEntity: " + taskEntity);
             if (!taskEntity.getActive()) {
                 taskDao.remove(taskEntity);
             }

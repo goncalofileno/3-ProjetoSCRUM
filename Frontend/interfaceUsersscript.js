@@ -8,35 +8,45 @@
 const addUserButton = document.getElementById("addUserButton");
 const restoreAllTasksButton = document.getElementById("restoreAllTasksButton");
 const deleteAllTasksButton = document.getElementById("deleteAllTasksButton");
+const restoreTask = document.getElementById("restoreTask");
+const deleteTask = document.getElementById("deleteTask");
 addUserButton.style.display = "none";
 
-window.onload = function () {
+window.onload = async function () {
   if (localStorage.getItem("token") == null) {
     window.location.href = "http://localhost:8080/demo-1.0-SNAPSHOT/";
     //se o user é Product Owner, o botão de adicionar user é mostrado.
   }
 
   if (localStorage.getItem("deletedTasks") === "true") {
-    document.getElementById("tableContainer").innerHTML = displayDeletedTasks();
+    await displayDeletedTasks();
+
+    let numTasks = document.querySelectorAll(
+      "#tableContainer .row.element"
+    ).length;
+
+    console.log("Numero de tasks: " + numTasks);
 
     if (localStorage.getItem("role") === "sm") {
-      restoreAllTasksButton.style.display = "block";
+      restoreAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
       deleteAllTasksButton.style.display = "none";
       addUserButton.style.display = "none";
     } else if (localStorage.getItem("role") === "po") {
-      restoreAllTasksButton.style.display = "block";
-      deleteAllTasksButton.style.display = "block";
+      restoreAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
+      deleteAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
       addUserButton.style.display = "none";
-    }
-  } else {
-    document.getElementById("tableContainer").innerHTML = displayUsers();
+    } else {
+      document.getElementById("tableContainer").innerHTML = displayUsers();
 
-    if (localStorage.getItem("role") === "po") {
-      addUserButton.style.display = "block";
+      if (localStorage.getItem("role") === "po") {
+        addUserButton.style.display = "block";
+      }
+
+      restoreAllTasksButton.style.display = "none";
+      deleteAllTasksButton.style.display = "none";
     }
 
-    restoreAllTasksButton.style.display = "none";
-    deleteAllTasksButton.style.display = "none";
+    sessionStorage.setItem("deletedTasks", "false");
   }
 
   //Vai buscar o userPartial do sessionStorage img e nome do user logado
@@ -57,27 +67,143 @@ window.onload = function () {
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
 };
 
-// Function copied from interfacescript.js
-//Função que mostra a data e hora
-function displayDateTime() {
-  const currentDate = new Date();
+restoreTask.addEventListener("click", async function () {
+  const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
+  const taskName = localStorage.getItem("selectedTask"); // Replace this with the actual task name
 
-  //Formata a data e hora
-  const options = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZoneName: "short",
-  };
-  const dateTimeString = currentDate.toLocaleDateString("en-US", options);
+  await fetch(
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/restore?name=${encodeURIComponent(
+      taskName
+    )}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      if (response.status === 200) {
+        console.log(data.message);
+        // You can add code here to update the UI after successfully restoring the task
+      } else if (response.status === 400) {
+        console.error(data.message);
+        // Handle the error when the task cannot be restored
+      } else if (response.status === 403) {
+        console.error(data.message);
+        // Handle the error when the user is forbidden to restore the task
+      } else if (response.status === 401) {
+        console.error(data.message);
+        // Handle the error when the user is unauthorized
+      }
+    })
+    .catch((error) => console.error("Error:", error));
 
-  // Atualiza o conteúdo do elemento
-  dateTimeDisplay.textContent = dateTimeString;
-}
+  await displayDeletedTasks();
+
+  let numTasks = document.querySelectorAll(
+    "#tableContainer .row.element"
+  ).length;
+
+  if (numTasks < 1) {
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+  }
+});
+
+deleteTask.addEventListener("click", function () {
+  // Open the modal
+  document.getElementById("deleteWarning").style.display = "block";
+
+  sessionStorage.setItem("deletedTasks", "one");
+});
+
+
+
+document.getElementById("yesButtonDelete").addEventListener("click", async function () {
+  // Close the modal
+  document.getElementById("deleteWarning").style.display = "none";
+
+  if(sessionStorage.getItem("deletedTasks") === "one"){
+    await deleteOneTask();
+  } else {
+    await deleteAllTasks();
+  }
+
+  await displayDeletedTasks();
+
+  let numTasks = document.querySelectorAll(
+    "#tableContainer .row.element"
+  ).length;
+
+  if (numTasks < 1) {
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+  }   
+});
+
+document.getElementById("noButtonDelete").addEventListener("click", function () {
+  // Close the modal
+  document.getElementById("deleteWarning").style.display = "none";
+});
+
+restoreAllTasksButton.addEventListener("click", async function () {
+  const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
+
+  await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/restoreAll", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      token: token,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (response.status === 200) {
+        console.log(data.message);
+        // You can add code here to update the UI after successfully restoring all tasks
+      } else if (response.status === 400) {
+        console.error(data.message);
+        // Handle the error when tasks cannot be restored
+      } else if (response.status === 403) {
+        console.error(data.message);
+        // Handle the error when the user is forbidden to restore tasks
+      } else if (response.status === 401) {
+        console.error(data.message);
+        // Handle the error when the user is unauthorized
+      }
+    })
+    .catch((error) => console.error("Error:", error));
+
+  await displayDeletedTasks();
+
+  let numTasks = document.querySelectorAll(
+    "#tableContainer .row.element"
+  ).length;
+
+  if (numTasks === 0) {
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+  }
+});
+
+deleteAllTasksButton.addEventListener("click", async function () {
+
+  document.getElementById("deleteWarning").style.display = "block";
+  
+});
+
+window.addEventListener("click", function (event) {
+  //Se o popup menu estiver aberto e se clicar fora do popup menu, o popup menu é fechado
+  if (contextMenu.style.display === "block") {
+    contextMenu.style.display = "none";
+  }
+  if (contextMenu1.style.display === "block") {
+    contextMenu1.style.display = "none";
+  }
+});
 
 editProfileButton.addEventListener("click", function () {
   //Redireciona para a página de editar perfil
@@ -122,22 +248,92 @@ async function logout() {
     });
 }
 
+async function deleteOneTask(){
+  const taskName = localStorage.getItem("selectedTask"); // Assuming the task name is stored in local storage
+  const response = await fetch(
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/delete?name=${taskName}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    console.log(data);
+    // Handle successful deletion of the task here
+  } else {
+    console.error("Failed to delete the task");
+    // Handle failure to delete the task here
+  }
+
+  await displayDeletedTasks();
+
+  let numTasks = document.querySelectorAll(
+    "#tableContainer .row.element"
+  ).length;
+
+  if (numTasks < 1) {
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+  }
+
+  sessionStorage.setItem("deletedTasks", "false");
+}
+
+async function deleteAllTasks() {
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/deleteAll",
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    console.log(data);
+    // Handle successful deletion of all tasks here
+  } else {
+    console.error("Failed to delete all tasks");
+    // Handle failure to delete all tasks here
+  }
+
+  await displayDeletedTasks();
+
+  let numTasks = document.querySelectorAll(
+    "#tableContainer .row.element"
+  ).length;
+
+  if (numTasks < 1) {
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+  }
+}
+
+
+
 ///////////////////////// TABLE //////////////////////////
 // contextMenu --
 const deleteUser = document.getElementById("deleteUser");
-const deleteAllTasks = document.getElementById("deleteAllTasks");
+const deleteAllTasksContext = document.getElementById("deleteAllTasksContext");
 const changeRole = document.getElementById("changeRole");
 const editUser = document.getElementById("editUser");
 const selectedUser = localStorage.getItem("selectedUser");
 
-restoreAllTasksButton.addEventListener("click", function () {
-  
-});
+restoreAllTasksButton.addEventListener("click", function () {});
 
 deleteUser.addEventListener("click", function (e) {
   console.log(div);
-  console.log("Delete user");});
-  
+  console.log("Delete user");
+});
+
 // getItem for use the selectedUser actual
 editUser.addEventListener("click", function () {
   console.log(localStorage.getItem("selectedUser") + " foi editado");
@@ -145,7 +341,7 @@ editUser.addEventListener("click", function () {
 deleteUser.addEventListener("click", function () {
   console.log(localStorage.getItem("selectedUser") + " foi apagado");
 });
-deleteAllTasks.addEventListener("click", function () {
+deleteAllTasksContext.addEventListener("click", function () {
   console.log(localStorage.getItem("selectedUser") + "Delete all tasks");
 });
 changeRole.addEventListener("click", function () {
@@ -328,6 +524,7 @@ async function displayUsers() {
 ///////////////////////// TABLE //////////////////////////
 
 async function displayDeletedTasks() {
+  document.getElementById("tableContainer").innerHTML = "";
   // Fetch tasks from the server
   const response = await fetch(
     "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/all",
@@ -382,41 +579,50 @@ async function displayDeletedTasks() {
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
   // Now that the new rows are in the DOM, you can add event listeners to them
-  // Now that the new rows are in the DOM, you can add event listeners to them
-let rowElement = tableContainer.querySelectorAll(".row.element");
-rowElement.forEach((row, index) => {
-  row.addEventListener("contextmenu", function (e) {
-    // This function will be called when a row is clicked
-    // `this` refers to the clicked row
-    e.preventDefault();
-    // Save the task name in local storage
-    localStorage.setItem("selectedTask", tasks[index].title);
-    // Show the context menu
-    const contextMenu = document.getElementById("contextMenu");
-    const restoreTaskOption = document.getElementById("restoreTask");
-    const deleteTaskOption = document.getElementById("deleteTask");
+  let rowElement = tableContainer.querySelectorAll(".row.element");
+  rowElement.forEach((row, index) => {
+    row.addEventListener("contextmenu", function (e) {
+      // This function will be called when a row is clicked
+      // `this` refers to the clicked row
+      e.preventDefault();
+      // Save the task name in local storage
+      localStorage.setItem("selectedTask", tasks[index].title);
+      // Show the context menu
+      const contextMenu = document.getElementById("contextMenu");
+      const restoreTaskOption = document.getElementById("restoreTask");
+      const deleteTaskOption = document.getElementById("deleteTask");
 
-    if (localStorage.getItem("role") === "sm") {
-      deleteTaskOption.style.display = "none";
-    } else {
-      deleteTaskOption.style.display = "block";
-    }
+      if (localStorage.getItem("role") === "sm") {
+        deleteTaskOption.style.display = "none";
+      } else {
+        deleteTaskOption.style.display = "block";
+      }
 
-    contextMenu.style.top = `${e.clientY}px`;
-    contextMenu.style.left = `${e.clientX}px`;
-    contextMenu.style.display = "block";
+      contextMenu.style.top = `${e.clientY}px`;
+      contextMenu.style.left = `${e.clientX}px`;
+      contextMenu.style.display = "block";
+    });
   });
-});
-
-  return tableHTML;
 }
 
-window.addEventListener("click", function (event) {
-  //Se o popup menu estiver aberto e se clicar fora do popup menu, o popup menu é fechado
-  if (contextMenu.style.display === "block") {
-    contextMenu.style.display = "none";
-  }
-  if (contextMenu1.style.display === "block") {
-    contextMenu1.style.display = "none";
-  }
-});
+// Function copied from interfacescript.js
+//Função que mostra a data e hora
+function displayDateTime() {
+  const currentDate = new Date();
+
+  //Formata a data e hora
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const dateTimeString = currentDate.toLocaleDateString("en-US", options);
+
+  // Atualiza o conteúdo do elemento
+  dateTimeDisplay.textContent = dateTimeString;
+}

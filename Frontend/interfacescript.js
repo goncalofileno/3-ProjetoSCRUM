@@ -418,6 +418,19 @@ editTaskOption.addEventListener("click", async () => {
   }
 });
 
+deleteTaskOption.addEventListener("click", async () => {
+  //Obtem o id da tarefa que foi largada sobre o trashIcon
+  const taskId = sessionStorage.getItem("taskID");
+
+  //Guarda o id da tarefa no atributo data-task-id do deleteWarning modal
+  deleteWarning.setAttribute("data-task-id", taskId);
+
+  //Mostra o deleteWarning modal
+  deleteWarning.style.display = "block";
+  //Escura o fundo da página
+  document.body.classList.add("modal-open");
+});
+
 //Listener para quando o botão de "Ok" do modal de detalhes da tarefa é clicado
 modalOkButton.addEventListener("click", function () {
   //Esconde o modal de detalhes da tarefa e remove o escurecimento do fundo da página
