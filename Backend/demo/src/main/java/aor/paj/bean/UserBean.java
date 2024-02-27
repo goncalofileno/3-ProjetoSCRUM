@@ -286,7 +286,7 @@ public class UserBean {
             List<TaskEntity> tasks = taskDao.findTaskByOwnerId(userEntity.getId());
             for(TaskEntity task : tasks){
                 task.setActive(false);
-                taskDao.remove(task);
+                taskDao.merge(task);
             }
             return true;
         }
