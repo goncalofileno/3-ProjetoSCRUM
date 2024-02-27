@@ -8,27 +8,47 @@
 const addUserButton = document.getElementById("addUserButton");
 const restoreAllTasksButton = document.getElementById("restoreAllTasksButton");
 const deleteAllTasksButton = document.getElementById("deleteAllTasksButton");
+const restoreTask = document.getElementById("restoreTask");
+const deleteTask = document.getElementById("deleteTask");
+const addCategoryButton = document.getElementById("addCategoryButton");
+const deleteCategoryoption = document.getElementById("deleteCategory");
+const editCategory = document.getElementById("editCategory");
+const newTaskModal = document.getElementById("newTaskModal");
+const cancelCategoryButton = document.getElementById("cancelTaskButton");
+const submitCategoryButton = document.getElementById("submitTaskButton");
+
 addUserButton.style.display = "none";
 
-window.onload = function () {
+window.onload = async function () {
   if (localStorage.getItem("token") == null) {
     window.location.href = "http://localhost:8080/demo-1.0-SNAPSHOT/";
     //se o user é Product Owner, o botão de adicionar user é mostrado.
   }
 
-  if (localStorage.getItem("deletedTasks") === "true") {
-    document.getElementById("tableContainer").innerHTML = displayDeletedTasks();
+  // let selectedButton = await localStorage.getItem("selectedButton");
+  // console.log("Selected button: " + selectedButton);
+
+  if (localStorage.getItem("selectedButton") == 2) {
+    await displayDeletedTasks();
+
+    let numTasks = document.querySelectorAll(
+      "#tableContainer .row.element"
+    ).length;
+
+    console.log("Numero de tasks: " + numTasks);
 
     if (localStorage.getItem("role") === "sm") {
-      restoreAllTasksButton.style.display = "block";
+      restoreAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
       deleteAllTasksButton.style.display = "none";
       addUserButton.style.display = "none";
+      addCategoryButton.style.display = "none";
     } else if (localStorage.getItem("role") === "po") {
-      restoreAllTasksButton.style.display = "block";
-      deleteAllTasksButton.style.display = "block";
+      restoreAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
+      deleteAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
       addUserButton.style.display = "none";
+      addCategoryButton.style.display = "none";
     }
-  } else {
+  } else if (localStorage.getItem("selectedButton") == 1) {
     document.getElementById("tableContainer").innerHTML = displayUsers();
 
     if (localStorage.getItem("role") === "po") {
@@ -37,6 +57,13 @@ window.onload = function () {
 
     restoreAllTasksButton.style.display = "none";
     deleteAllTasksButton.style.display = "none";
+    addCategoryButton.style.display = "none";
+  } else if (localStorage.getItem("selectedButton") == 3) {
+    document.getElementById("tableContainer").innerHTML = displayCategories();
+    addUserButton.style.display = "none";
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+    addCategoryButton.style.display = "block";
   }
 
   //Vai buscar o userPartial do sessionStorage img e nome do user logado
@@ -55,29 +82,201 @@ window.onload = function () {
   //Mostra a data e hora
   displayDateTime(); // Adiciona a exibição da data e hora
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
+  localStorage.setItem("deletedTasks", "false");
+  localStorage.setItem("deletedCategory", "false");
 };
 
-// Function copied from interfacescript.js
-//Função que mostra a data e hora
-function displayDateTime() {
-  const currentDate = new Date();
+addCategoryButton.addEventListener("click", function () {
+  document.getElementById("modalTitle").innerText = "New Category";
+  document.getElementById("submitTaskButton").innerText = "Add Category";
+  document.getElementById("taskTitle").value = "";
+  document.getElementById("taskDescription").value = "";
+  localStorage.setItem("editCategory", "false");
 
-  //Formata a data e hora
-  const options = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZoneName: "short",
-  };
-  const dateTimeString = currentDate.toLocaleDateString("en-US", options);
+  newTaskModal.style.display = "block";
+  
+  document.body.classList.add("modal-open");
+});
 
-  // Atualiza o conteúdo do elemento
-  dateTimeDisplay.textContent = dateTimeString;
-}
+cancelCategoryButton.addEventListener("click", function () {
+  newTaskModal.style.display = "none";
+  document.body.classList.remove("modal-open");
+});
+
+submitCategoryButton.addEventListener("click", async function () {
+  if (localStorage.getItem("editCategory") === "true") {
+    await updateCategory();
+  } else {
+    await createCategory();
+  }
+});
+
+restoreTask.addEventListener("click", async function () {
+  const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
+  const taskName = localStorage.getItem("selectedTask"); // Replace this with the actual task name
+
+  await fetch(
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/restore?name=${encodeURIComponent(
+      taskName
+    )}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      if (response.status === 200) {
+        console.log(data.message);
+        // You can add code here to update the UI after successfully restoring the task
+      } else if (response.status === 400) {
+        console.error(data.message);
+        // Handle the error when the task cannot be restored
+      } else if (response.status === 403) {
+        console.error(data.message);
+        // Handle the error when the user is forbidden to restore the task
+      } else if (response.status === 401) {
+        console.error(data.message);
+        // Handle the error when the user is unauthorized
+      }
+    })
+    .catch((error) => console.error("Error:", error));
+
+  await displayDeletedTasks();
+
+  let numTasks = document.querySelectorAll(
+    "#tableContainer .row.element"
+  ).length;
+
+  if (numTasks < 1) {
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+  }
+});
+
+deleteTask.addEventListener("click", function () {
+  // Open the modal
+  document.getElementById("deleteWarning").style.display = "block";
+
+  localStorage.setItem("deletedTasks", "one");
+});
+
+document
+  .getElementById("yesButtonDelete")
+  .addEventListener("click", async function () {
+    // Close the modal
+    document.getElementById("deleteWarning").style.display = "none";
+
+    if (localStorage.getItem("deletedTasks") === "one") {
+      await deleteOneTask();
+    } else if (localStorage.getItem("deletedCategory") === "true") {
+      await deleteCategory();
+    } else if (localStorage.getItem("deletedTasks") === "all") {
+      await deleteAllTasks();
+    }
+
+    let numTasks = await document.querySelectorAll(
+      "#tableContainer .row.element"
+    ).length;
+
+    if (numTasks <= 1) {
+      restoreAllTasksButton.style.display = "none";
+      deleteAllTasksButton.style.display = "none";
+    }
+  });
+
+document
+  .getElementById("noButtonDelete")
+  .addEventListener("click", function () {
+    // Close the modal
+    document.getElementById("deleteWarning").style.display = "none";
+  });
+
+deleteCategoryoption.addEventListener("click", async function () {
+  localStorage.setItem("deletedCategory", "true");
+
+  deleteWarning.style.display = "block";
+});
+
+editCategory.addEventListener("click", function () {
+  const titleElement = document.getElementById("taskTitle");
+  const descriptionElement = document.getElementById("taskDescription");
+
+  // Populate the input fields with the category data
+  titleElement.value = localStorage.getItem("selectedCategoryTitle");
+  descriptionElement.value = localStorage.getItem("selectedCategoryDescription");
+
+  // Change the modal title and button text
+  document.getElementById("modalTitle").innerText = "Edit Category";
+  document.getElementById("submitTaskButton").innerText = "Update Category";
+
+  localStorage.setItem("editCategory", "true");
+
+  newTaskModal.style.display = "block";
+  document.body.classList.add("modal-open");
+  
+});
+
+restoreAllTasksButton.addEventListener("click", async function () {
+  const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
+
+  await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/restoreAll", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      token: token,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (response.status === 200) {
+        console.log(data.message);
+        // You can add code here to update the UI after successfully restoring all tasks
+      } else if (response.status === 400) {
+        console.error(data.message);
+        // Handle the error when tasks cannot be restored
+      } else if (response.status === 403) {
+        console.error(data.message);
+        // Handle the error when the user is forbidden to restore tasks
+      } else if (response.status === 401) {
+        console.error(data.message);
+        // Handle the error when the user is unauthorized
+      }
+    })
+    .catch((error) => console.error("Error:", error));
+
+  await displayDeletedTasks();
+
+  let numTasks = document.querySelectorAll(
+    "#tableContainer .row.element"
+  ).length;
+
+  if (numTasks === 0) {
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+  }
+});
+
+deleteAllTasksButton.addEventListener("click", async function () {
+  document.getElementById("deleteWarning").style.display = "block";
+  localStorage.setItem("deletedTasks", "all");
+});
+
+window.addEventListener("click", function (event) {
+  //Se o popup menu estiver aberto e se clicar fora do popup menu, o popup menu é fechado
+  if (contextMenu.style.display === "block") {
+    contextMenu.style.display = "none";
+  }
+  if (contextMenu1.style.display === "block") {
+    contextMenu1.style.display = "none";
+  }
+  if (contextMenu2.style.display === "block") {
+    contextMenu2.style.display = "none";
+  }
+});
 
 editProfileButton.addEventListener("click", function () {
   //Redireciona para a página de editar perfil
@@ -122,22 +321,88 @@ async function logout() {
     });
 }
 
+async function deleteOneTask() {
+  const taskName = localStorage.getItem("selectedTask"); // Assuming the task name is stored in local storage
+  const response = await fetch(
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/delete?name=${taskName}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    console.log(data);
+    // Handle successful deletion of the task here
+  } else {
+    console.error("Failed to delete the task");
+    // Handle failure to delete the task here
+  }
+
+  await displayDeletedTasks();
+
+  let numTasks = document.querySelectorAll(
+    "#tableContainer .row.element"
+  ).length;
+
+  if (numTasks < 1) {
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+  }
+}
+
+async function deleteAllTasks() {
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/deleteAll",
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    console.log(data);
+    // Handle successful deletion of all tasks here
+  } else {
+    console.error("Failed to delete all tasks");
+    // Handle failure to delete all tasks here
+  }
+
+  await displayDeletedTasks();
+
+  let numTasks = document.querySelectorAll(
+    "#tableContainer .row.element"
+  ).length;
+
+  if (numTasks < 1) {
+    restoreAllTasksButton.style.display = "none";
+    deleteAllTasksButton.style.display = "none";
+  }
+}
+
 ///////////////////////// TABLE //////////////////////////
 // contextMenu --
 const deleteUser = document.getElementById("deleteUser");
-const deleteAllTasks = document.getElementById("deleteAllTasks");
+const deleteAllTasksContext = document.getElementById("deleteAllTasksContext");
 const changeRole = document.getElementById("changeRole");
 const editUser = document.getElementById("editUser");
 const selectedUser = localStorage.getItem("selectedUser");
 
-restoreAllTasksButton.addEventListener("click", function () {
-  
-});
+restoreAllTasksButton.addEventListener("click", function () {});
 
 deleteUser.addEventListener("click", function (e) {
   console.log(div);
-  console.log("Delete user");});
-  
+  console.log("Delete user");
+});
+
 // getItem for use the selectedUser actual
 editUser.addEventListener("click", function () {
   console.log(localStorage.getItem("selectedUser") + " foi editado");
@@ -145,7 +410,7 @@ editUser.addEventListener("click", function () {
 deleteUser.addEventListener("click", function () {
   console.log(localStorage.getItem("selectedUser") + " foi apagado");
 });
-deleteAllTasks.addEventListener("click", function () {
+deleteAllTasksContext.addEventListener("click", function () {
   console.log(localStorage.getItem("selectedUser") + "Delete all tasks");
 });
 changeRole.addEventListener("click", function () {
@@ -328,6 +593,7 @@ async function displayUsers() {
 ///////////////////////// TABLE //////////////////////////
 
 async function displayDeletedTasks() {
+  document.getElementById("tableContainer").innerHTML = "";
   // Fetch tasks from the server
   const response = await fetch(
     "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/all",
@@ -359,16 +625,125 @@ async function displayDeletedTasks() {
   ];
 
   // Generate the rows
-  let rows = tasks.map(
-    (task) => `
+  let rows = tasks.map((task) => {
+    // Determine the priority string based on the task's priority
+    let priorityString;
+    if (task.priority === 300) {
+      priorityString = "High";
+    } else if (task.priority === 200) {
+      priorityString = "Medium";
+    } else if (task.priority === 100) {
+      priorityString = "Low";
+    } else {
+      priorityString = "Unknown";
+    }
+
+    return `
+        <div class="row element">
+          <div>${task.title}</div>
+          <div>${task.description}</div>
+          <div>${task.initialDate}</div>
+          <div>${task.finalDate}</div>
+          <div>${task.owner}</div>
+          <div>${priorityString}</div> <!-- Display the priority string -->
+          <div>${task.category}</div>
+        </div>
+      `;
+  });
+
+  // Add the rows to the table
+  table.push(...rows);
+  // End of the table
+  table.push("</div>");
+  // Join the table array into a string and return it
+  let tableHTML = table.join("");
+  // Add the table to the DOM
+  tableContainer.innerHTML = tableHTML;
+  // Now that the new rows are in the DOM, you can add event listeners to them
+  let rowElement = tableContainer.querySelectorAll(".row.element");
+  rowElement.forEach((row, index) => {
+    row.addEventListener("contextmenu", function (e) {
+      // This function will be called when a row is clicked
+      // `this` refers to the clicked row
+      e.preventDefault();
+      // Save the task name in local storage
+      localStorage.setItem("selectedTask", tasks[index].title);
+      // Show the context menu
+      const contextMenu = document.getElementById("contextMenu");
+      const restoreTaskOption = document.getElementById("restoreTask");
+      const deleteTaskOption = document.getElementById("deleteTask");
+
+      if (localStorage.getItem("role") === "sm") {
+        deleteTaskOption.style.display = "none";
+      } else {
+        deleteTaskOption.style.display = "block";
+      }
+
+      contextMenu.style.top = `${e.clientY}px`;
+      contextMenu.style.left = `${e.clientX}px`;
+      contextMenu.style.display = "block";
+    });
+  });
+}
+
+// Function copied from interfacescript.js
+//Função que mostra a data e hora
+function displayDateTime() {
+  const currentDate = new Date();
+
+  //Formata a data e hora
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const dateTimeString = currentDate.toLocaleDateString("en-US", options);
+
+  // Atualiza o conteúdo do elemento
+  dateTimeDisplay.textContent = dateTimeString;
+}
+
+async function displayCategories() {
+  document.getElementById("tableContainer").innerHTML = "";
+  // Fetch categories from the server
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
+  if (!response.ok) {
+    alert("Failed to fetch categories");
+    return;
+  }
+  let categories = await response.json();
+
+  // Get the tableContainer element
+  const tableContainer = document.getElementById("tableContainer");
+
+  // Start of the table
+  let table = [
+    "<div class='table t-design'>",
+    "<div class='row header'><div>Title</div><div>Description</div><div>Owner</div></div>",
+  ];
+
+  // Generate the rows
+  let rows = categories.map(
+    (category) => `
     <div class="row element">
-      <div>${task.title}</div>
-      <div>${task.description}</div>
-      <div>${task.initialDate}</div>
-      <div>${task.finalDate}</div>
-      <div>${task.owner}</div>
-      <div>${task.priority}</div>
-      <div>${task.category}</div>
+      <div>${category.title}</div>
+      <div>${category.description}</div>
+      <div>${category.owner}</div>
     </div>
   `
   );
@@ -381,42 +756,124 @@ async function displayDeletedTasks() {
   let tableHTML = table.join("");
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
-  // Now that the new rows are in the DOM, you can add event listeners to them
-  // Now that the new rows are in the DOM, you can add event listeners to them
-let rowElement = tableContainer.querySelectorAll(".row.element");
-rowElement.forEach((row, index) => {
-  row.addEventListener("contextmenu", function (e) {
-    // This function will be called when a row is clicked
-    // `this` refers to the clicked row
-    e.preventDefault();
-    // Save the task name in local storage
-    localStorage.setItem("selectedTask", tasks[index].title);
-    // Show the context menu
-    const contextMenu = document.getElementById("contextMenu");
-    const restoreTaskOption = document.getElementById("restoreTask");
-    const deleteTaskOption = document.getElementById("deleteTask");
 
-    if (localStorage.getItem("role") === "sm") {
-      deleteTaskOption.style.display = "none";
-    } else {
-      deleteTaskOption.style.display = "block";
-    }
-
-    contextMenu.style.top = `${e.clientY}px`;
-    contextMenu.style.left = `${e.clientX}px`;
-    contextMenu.style.display = "block";
+  // Now that the new rows are in the DOM, you can add event listeners to them
+  let rowElement = tableContainer.querySelectorAll(".row.element");
+  rowElement.forEach((row, index) => {
+    row.addEventListener("contextmenu", function (e) {
+      // This function will be called when a row is clicked
+      // `this` refers to the clicked row
+      e.preventDefault();
+      // Save the category title and description in local storage
+      localStorage.setItem("selectedCategoryTitle", categories[index].title);
+      localStorage.setItem("selectedCategoryDescription", categories[index].description);
+      // Show the context menu
+      const contextMenu = document.getElementById("contextMenu2");
+      contextMenu.style.top = `${e.clientY}px`;
+      contextMenu.style.left = `${e.clientX}px`;
+      contextMenu.style.display = "block";
+    });
   });
-});
-
-  return tableHTML;
 }
 
-window.addEventListener("click", function (event) {
-  //Se o popup menu estiver aberto e se clicar fora do popup menu, o popup menu é fechado
-  if (contextMenu.style.display === "block") {
-    contextMenu.style.display = "none";
+async function deleteCategory() {
+  const title = localStorage.getItem("selectedCategoryTitle");
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/delete?title=" +
+      title,
+    {
+      method: "DELETE",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  alert(data.message);
+
+
+  await displayCategories();
+}
+
+//Functio to update category
+async function updateCategory() {
+  const titleElement = document.getElementById("taskTitle");
+  const descriptionElement = document.getElementById("taskDescription");
+
+  const title = titleElement.value.trim();
+  const description = descriptionElement.value.trim();
+
+  // Only send the request if the title or description has changed
+  if (title !== localStorage.getItem("selecteCategoryTitle") || description !== localStorage.getItem("selecteCategoryDescription")) {
+    const category = {
+      title: title,
+      description: description,
+      owner: localStorage.getItem("username")
+    };
+
+    const response = await fetch(
+      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/update?title=" + localStorage.getItem("selectedCategoryTitle"),
+      {
+        method: "PUT",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+          token: localStorage.getItem("token"),
+        },
+        body: JSON.stringify(category)
+      }
+    );
+
+    const data = await response.json();
+    
+    alert(data.message);
+
+    newTaskModal.style.display = "none";
+    document.body.classList.remove("modal-open");
+    localStorage.setItem("editCategory", "false");
+    window.location.reload();
   }
-  if (contextMenu1.style.display === "block") {
-    contextMenu1.style.display = "none";
-  }
-});
+}
+
+async function createCategory(){
+  const title = document.getElementById("taskTitle").value.trim();
+  const description = document.getElementById("taskDescription").value.trim();
+  const owner = localStorage.getItem("username");
+
+  console.log(title);
+  console.log(description);
+  console.log(owner);
+
+  const category = {
+    id: 0, // Assuming the ID is generated on the server side
+    title: title,
+    description: description,
+    owner: owner,
+  };
+
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/add",
+    {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+      body: JSON.stringify(category),
+    }
+  );
+
+  const data = await response.json();
+
+  alert(data.message);
+
+  newTaskModal.style.display = "none";
+  document.body.classList.remove("modal-open");
+  window.location.reload();
+
+}

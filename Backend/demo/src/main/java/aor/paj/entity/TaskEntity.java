@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @NamedQuery(name = "Task.getAllTasks", query = "SELECT t FROM TaskEntity t")
 @NamedQuery(name = "Task.findTaskByOwnerId", query = "SELECT t FROM TaskEntity t WHERE t.owner.id = :id")
 @NamedQuery(name = "Task.getActiveTasks", query = "SELECT t FROM TaskEntity t WHERE t.active = true")
+@NamedQuery(name = "Task.findTaskByCategory", query = "SELECT t FROM TaskEntity t WHERE t.category = :category")
 public class TaskEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

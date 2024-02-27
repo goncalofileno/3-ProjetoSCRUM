@@ -72,6 +72,7 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTask(@HeaderParam("token") String token, @QueryParam("id") int id, @QueryParam("status") int status) {
+        System.out.println("A tentar editar task de tabela");
         if (userBean.isValidUserByToken(token) && TaskValidator.isValidStatus(status)) {
             taskBean.updateTaskStatus(id, status);
             return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is updated"))).build();

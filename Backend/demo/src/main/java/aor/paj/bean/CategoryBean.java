@@ -2,14 +2,18 @@ package aor.paj.bean;
 
 import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
+import aor.paj.dao.UserDao;
 import aor.paj.dto.CategoryDto;
 import aor.paj.dto.TaskDto;
 import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
+import aor.paj.entity.UserEntity;
 import aor.paj.mapper.CategoryMapper;
 import aor.paj.mapper.TaskMapper;
+import aor.paj.mapper.UserMapper;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +25,13 @@ public class CategoryBean {
     CategoryDao categoryDao;
 
     @EJB
+    UserDao userDao;
+
+    @EJB
     TaskDao taskDao;
+
+    @Inject
+    UserBean userbean;
 
     //Function that gets all categories from database my sql
     public List<CategoryDto> getAllCategories() {
@@ -42,6 +52,58 @@ public class CategoryBean {
             categoryDtos.add(CategoryMapper.convertCategoryEntityToCategoryDto(categoryEntity));
         }
         return categoryDtos;
+    }
+
+    //Function that receives a category title, checks if there is any task with the category, if not, deletes the category
+    public boolean deleteCategory(String title) {
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(title);
+        List<TaskEntity> taskEntities = taskDao.findTasksByCategory(categoryEntity);
+        if (taskEntities.isEmpty()) {
+            categoryDao.deleteCategory(categoryEntity);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateCategory(CategoryDto categoryDto, String title) {
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(title);
+        if (categoryEntity == null) {
+            return false;
+        }
+        categoryEntity.setTitle(categoryDto.getTitle());
+        categoryEntity.setDescription(categoryDto.getDescription());
+        categoryDao.merge(categoryEntity);
+        return true;
+    }
+
+    //Function that receives a categorydto, converts it to categoryentity using categorydto.getOwner() to get the userentity and adds the category to the database mysql
+    public boolean addCategory(CategoryDto categoryDto) {
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(categoryDto.getTitle());
+        if (categoryEntity != null) {
+            return false;
+        }
+        UserEntity userEntity = userDao.findUserByUsername(categoryDto.getOwner());
+        categoryEntity = CategoryMapper.convertCategoryDtoToCategoryEntity(categoryDto);
+        categoryEntity.setOwner(userEntity);
+        categoryEntity.setId(generateIdDataBase());
+        categoryDao.addCategory(categoryEntity);
+        return true;
+    }
+
+    //Function that verifys all categories in the database my sql and generates a unique id for new category
+    public int generateIdDataBase() {
+        int id = 1;
+        boolean idAlreadyExists;
+
+        do {
+            idAlreadyExists = false;
+            CategoryEntity categoryEntity = categoryDao.findCategoryById(id);
+            if (categoryEntity != null) {
+                id++;
+                idAlreadyExists = true;
+            }
+        } while (idAlreadyExists);
+        return id;
     }
 
 }

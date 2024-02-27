@@ -33,4 +33,33 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
             return null;
         }
     }
+
+    public void deleteCategory(CategoryEntity categoryEntity) {
+        try {
+            em.createQuery("DELETE FROM CategoryEntity c WHERE c.id = :id")
+                    .setParameter("id", categoryEntity.getId())
+                    .executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addCategory(CategoryEntity categoryEntity) {
+        try {
+            em.persist(categoryEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public CategoryEntity findCategoryById(int id) {
+        try {
+            return (CategoryEntity) em.createNamedQuery("Category.findCategoryById").setParameter("id", id)
+                    .getSingleResult();
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

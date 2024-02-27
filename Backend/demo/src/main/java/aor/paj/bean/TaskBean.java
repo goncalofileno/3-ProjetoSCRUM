@@ -164,6 +164,7 @@ public class TaskBean {
     public boolean deleteAllTasks() {
         List<TaskEntity> taskEntities = taskDao.getAllTasks();
         for (TaskEntity taskEntity : taskEntities) {
+            System.out.println("TaskEntity: " + taskEntity);
             if (!taskEntity.getActive()) {
                 taskDao.remove(taskEntity);
             }
@@ -171,17 +172,11 @@ public class TaskBean {
         return true;
     }
 
-
-
-
     //Return the list of users in the json file
     public ArrayList<UserDto> getUsers() {
         userDtos = JsonUtils.getUsers();
         return userDtos;
     }
-
-
-
 
     //Function that returns the list of tasks of the user by username
     public ArrayList<TaskDto> getTasks(String username) {

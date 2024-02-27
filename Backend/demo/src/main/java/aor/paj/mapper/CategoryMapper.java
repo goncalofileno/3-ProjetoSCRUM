@@ -17,4 +17,14 @@ public class CategoryMapper {
 
         return categoryDto;
     }
+
+    public static CategoryEntity convertCategoryDtoToCategoryEntity(CategoryDto categoryDto) {
+        CategoryEntity categoryEntity = new CategoryEntity();
+
+        categoryEntity.setId(categoryDto.getId());
+        categoryEntity.setTitle(categoryDto.getTitle());
+        categoryEntity.setDescription(categoryDto.getDescription());
+
+        return categoryEntity;
+    }
 }
