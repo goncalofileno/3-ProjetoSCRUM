@@ -276,6 +276,10 @@ doneSection.addEventListener("dragover", function (event) {
   event.preventDefault();
 });
 
+todoSection.addEventListener("drop", drop);
+doingSection.addEventListener("drop", drop);
+doneSection.addEventListener("drop", drop);
+
 resetFiltersButton.addEventListener("click", () => {
   // Reset the selected filter values
   categoryFilter.value = "";

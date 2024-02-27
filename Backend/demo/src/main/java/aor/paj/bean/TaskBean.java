@@ -172,17 +172,11 @@ public class TaskBean {
         return true;
     }
 
-
-
-
     //Return the list of users in the json file
     public ArrayList<UserDto> getUsers() {
         userDtos = JsonUtils.getUsers();
         return userDtos;
     }
-
-
-
 
     //Function that returns the list of tasks of the user by username
     public ArrayList<TaskDto> getTasks(String username) {
