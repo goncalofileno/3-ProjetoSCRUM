@@ -190,6 +190,7 @@ public class UserBean {
             userEntity.setEmail(userUpdateDto.getEmail());
             userEntity.setPhone(userUpdateDto.getPhone());
             userEntity.setPhotoURL(userUpdateDto.getPhotoURL());
+            userEntity.setRole(userUpdateDto.getRole());
 
             userDao.merge(userEntity);
         }

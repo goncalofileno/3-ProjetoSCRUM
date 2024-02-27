@@ -195,65 +195,57 @@ public class UserService {
     @GET
     @Path("/getDetails")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserDetails(@HeaderParam("token") String token) {
+    public Response getUserDetails(@HeaderParam("token") String token, @HeaderParam("selectedUser") String selectedUser) {
 //        ~
         if (!userBean.isValidUserByToken(token)) {
             System.out.println("Token is invalid");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-        }else if(userBean.isValidUserByToken(token)) {
-            System.out.println("Token is valid");
-            // get the dto from bean
-            UserDto userDto = userBean.getUserByToken(token);
-            // build the response object
-            UserDetailsDto userDetails = new UserDetailsDto(
-                    userDto.getUsername(),
-                    userDto.getFirstname(),
-                    userDto.getLastname(),
-                    userDto.getEmail(),
-                    userDto.getPhotoURL(),
-                    userDto.getPhone()
-            );
-            return Response.status(200).entity(userDetails).build();
-        } else {
+
+        } else if (userBean.isValidUserByToken(token) && userBean.getUserByToken(token).getRole().equals("po") || userBean.getUserByToken(token).getUsername().equals(selectedUser)) {
+                UserDto userDto = userBean.getUserByUsername(selectedUser);
+                UserDetailsDto userDetails = new UserDetailsDto(
+                        userDto.getUsername(),
+                        userDto.getFirstname(),
+                        userDto.getLastname(),
+                        userDto.getEmail(),
+                        userDto.getPhotoURL(),
+                        userDto.getPhone()
+                );
+                return Response.status(200).entity(userDetails).build();
+
+            } else {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-        }
-    }
+        }}
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUser(UserUpdateDto u, @HeaderParam("token") String token) {
-//        if (token == null || token.isEmpty()) {
-//            System.out.println("Token is null or empty");
-//            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
-//        }
+    public Response updateUser(UserUpdateDto u, @HeaderParam("token") String token, @HeaderParam("selectedUser") String selectedUser) {
         if (!userBean.isValidUserByToken(token)) {
             System.out.println("Token is invalid");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-        } else if (userBean.isValidUserByToken(token)) {
+        } else if (userBean.isValidUserByToken(token) && userBean.getUserByToken(token).getRole().equals("po") || userBean.getUserByToken(token).getUsername().equals(selectedUser)) {
             if (!UserValidator.isValidEmail(u.getEmail())) {
                 System.out.println("Invalid email format");
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid email format"))).build();
-            } else if (UserValidator.emailExists(userBean.getAllUsersDB(),u.getEmail()) && !userBean.getUserByToken(token).getEmail().equals(u.getEmail())) {
+            } else if (!u.getEmail().equals(userBean.getUserByUsername(selectedUser).getEmail()) && UserValidator.emailExists(userBean.getAllUsersDB(),u.getEmail())
+                    && (!userBean.getUserByToken(token).getEmail().equals(u.getEmail()) || !userBean.getUserByUsername(selectedUser).getEmail().equals(u.getEmail()))) {
                 System.out.println("Email already exists");
                 return Response.status(409).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Email already exists"))).build();
-            //email exists
             } else if (!UserValidator.isValidPhoneNumber(u.getPhone())) {
                 System.out.println("Invalid phone number format");
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid phone number format"))).build();
             } else if (!UserValidator.isValidURL(u.getPhotoURL())) {
                 System.out.println("Invalid URL format");
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid URL format"))).build();
-            } else if (!UserValidator.isValidEmail(u.getEmail())) {
-                System.out.println("Invalid email format");
-                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid email format"))).build();
-            }else{
+            } else {
                 userBean.updateUser(u);
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User is updated")).toString()).build();
             }
         }
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
+
 
     //Services tha receives a UserPasswordDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user password
     @PUT
