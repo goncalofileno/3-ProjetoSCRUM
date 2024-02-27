@@ -280,6 +280,18 @@ public class UserBean {
         return false;
     }
 
+    public boolean deleteTasks(String username) {
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        if (userEntity != null) {
+            List<TaskEntity> tasks = taskDao.findTaskByOwnerId(userEntity.getId());
+            for(TaskEntity task : tasks){
+                task.setActive(false);
+                taskDao.remove(task);
+            }
+            return true;
+        }
+        return false;
+    }
 
 
 //    public UserPartialDto getUserPartial(String username, String password) {
