@@ -1,5 +1,6 @@
 package aor.paj.dao;
 
+import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.NoResultException;
@@ -52,6 +53,14 @@ public class TaskDao extends AbstractDao<TaskEntity>{
     public List<TaskEntity> getActiveTasks() {
         try {
             return em.createNamedQuery("Task.getActiveTasks").getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public List<TaskEntity> findTasksByCategory(CategoryEntity category){
+        try {
+            return em.createNamedQuery("Task.findTaskByCategory").setParameter("category", category).getResultList();
         } catch (NoResultException e) {
             return null;
         }

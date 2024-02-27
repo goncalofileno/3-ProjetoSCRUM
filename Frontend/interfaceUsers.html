@@ -117,15 +117,16 @@
       <button id="addUserButton">Add User</button>
       <button id="restoreAllTasksButton" class="btn-interface">Restore All Tasks</button>
       <button id="deleteAllTasksButton" class="btn-interface">Delete All Tasks</button>
+      <button id="addCategoryButton" class="btn-interface">Add Category</button>
     </aside>
 
     <div id="modal-adduser"></div>
 
     <div id="newTaskModal" class="modal">
       <div class="modal-content">
-        <h1>New Task</h1>
+        <h1 id="modalTitle">New Category</h1>
         <div class="input-container">
-          <label for="taskTitle">Task Title:</label>
+          <label for="taskTitle">Category Title:</label>
           <textarea
             id="taskTitle"
             name="taskTitle"
@@ -134,7 +135,7 @@
           ></textarea>
         </div>
         <div class="input-container">
-          <label for="taskDescription">Task Description:</label>
+          <label for="taskDescription">Category Description:</label>
           <textarea
             id="taskDescription"
             name="taskDescription"
@@ -142,25 +143,9 @@
             required
           ></textarea>
         </div>
-        <div class="input-container">
-          <label for="initialDate">Initial Date:</label>
-          <input type="date" id="initialDate" name="initialDate" required />
-        </div>
-        <div class="input-container">
-          <label for="finalDate">Final Date:</label>
-          <input type="date" id="finalDate" name="finalDate" required />
-        </div>
-        <div class="center-container">
-          <label for="editTaskPriority">Priority:</label>
-          <select id="editTaskPriority" name="priority">
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-        </div>
         <div class="buttons-container">
           <button id="cancelTaskButton">Cancel</button>
-          <button id="submitTaskButton">Add Task</button>
+          <button id="submitTaskButton">Add Category</button>
         </div>
       </div>
     </div>
@@ -203,6 +188,12 @@
       <div class="delete-icon" id="deleteAllTasksContext">Apagar todas as Tarefas</div>
       <div class="delete-icon" id="deleteUser">Apagar User</div>
     </div>
+
+    <div id="contextMenu2" class="contextMenu-style">
+      <div class="edit-icon" id="deleteCategory">Delete</div>
+      <div class="edit-icon" id="editCategory">Edit</div>
+    </div>
+  
 
     <div id="modalOverlay2"></div>
 

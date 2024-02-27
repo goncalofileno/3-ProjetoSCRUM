@@ -5,7 +5,7 @@ window.onload = async function () {
     window.location.href = "index.html";
   }
 
-  localStorage.setItem("deletedTasks", false);
+  localStorage.setItem("selectedButton", 0);
 
   // Get the role from local storage
   const role = localStorage.getItem("role");
@@ -140,6 +140,7 @@ const applyFiltersButton = document.getElementById("applyFilters");
 const resetFiltersButton = document.getElementById("resetFilters");
 
 const deletedTasksButton = document.getElementById("deletedTasksButton");
+const categoryButton = document.getElementById("taskCategoryButton");
 
 //Listener para quando se clica na em qualquer sitio da página
 window.addEventListener("click", function (event) {
@@ -201,10 +202,17 @@ botaoLogout.addEventListener("click", function () {
 
 deletedTasksButton.addEventListener("click", () => {
   // Set deletedTasks to true in local storage
-  localStorage.setItem("deletedTasks", true);
+  localStorage.setItem("selectedButton", 2);
   // Open interfaceusers.html
   window.location.href = "interfaceUsers.html";
 });
+
+categoryButton.addEventListener("click", () => {
+
+  localStorage.setItem("selectedButton", 3);
+
+  window.location.href = "interfaceUsers.html";
+})
 
 //Listener para quando o botão Add Task é clicado
 addTaskButton.addEventListener("click", function () {
@@ -254,7 +262,7 @@ addTaskButton.addEventListener("click", function () {
 
 usersButton.addEventListener("click", function () {
   window.location.href = "interfaceUsers.html";
-  localStorage.setItem("deletedTasks", false);
+  localStorage.setItem("selectedButton", 1);
 });
 
 //Listener para quando o botão de cancelar da modal de adicionar uma nova tarefa é clicado
