@@ -424,6 +424,8 @@ footer a {
   width: 2em;
   height: 2em;
   flex-shrink: 0;
+  padding-bottom: 0.5em;
+  padding-right: 0.5em;
 }
 /*caracteristicas gerais dos modals*/
 .modal {
@@ -1137,6 +1139,8 @@ aside::after {
   align-items: flex-start;
   height: 100%;
 }
+.btn-bottom {
+}
 
 .btn-interface {
   position: relative;
@@ -1165,6 +1169,22 @@ aside::after {
 .btn-interface :active {
   box-shadow: 0 0 0 #205d88; /* Remove a sombra */
   transform: translate(0, 0); /* Volta o elemento para a posição original */
+}
+.bottom-btn {
+  position: relative;
+  bottom: 15rem;
+  left: 0%;
+  margin-left: 0;
+  width: 12rem;
+  font-family: inherit;
+  font-size: inherit;
+  background: white;
+  border: 3px solid #205d88;
+  margin-right: 2.6rem;
+  box-shadow: 0 0 0 #205d88;
+  transition: all 0.2s;
+  border-radius: 10px;
+  margin-bottom: 1rem;
 }
 /* AJUSTAR AO CONTEXTBOX DAS TASKS! */
 .contextMenu-style {
@@ -1365,8 +1385,13 @@ aside::after {
 }
 
 .category-label {
-  top: 0;
+  bottom: 0;
   right: 0;
+  position: absolute;
+  color: #205d88;
+  background-color: var(--category-color);
+  border-top-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .task-element {
@@ -1374,6 +1399,7 @@ aside::after {
   justify-content: space-between;
   align-items: center;
   position: relative;
+  height: 12%;
 }
 .info-block {
   display: flex;
@@ -1383,6 +1409,15 @@ aside::after {
   font-size: small;
   color: #9b9b9b;
 }
+.left-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  font-size: small;
+  color: #9b9b9b;
+}
+
 .owner-label {
   position: absolute;
   top: 0;
