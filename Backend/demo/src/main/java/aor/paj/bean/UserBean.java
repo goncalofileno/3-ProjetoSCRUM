@@ -255,6 +255,33 @@ public class UserBean {
         return new UserPartialDto(userDto.getFirstname(), userDto.getPhotoURL());
     }
 
+    public boolean deleteUser(String username) {
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        if (userEntity != null) {
+            if(changeTaskOwner(username,"deleted")){
+            userDao.remove(userEntity);
+            return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean changeTaskOwner(String oldUsername, String newUsername){
+        UserEntity oldUserEntity = userDao.findUserByUsername(oldUsername);
+        UserEntity newUserEntity = userDao.findUserByUsername(newUsername);
+        if(oldUserEntity != null && newUserEntity != null){
+            List<TaskEntity> tasks = taskDao.findTaskByOwnerId(oldUserEntity.getId());
+            for(TaskEntity task : tasks){
+                task.setOwner(newUserEntity);
+                taskDao.merge(task);
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+
 //    public UserPartialDto getUserPartial(String username, String password) {
 //        UserDto userDto = getUsers().stream()
 //                .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))

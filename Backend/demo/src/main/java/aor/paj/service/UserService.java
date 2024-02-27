@@ -293,6 +293,28 @@ public class UserService {
         System.out.println("Invalid Parameters");
         return Response .status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters")).toString()).build();
     }
+
+
+    @DELETE
+    @Path("/delete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+        if(!userBean.isValidUserByToken(token) && !userBean.getUserByToken(token).getRole().equals("po")){
+            System.out.println("Unauthorized");
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }else if(userBean.getUserByToken(token).getRole().equals("po")){
+            System.out.println("Authorized");
+            if(userBean.deleteUser(username)){
+                System.out.println("User deleted");
+                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User deleted")).toString()).build();
+            }else{
+                System.out.println("User not deleted");
+                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User not deleted")).toString()).build();
+            }
+        }
+        System.out.println("Invalid Parameters");
+        return Response .status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters")).toString()).build();
+    }
 //        if (!UserValidator.isNullorBlank(u)) {
 //            if (UserValidator.isValidUser(userBean.getUsers(), username, password)) {
 //                if (!userBean.getUser(username).getPassword().equals(password)) {
