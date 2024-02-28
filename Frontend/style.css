@@ -246,6 +246,10 @@ footer a {
   transform: scale(1.2);
 }
 
+#editProfileButton:hover {
+  transform: scale(1.2);
+}
+
 /*caracteristicas comuns das argolas*/
 #argola1,
 #argola2,
@@ -659,9 +663,9 @@ aside::after {
   border-radius: 5px;
 }
 /*caracteristicas do primeiro elemento das opções do pop-up menu (icons)*/
-#restoreTask::before,
-#deleteTask::before,
-#editTask::before {
+.restore-icon::before,
+.delete-icon::before,
+.edit-icon::before {
   display: inline-block;
   width: 1em;
   height: 1em;
@@ -673,15 +677,15 @@ aside::after {
   filter: invert(1) grayscale(1) brightness(0.5);
 }
 /*icon da opção de excluir tarefa*/
-#deleteTask::before {
+.delete-icon::before {
   background-image: url("resources/Icons/trash_context.png");
 }
 /*icon da opção de editar tarefa*/
-#editTask::before {
+.edit-icon::before {
   background-image: url("resources/Icons/edit_context.png");
 }
 
-#restoreTask::before {
+.restore-icon::before {
   background-image: url("resources/Icons/restore.png");
 }
 
@@ -1217,7 +1221,7 @@ aside::after {
 .contextMenu-style {
   display: none;
   position: fixed;
-  width: 200px; /* Fixed width */
+  width: 160px; /* Fixed width */
   z-index: 1;
   background: white;
   border: 3px solid #205d88;
@@ -1279,35 +1283,32 @@ aside::after {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 20px;
   background-color: #f8f8f8;
   border-radius: 10px;
 }
 
-#applyFilters {
-  width: 100%;
-  padding: 10px;
+#filters label {
   margin-bottom: 5px;
-  margin-top: 5px;
-  border: none;
+  margin-top: 10px;
+  text-align: center;
+}
+
+#filters select {
+  
+  padding: 10px;
   border-radius: 5px;
-  background-color: #205d88;
-  color: #fff;
-  cursor: pointer;
-}
-
-#applyFilters:hover {
-  background-color: #704a4a;
-}
-
-#applyFilters:active {
-  background-color: #333;
+  border: 1px solid #205d88;
+  box-sizing: border-box;
+  background-color: rgba(168, 146, 124, 0.3);
 }
 
 #resetFilters {
   width: 100%;
   padding: 10px;
   margin-bottom: 5px;
+  margin-top: 15px;
   border: none;
   border-radius: 5px;
   background-color: #205d88;
