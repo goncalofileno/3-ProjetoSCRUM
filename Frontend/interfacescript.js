@@ -132,6 +132,8 @@ const dateTimeDisplay = document.getElementById("dateTimeDisplay");
 const editProfileButton = document.getElementById("editProfileButton");
 const taskInitialDateinfo = document.getElementById("taskInitialDateinfo");
 const taskFinalDateinfo = document.getElementById("taskFinalDateinfo");
+const taskCategoryinfo = document.getElementById("taskCategoryinfo");
+const taskOwnerinfo = document.getElementById("taskOwnerinfo");
 
 const categoryFilter = document.getElementById("categoryFilter");
 const ownerFilter = document.getElementById("ownerFilter");
@@ -689,6 +691,8 @@ function createTaskElement(task) {
     modalTaskDescription.textContent = task.description;
     taskInitialDateinfo.textContent = task.initialDate;
     taskFinalDateinfo.textContent = task.finalDate;
+    taskCategoryinfo.textContent = task.category;
+    taskOwnerinfo.textContent = task.owner;
 
     //Mostra o modal escurecendo o fundo da página
     taskDetailsModal.style.display = "block";
