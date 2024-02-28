@@ -94,7 +94,7 @@ addCategoryButton.addEventListener("click", function () {
   localStorage.setItem("editCategory", "false");
 
   newTaskModal.style.display = "block";
-  
+
   document.body.classList.add("modal-open");
 });
 
@@ -207,7 +207,9 @@ editCategory.addEventListener("click", function () {
 
   // Populate the input fields with the category data
   titleElement.value = localStorage.getItem("selectedCategoryTitle");
-  descriptionElement.value = localStorage.getItem("selectedCategoryDescription");
+  descriptionElement.value = localStorage.getItem(
+    "selectedCategoryDescription"
+  );
 
   // Change the modal title and button text
   document.getElementById("modalTitle").innerText = "Edit Category";
@@ -217,7 +219,6 @@ editCategory.addEventListener("click", function () {
 
   newTaskModal.style.display = "block";
   document.body.classList.add("modal-open");
-  
 });
 
 restoreAllTasksButton.addEventListener("click", async function () {
@@ -625,31 +626,44 @@ async function displayDeletedTasks() {
   ];
 
   // Generate the rows
-  let rows = tasks.map((task) => {
-    // Determine the priority string based on the task's priority
-    let priorityString;
-    if (task.priority === 300) {
-      priorityString = "High";
-    } else if (task.priority === 200) {
-      priorityString = "Medium";
-    } else if (task.priority === 100) {
-      priorityString = "Low";
-    } else {
-      priorityString = "Unknown";
-    }
+  let rows = await Promise.all(
+    tasks.map(async (task) => {
+      // Determine the priority string and icon based on the task's priority
+      let priorityString;
+      let priorityIcon;
+      if (task.priority === 300) {
+        priorityString = "High";
+        priorityIcon = "resources/Icons/high_priority.png";
+      } else if (task.priority === 200) {
+        priorityString = "Medium";
+        priorityIcon = "resources/Icons/medium_priority.png";
+      } else if (task.priority === 100) {
+        priorityString = "Low";
+        priorityIcon = "resources/Icons/low_priority.png";
+      } else {
+        priorityString = "Unknown";
+        priorityIcon = "resources/Icons/unknown_priority.png";
+      }
 
-    return `
+      // Fetch the user photo
+      const photoUrl = await getUserPhoto(
+        localStorage.getItem("token"),
+        task.owner
+      );
+
+      return `
         <div class="row element">
           <div>${task.title}</div>
           <div>${task.description}</div>
           <div>${task.initialDate}</div>
           <div>${task.finalDate}</div>
-          <div>${task.owner}</div>
-          <div>${priorityString}</div> <!-- Display the priority string -->
+          <div><img src="${photoUrl}" alt="User Photo" style="border-radius: 50%; border: 1px solid black; width: 30px; height: 30px; margin-right: 0.4rem"> ${task.owner}</div>
+          <div>${priorityString} <img src="${priorityIcon}" alt="Priority Icon" style="height: 20px; width: 20px; margin-left: 0.3rem"></div> <!-- Display the priority string and icon -->
           <div>${task.category}</div>
         </div>
       `;
-  });
+    })
+  );
 
   // Add the rows to the table
   table.push(...rows);
@@ -738,17 +752,25 @@ async function displayCategories() {
   ];
 
   // Generate the rows
-  let rows = await Promise.all(categories.map(async (category) => {
-    const tasks = await getTasksByCategory(category.title);
-    return `
+  let rows = await Promise.all(
+    categories.map(async (category) => {
+      const tasks = await getTasksByCategory(category.title);
+      // Fetch the user photo
+      const photoUrl = await getUserPhoto(
+        localStorage.getItem("token"),
+        category.owner
+      );
+
+      return `
       <div class="row element">
         <div>${category.title}</div>
         <div>${category.description}</div>
-        <div>${category.owner}</div>
+        <div><img src="${photoUrl}" alt="User Photo" style="border-radius: 50%; border: 1px solid black; width: 30px; height: 30px; margin-right: 0.3rem"> ${category.owner}</div>
         <div>${tasks}</div>
       </div>
     `;
-  }));
+    })
+  );
 
   // Add the rows to the table
   table.push(...rows);
@@ -758,25 +780,37 @@ async function displayCategories() {
   let tableHTML = table.join("");
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
-
-  // Now that the new rows are in the DOM, you can add event listeners to them
-  let rowElement = tableContainer.querySelectorAll(".row.element");
-  rowElement.forEach((row, index) => {
-    row.addEventListener("contextmenu", function (e) {
-      // This function will be called when a row is clicked
-      // `this` refers to the clicked row
-      e.preventDefault();
-      // Save the category title and description in local storage
-      localStorage.setItem("selectedCategoryTitle", categories[index].title);
-      localStorage.setItem("selectedCategoryDescription", categories[index].description);
-      // Show the context menu
-      const contextMenu = document.getElementById("contextMenu2");
-      contextMenu.style.top = `${e.clientY}px`;
-      contextMenu.style.left = `${e.clientX}px`;
-      contextMenu.style.display = "block";
-    });
-  });
 }
+
+// Add the rows to the table
+table.push(...rows);
+// End of the table
+table.push("</div>");
+// Join the table array into a string and return it
+let tableHTML = table.join("");
+// Add the table to the DOM
+tableContainer.innerHTML = tableHTML;
+
+// Now that the new rows are in the DOM, you can add event listeners to them
+let rowElement = tableContainer.querySelectorAll(".row.element");
+rowElement.forEach((row, index) => {
+  row.addEventListener("contextmenu", function (e) {
+    // This function will be called when a row is clicked
+    // `this` refers to the clicked row
+    e.preventDefault();
+    // Save the category title and description in local storage
+    localStorage.setItem("selectedCategoryTitle", categories[index].title);
+    localStorage.setItem(
+      "selectedCategoryDescription",
+      categories[index].description
+    );
+    // Show the context menu
+    const contextMenu = document.getElementById("contextMenu2");
+    contextMenu.style.top = `${e.clientY}px`;
+    contextMenu.style.left = `${e.clientX}px`;
+    contextMenu.style.display = "block";
+  });
+});
 
 async function deleteCategory() {
   const title = localStorage.getItem("selectedCategoryTitle");
@@ -797,7 +831,6 @@ async function deleteCategory() {
 
   alert(data.message);
 
-
   await displayCategories();
 }
 
@@ -810,15 +843,19 @@ async function updateCategory() {
   const description = descriptionElement.value.trim();
 
   // Only send the request if the title or description has changed
-  if (title !== localStorage.getItem("selecteCategoryTitle") || description !== localStorage.getItem("selecteCategoryDescription")) {
+  if (
+    title !== localStorage.getItem("selecteCategoryTitle") ||
+    description !== localStorage.getItem("selecteCategoryDescription")
+  ) {
     const category = {
       title: title,
       description: description,
-      owner: localStorage.getItem("username")
+      owner: localStorage.getItem("username"),
     };
 
     const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/update?title=" + localStorage.getItem("selectedCategoryTitle"),
+      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/update?title=" +
+        localStorage.getItem("selectedCategoryTitle"),
       {
         method: "PUT",
         headers: {
@@ -826,12 +863,12 @@ async function updateCategory() {
           "Content-Type": "application/json",
           token: localStorage.getItem("token"),
         },
-        body: JSON.stringify(category)
+        body: JSON.stringify(category),
       }
     );
 
     const data = await response.json();
-    
+
     alert(data.message);
 
     newTaskModal.style.display = "none";
@@ -841,7 +878,7 @@ async function updateCategory() {
   }
 }
 
-async function createCategory(){
+async function createCategory() {
   const title = document.getElementById("taskTitle").value.trim();
   const description = document.getElementById("taskDescription").value.trim();
   const owner = localStorage.getItem("username");
@@ -877,22 +914,46 @@ async function createCategory(){
   newTaskModal.style.display = "none";
   document.body.classList.remove("modal-open");
   window.location.reload();
-
 }
 
 async function getTasksByCategory(title) {
   const token = localStorage.getItem("token");
-  const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/tasksNumber?title=${title}`, {
-    method: "GET",
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-      "token": token
+  const response = await fetch(
+    `http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/tasksNumber?title=${title}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        token: token,
+      },
     }
-  });
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch number of tasks");
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+async function getUserPhoto(token, username) {
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getPhoto",
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        token: token,
+        username: username,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user photo");
   }
 
   const data = await response.json();

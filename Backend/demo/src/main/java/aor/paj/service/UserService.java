@@ -145,6 +145,19 @@ public class UserService {
         }
     }
 
+    //Service that receives a token and a username and sends the photoURL of the usersame
+    @GET
+    @Path("/getPhoto")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPhoto(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+        if (userBean.isValidUserByToken(token)) {
+            UserDto userDto = userBean.getUserByUsername(username);
+            return Response.status(200).entity(JsonUtils.convertObjectToJson((userDto.getPhotoURL()))).build();
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
+
     //Service that receives the token and sends only the users that ownes the tasks in the database mysql
     @GET
     @Path("/getUsersOwners")

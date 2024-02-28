@@ -26,11 +26,7 @@ public class CategoryService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCategories(@HeaderParam("token") String token) {
         if (userBean.isValidUserByToken(token)) {
-            if (userBean.getUserRole(token).equals("po")) {
-                return Response.status(200).entity(categoryBean.getAllCategories()).build();
-            } else {
-                return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-            }
+            return Response.status(200).entity(categoryBean.getAllCategories()).build();
         } else {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
