@@ -16,6 +16,7 @@ const editCategory = document.getElementById("editCategory");
 const newTaskModal = document.getElementById("newTaskModal");
 const cancelCategoryButton = document.getElementById("cancelTaskButton");
 const submitCategoryButton = document.getElementById("submitTaskButton");
+const backButton = document.getElementById("backButton");
 
 addUserButton.style.display = "none";
 
@@ -82,7 +83,7 @@ window.onload = async function () {
   //Mostra a data e hora
   displayDateTime(); // Adiciona a exibição da data e hora
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
-  
+
   localStorage.setItem("optionDelete", 0);
 };
 addUserButton.addEventListener("click", function () {
@@ -1067,3 +1068,7 @@ async function getUserPhoto(token, username) {
   const data = await response.json();
   return data;
 }
+
+backButton.addEventListener("click", function () {
+  window.location.href = "interface.html";
+});
