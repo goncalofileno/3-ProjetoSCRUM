@@ -7,17 +7,19 @@ public class UserDetailsDto {
     private String email;
     private String photoURL;
     private String phone;
+    private String role;
 
     public UserDetailsDto() {
     }
 
-    public UserDetailsDto(String username, String firstname, String lastname, String email, String photoURL, String phone) {
+    public UserDetailsDto(String username, String firstname, String lastname, String email, String photoURL, String phone, String role) {
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.photoURL = photoURL;
         this.phone = phone;
+        this.role = role;
     }
 
     public String getUsername() {
@@ -66,5 +68,13 @@ public class UserDetailsDto {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

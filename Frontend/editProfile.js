@@ -3,8 +3,29 @@
 /**************************************/
 window.onload = async function () {
   await getUser();
-  const user = JSON.parse(sessionStorage.getItem("user"));
 
+  let ownerOptions = Array.from(document.getElementsByClassName("ownerOption"));
+  if (
+    localStorage.getItem("token") != null &&
+    localStorage.getItem("role") == "po"
+  ) {
+    // If the user is a Product Owner, show the "Add User" button
+    ownerOptions.forEach((element) => {
+      element.style.display = "block";
+      console.log(element.style.display.value);
+    });
+  } else {
+    ownerOptions.forEach((element) => {
+      element.style.display = "none";
+      console.log(element.style.display.value);
+    });
+  }
+
+  if (
+    localStorage.getItem("username") != localStorage.getItem("selectedUser")
+  ) {
+    document.getElementById("changePassword").style.display = "none";
+  }
   getUserDataDB();
 
   //document.getElementById("updatePassword").setAttribute("style", "display: none");
@@ -17,6 +38,7 @@ function getUserDataDB() {
       Accept: "*/*",
       "Content-Type": "application/json",
       token: localStorage.getItem("token"),
+      selectedUser: localStorage.getItem("selectedUser"),
     },
   })
     .then((response) => response.json())
@@ -36,6 +58,12 @@ function fillForm(data) {
   document.getElementById("phone").placeholder = data.phone;
   document.getElementById("photo").placeholder = data.photoURL;
   document.getElementById("photoPreview").src = data.photoURL;
+  if (
+    localStorage.getItem("username") !== localStorage.getItem("selectedUser") &&
+    localStorage.getItem("role") === "po"
+  ) {
+    document.getElementById("role").value = data.role;
+  }
 }
 
 // Get the modal and the cancel button
@@ -104,21 +132,18 @@ document
 function updateUser() {
   let userFromForm = getUserfromUpdatedFormValues();
 
-  console.log(userFromForm);
-  console.log("This data was in the form:\n" + JSON.stringify(userFromForm));
-
   fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/update", {
     method: "PUT",
     headers: {
       Accept: "*/*",
       "Content-Type": "application/json",
       token: localStorage.getItem("token"),
+      selectedUser: localStorage.getItem("selectedUser"),
     },
     body: JSON.stringify(userFromForm),
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("This data was received:\n" + JSON.stringify(data));
       if (data.message === "User is updated") {
         alert("User updated successfully");
         window.location.href = "interface.html";
@@ -161,6 +186,8 @@ function getUserfromUpdatedFormValues() {
   let lastname = getValueOrPlaceholder("lastname");
   let phone = getValueOrPlaceholder("phone");
   let photoURL = getValueOrPlaceholder("photo");
+  let role = document.getElementById("role").value;
+  // get the role from the dropdown
 
   // turns it into a User
   let userFromForm = {
@@ -170,6 +197,7 @@ function getUserfromUpdatedFormValues() {
     lastname: lastname,
     phone: phone,
     photoURL: photoURL,
+    role: role,
   };
 
   return userFromForm;
@@ -190,8 +218,8 @@ async function getUser() {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
-        username: localStorage.getItem("username"),
-        password: localStorage.getItem("password"),
+        token: localStorage.getItem("token"),
+        selectedUser: localStorage.getItem("selectedUser"),
       },
     }
   );

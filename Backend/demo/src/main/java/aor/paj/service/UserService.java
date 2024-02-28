@@ -222,7 +222,8 @@ public class UserService {
                         userDto.getLastname(),
                         userDto.getEmail(),
                         userDto.getPhotoURL(),
-                        userDto.getPhone()
+                        userDto.getPhone(),
+                        userDto.getRole()
                 );
                 return Response.status(200).entity(userDetails).build();
 
@@ -311,13 +312,13 @@ public class UserService {
     @DELETE
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+    public Response deleteUser(@HeaderParam("token") String token, @HeaderParam("selectedUser") String selectedUser) {
         if(!userBean.isValidUserByToken(token) && !userBean.getUserByToken(token).getRole().equals("po")){
             System.out.println("Unauthorized");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }else if(userBean.getUserByToken(token).getRole().equals("po")){
             System.out.println("Authorized");
-            if(userBean.deleteUser(username)){
+            if(userBean.deleteUser(selectedUser)){
                 System.out.println("User deleted");
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User deleted")).toString()).build();
             }else{
@@ -333,13 +334,13 @@ public class UserService {
     @DELETE
     @Path("/deleteTasks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteTasks(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+    public Response deleteTasks(@HeaderParam("token") String token, @HeaderParam("selectedUser") String selectedUser) {
         if(!userBean.isValidUserByToken(token) && !userBean.getUserByToken(token).getRole().equals("po")){
             System.out.println("Unauthorized");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }else if(userBean.getUserByToken(token).getRole().equals("po")){
             System.out.println("Authorized");
-            if(userBean.deleteTasks(username)){
+            if(userBean.deleteTasks(selectedUser)){
                 System.out.println("Tasks deleted");
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Tasks deleted")).toString()).build();
             }else{

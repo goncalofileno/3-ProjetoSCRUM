@@ -208,11 +208,10 @@ deletedTasksButton.addEventListener("click", () => {
 });
 
 categoryButton.addEventListener("click", () => {
-
   localStorage.setItem("selectedButton", 3);
 
   window.location.href = "interfaceUsers.html";
-})
+});
 
 //Listener para quando o botão Add Task é clicado
 addTaskButton.addEventListener("click", function () {
@@ -342,7 +341,7 @@ submitTaskButton.addEventListener("click", async function () {
     console.log(newTask);
 
     await addTask(newTask);
-    // newTaskModal.style.display = "none"; // Comment this line
+    // newTaskModal.style.display = "none"; // Comxment this line
   }
 
   await displayTasks();
@@ -461,7 +460,7 @@ okButton.addEventListener("click", function (event) {
 
 //Listener para quando o botão de "Edit Profile" é clicado
 editProfileButton.addEventListener("click", function () {
-  //Redireciona para a página de editar perfil
+  localStorage.setItem("selectedUser", localStorage.getItem("username"));
   window.location.href = "editProfile.html";
 });
 
@@ -765,6 +764,7 @@ async function addTask(task) {
     body: JSON.stringify(task),
   }).then((response) => {
     if (response.status === 200) {
+      console.log(JSON.stringify(task));
       alert("Task is added successfully :)");
     } else {
       return response.text(); // read the response body as text

@@ -85,6 +85,9 @@ window.onload = async function () {
   localStorage.setItem("deletedTasks", "false");
   localStorage.setItem("deletedCategory", "false");
 };
+addUserButton.addEventListener("click", function () {
+  window.location.href = "register.html";
+});
 
 addCategoryButton.addEventListener("click", function () {
   document.getElementById("modalTitle").innerText = "New Category";
@@ -279,10 +282,12 @@ window.addEventListener("click", function (event) {
   }
 });
 
-editProfileButton.addEventListener("click", function () {
-  //Redireciona para a página de editar perfil
-  window.location.href = "editProfile.html";
-});
+document
+  .getElementById("editProfileButton")
+  .addEventListener("click", function () {
+    localStorage.setItem("selectedUser", localStorage.getItem("username"));
+    window.location.href = "editProfile.html";
+  });
 
 botaoLogout = document.getElementById("logoutButton");
 botaoLogout.addEventListener("click", function () {
@@ -393,7 +398,6 @@ async function deleteAllTasks() {
 // contextMenu --
 const deleteUser = document.getElementById("deleteUser");
 const deleteAllTasksContext = document.getElementById("deleteAllTasksContext");
-const changeRole = document.getElementById("changeRole");
 const editUser = document.getElementById("editUser");
 const selectedUser = localStorage.getItem("selectedUser");
 
@@ -406,17 +410,20 @@ deleteUser.addEventListener("click", function (e) {
 
 // getItem for use the selectedUser actual
 editUser.addEventListener("click", function () {
+  window.location.href = "editProfile.html";
   console.log(localStorage.getItem("selectedUser") + " foi editado");
 });
 deleteUser.addEventListener("click", function () {
+  deleteUserPermanently();
+  //open modal asking if the user wants to delete the user
   console.log(localStorage.getItem("selectedUser") + " foi apagado");
 });
 deleteAllTasksContext.addEventListener("click", function () {
+  deleteAllTasks();
+  //open modal asking if the user wants to delete the user
   console.log(localStorage.getItem("selectedUser") + "Delete all tasks");
 });
-changeRole.addEventListener("click", function () {
-  console.log(localStorage.getItem("selectedUser") + "Change role");
-});
+
 // -- -- -- -- -- -- -- -- --
 // Function to get the full role name from the role abbreviation
 function getRoleFullName(role) {
@@ -780,38 +787,57 @@ async function displayCategories() {
   let tableHTML = table.join("");
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
-}
 
-// Add the rows to the table
-table.push(...rows);
-// End of the table
-table.push("</div>");
-// Join the table array into a string and return it
-let tableHTML = table.join("");
-// Add the table to the DOM
-tableContainer.innerHTML = tableHTML;
-
-// Now that the new rows are in the DOM, you can add event listeners to them
-let rowElement = tableContainer.querySelectorAll(".row.element");
-rowElement.forEach((row, index) => {
-  row.addEventListener("contextmenu", function (e) {
-    // This function will be called when a row is clicked
-    // `this` refers to the clicked row
-    e.preventDefault();
-    // Save the category title and description in local storage
-    localStorage.setItem("selectedCategoryTitle", categories[index].title);
-    localStorage.setItem(
-      "selectedCategoryDescription",
-      categories[index].description
-    );
-    // Show the context menu
-    const contextMenu = document.getElementById("contextMenu2");
-    contextMenu.style.top = `${e.clientY}px`;
-    contextMenu.style.left = `${e.clientX}px`;
-    contextMenu.style.display = "block";
+  // Now that the new rows are in the DOM, you can add event listeners to them
+  let rowElement = tableContainer.querySelectorAll(".row.element");
+  rowElement.forEach((row, index) => {
+    row.addEventListener("contextmenu", function (e) {
+      // This function will be called when a row is clicked
+      // `this` refers to the clicked row
+      e.preventDefault();
+      // Save the category title and description in local storage
+      localStorage.setItem("selectedCategoryTitle", categories[index].title);
+      localStorage.setItem(
+        "selectedCategoryDescription",
+        categories[index].description
+      );
+      // Show the context menu
+      const contextMenu = document.getElementById("contextMenu2");
+      contextMenu.style.top = `${e.clientY}px`;
+      contextMenu.style.left = `${e.clientX}px`;
+      contextMenu.style.display = "block";
+    });
   });
-});
+  // // Add the rows to the table
+  // table.push(...rows);
+  // // End of the table
+  // table.push("</div>");
+  // // Join the table array into a string and return it
+  // let tableHTML = table.join("");
+  // // Add the table to the DOM
+  // tableContainer.innerHTML = tableHTML;
 
+  // // Now that the new rows are in the DOM, you can add event listeners to them
+  // let rowElement = tableContainer.querySelectorAll(".row.element");
+  // rowElement.forEach((row, index) => {
+  //   row.addEventListener("contextmenu", function (e) {
+  //     // This function will be called when a row is clicked
+  //     // `this` refers to the clicked row
+  //     e.preventDefault();
+  //     // Save the category title and description in local storage
+  //     localStorage.setItem("selectedCategoryTitle", categories[index].title);
+  //     localStorage.setItem(
+  //       "selectedCategoryDescription",
+  //       categories[index].description
+  //     );
+  //     // Show the context menu
+  //     const contextMenu = document.getElementById("contextMenu2");
+  //     contextMenu.style.top = `${e.clientY}px`;
+  //     contextMenu.style.left = `${e.clientX}px`;
+  //     contextMenu.style.display = "block";
+  //   });
+  // });
+}
 async function deleteCategory() {
   const title = localStorage.getItem("selectedCategoryTitle");
   const response = await fetch(
@@ -833,7 +859,6 @@ async function deleteCategory() {
 
   await displayCategories();
 }
-
 //Functio to update category
 async function updateCategory() {
   const titleElement = document.getElementById("taskTitle");
@@ -936,6 +961,87 @@ async function getTasksByCategory(title) {
 
   const data = await response.json();
   return data;
+}
+function deleteAllTasks() {
+  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/deleteTasks", {
+    method: "DELETE",
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      token: localStorage.getItem("token"),
+      selectedUser: localStorage.getItem("selectedUser"),
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.message === "All tasks deleted") {
+        alert("All tasks deleted");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      if (error.message.includes("401")) {
+        alert("Unauthorized");
+      }
+    });
+}
+
+async function getUserPhoto(token, username) {
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getPhoto",
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        token: token,
+        username: username,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user photo");
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+function deleteUserPermanently() {
+  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/delete", {
+    method: "DELETE",
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      token: localStorage.getItem("token"),
+      selectedUser: localStorage.getItem("selectedUser"),
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      // remove child from the table
+      displayUsers();
+      return response.json();
+    })
+    .then((data) => {
+      if (data.message === "User deleted") {
+        alert("User deleted");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      if (error.message.includes("401")) {
+        alert("Unauthorized");
+      }
+    });
 }
 
 async function getUserPhoto(token, username) {

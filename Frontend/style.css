@@ -1386,6 +1386,7 @@ aside::after {
 .category-label {
   bottom: 0;
   right: 0;
+  padding-right: 0.5rem;
   position: absolute;
   color: #205d88;
   background-color: var(--category-color);
