@@ -258,12 +258,12 @@ public class UserBean {
     public boolean deleteUser(String username) {
         UserEntity userEntity = userDao.findUserByUsername(username);
         if (userEntity != null) {
-            if(changeTaskOwner(username,"deleted")){
+            changeTaskOwner(username,"deleted");
             userDao.remove(userEntity);
             return true;
             }
-        }
         return false;
+
     }
 
     public boolean changeTaskOwner(String oldUsername, String newUsername){

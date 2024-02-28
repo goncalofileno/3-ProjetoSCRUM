@@ -184,17 +184,23 @@
           <label for="finalDate">Final Date:</label>
           <input type="date" id="finalDate" name="finalDate" required />
         </div>
-        <div class="center-container">
-          <label for="editTaskPriority">Priority:</label>
-          <select id="editTaskPriority" name="priority">
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-        </div>
-        <div class="center-container">
-          <label for="taskCategory">Category:</label>
-          <select id="taskCategory" name="category"></select>
+        <div class="container-option">
+          <div class="center-container">
+            <label for="editTaskPriority">Priority:</label>
+            <select id="editTaskPriority" name="priority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="center-container">
+            <label for="taskCategory">Category:</label>
+            <select
+              id="taskCategory"
+              class="dropdown-btn"
+              name="category"
+            ></select>
+          </div>
         </div>
         <div class="buttons-container">
           <button id="cancelTaskButton">Cancel</button>

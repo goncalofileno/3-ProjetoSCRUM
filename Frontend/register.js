@@ -75,6 +75,7 @@ document
     ) {
       let roleChoice = document.getElementById("role").value;
       addUserPO(user, roleChoice);
+      window.location.href = "interfaceUsers.html";
     } else addUser(user);
     //Redireciona para a página de login
     //window.location.href = "index.html";
@@ -143,7 +144,7 @@ async function addUserPO(user, roleChoice) {
 
   if (response.status === 200 && data.message === "A new user is created") {
     alert("User is added successfully :)");
-    window.location.href = "index.html";
+    window.location.href = "./interfaceUsers.html";
   } else {
     alert(data.message); // show the error message
     if (response.status === 400) {
