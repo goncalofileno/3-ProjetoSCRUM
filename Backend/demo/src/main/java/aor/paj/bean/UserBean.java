@@ -184,14 +184,16 @@ public class UserBean {
     public void updateUser(UserUpdateDto userUpdateDto) {
         UserEntity userEntity = userDao.findUserByUsername(userUpdateDto.getUsername());
 
+
         if (userEntity != null) {
             userEntity.setFirstname(userUpdateDto.getFirstname());
             userEntity.setLastname(userUpdateDto.getLastname());
             userEntity.setEmail(userUpdateDto.getEmail());
             userEntity.setPhone(userUpdateDto.getPhone());
             userEntity.setPhotoURL(userUpdateDto.getPhotoURL());
-            userEntity.setRole(userUpdateDto.getRole());
-
+            if(userEntity.getRole().equals("po")){
+                userEntity.setRole(userUpdateDto.getRole());
+            }
             userDao.merge(userEntity);
         }
     }

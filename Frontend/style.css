@@ -1043,9 +1043,7 @@ aside::after {
   color: #205d88;
   margin-bottom: -10px;
 }
-#role-label {
-  display: none;
-}
+
 #registerForm {
   position: absolute;
   top: -100px;
@@ -1389,7 +1387,7 @@ aside::after {
 .category-label {
   bottom: 0;
   right: 0;
-  padding-right: 0.3rem;
+  padding-right: 0.5rem;
   position: absolute;
   color: #205d88;
   background-color: var(--category-color);
