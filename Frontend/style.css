@@ -246,6 +246,10 @@ footer a {
   transform: scale(1.2);
 }
 
+#editProfileButton:hover {
+  transform: scale(1.2);
+}
+
 /*caracteristicas comuns das argolas*/
 #argola1,
 #argola2,
