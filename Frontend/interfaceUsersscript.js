@@ -82,8 +82,8 @@ window.onload = async function () {
   //Mostra a data e hora
   displayDateTime(); // Adiciona a exibição da data e hora
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
-  localStorage.setItem("deletedTasks", "false");
-  localStorage.setItem("deletedCategory", "false");
+  
+  localStorage.setItem("optionDelete", 0);
 };
 addUserButton.addEventListener("click", function () {
   window.location.href = "register.html";
@@ -164,7 +164,7 @@ deleteTask.addEventListener("click", function () {
   // Open the modal
   document.getElementById("deleteWarning").style.display = "block";
 
-  localStorage.setItem("deletedTasks", "one");
+  localStorage.setItem("optionDelete", 2);
 });
 
 document
@@ -173,11 +173,11 @@ document
     // Close the modal
     document.getElementById("deleteWarning").style.display = "none";
 
-    if (localStorage.getItem("deletedTasks") === "one") {
+    if (localStorage.getItem("optionDelete") === 2) {
       await deleteOneTask();
-    } else if (localStorage.getItem("deletedCategory") === "true") {
+    } else if (localStorage.getItem("optionDelete") == 1) {
       await deleteCategory();
-    } else if (localStorage.getItem("deletedTasks") === "all") {
+    } else if (localStorage.getItem("optionDelete") == 3) {
       await deleteAllTasks();
     }
 
@@ -189,6 +189,8 @@ document
       restoreAllTasksButton.style.display = "none";
       deleteAllTasksButton.style.display = "none";
     }
+
+    localStorage.setItem("optionDelete", 0);
   });
 
 document
@@ -199,7 +201,7 @@ document
   });
 
 deleteCategoryoption.addEventListener("click", async function () {
-  localStorage.setItem("deletedCategory", "true");
+  localStorage.setItem("optionDelete", 1);
 
   deleteWarning.style.display = "block";
 });
@@ -266,7 +268,7 @@ restoreAllTasksButton.addEventListener("click", async function () {
 
 deleteAllTasksButton.addEventListener("click", async function () {
   document.getElementById("deleteWarning").style.display = "block";
-  localStorage.setItem("deletedTasks", "all");
+  localStorage.setItem("optionDelete", 3);
 });
 
 window.addEventListener("click", function (event) {
@@ -419,7 +421,7 @@ deleteUser.addEventListener("click", function () {
   console.log(localStorage.getItem("selectedUser") + " foi apagado");
 });
 deleteAllTasksContext.addEventListener("click", function () {
-  deleteAllTasks();
+  deleteAllTasksUser();
   //open modal asking if the user wants to delete the user
   console.log(localStorage.getItem("selectedUser") + "Delete all tasks");
 });
@@ -962,7 +964,7 @@ async function getTasksByCategory(title) {
   const data = await response.json();
   return data;
 }
-function deleteAllTasks() {
+function deleteAllTasksUser() {
   fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/deleteTasks", {
     method: "DELETE",
     headers: {
