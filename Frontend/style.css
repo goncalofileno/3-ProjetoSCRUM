@@ -438,7 +438,7 @@ footer a {
   width: auto;
   max-width: 100%;
   max-height: 100%;
-  overflow: auto;
+  /* overflow: auto; */
   flex-direction: column;
   align-items: center;
   padding: 1.6rem 3rem;
@@ -457,7 +457,7 @@ footer a {
   background: white;
   padding: 0.3rem 3.4rem;
   border: 3px solid #205d88;
-  margin-right: 2.6rem;
+  /* margin-right: 2.6rem; */
   box-shadow: 0 0 0 #205d88;
   transition: all 0.2s;
   border-radius: 10px;
@@ -601,9 +601,9 @@ aside::after {
   top: 50%;
   transform: translate(-50%, -50%);
   width: auto;
-  max-width: 20%;
-  height: 10%;
-  overflow: auto;
+  /* max-width: 20%; */
+  /* height: 10%; */
+  /* overflow: auto; */
   flex-direction: column;
   align-items: center;
   padding: 1.6rem 3rem;
@@ -613,6 +613,7 @@ aside::after {
   box-shadow: 8px 8px 0 rgba(32, 93, 136, 0.2);
   border-radius: 10px;
   z-index: 3;
+  justify-content: center;
 }
 /*caracteristicas do texto do modal de confirmação de exclusão de tarefa*/
 #deleteWarning .message {
@@ -625,6 +626,10 @@ aside::after {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+.options {
+  justify-content: space-between;
+  display: flex;
 }
 
 /*pop-up menu que aparece quando o botão direito é clicado sobre a tarefa*/
@@ -1014,6 +1019,8 @@ aside::after {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
   border: none;
   border-radius: 5px;
   background-color: #333;
