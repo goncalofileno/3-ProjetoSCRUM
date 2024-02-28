@@ -26,7 +26,7 @@ public class CategoryService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCategories(@HeaderParam("token") String token) {
         if (userBean.isValidUserByToken(token)) {
-            if(userBean.getUserRole(token).equals("po")) {
+            if (userBean.getUserRole(token).equals("po")) {
                 return Response.status(200).entity(categoryBean.getAllCategories()).build();
             } else {
                 return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
@@ -56,8 +56,8 @@ public class CategoryService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCategory(@HeaderParam("token") String token, @QueryParam("title") String title) {
         if (userBean.isValidUserByToken(token)) {
-            if(userBean.getUserRole(token).equals("po")) {
-                if(categoryBean.deleteCategory(title)) {
+            if (userBean.getUserRole(token).equals("po")) {
+                if (categoryBean.deleteCategory(title)) {
                     return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category deleted"))).build();
                 } else {
                     return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("There are tasks with this category. Delete this tasks before deleting the category."))).build();
@@ -77,8 +77,8 @@ public class CategoryService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addCategory(@HeaderParam("token") String token, CategoryDto category) {
         if (userBean.isValidUserByToken(token)) {
-            if(userBean.getUserRole(token).equals("po")) {
-                if(categoryBean.addCategory(category)) {
+            if (userBean.getUserRole(token).equals("po")) {
+                if (categoryBean.addCategory(category)) {
                     return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category added"))).build();
                 } else {
                     return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category already exists"))).build();
@@ -98,12 +98,29 @@ public class CategoryService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCategory(@HeaderParam("token") String token, CategoryDto category, @QueryParam("title") String title) {
         if (userBean.isValidUserByToken(token)) {
-            if(userBean.getUserRole(token).equals("po")) {
-                if(categoryBean.updateCategory(category, title)) {
+            if (userBean.getUserRole(token).equals("po")) {
+                if (categoryBean.updateCategory(category, title)) {
                     return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category updated"))).build();
                 } else {
                     return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category already exists"))).build();
                 }
+            } else {
+                return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+            }
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
+
+    //Service that receives a token and a category title, validates the token, checks if toke user role its po, and sends back the number of tasks with the category sended in the title
+    @GET
+    @Path("/tasksNumber")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTasksByCategory(@HeaderParam("token") String token, @QueryParam("title") String title) {
+        if (userBean.isValidUserByToken(token)) {
+            if (userBean.getUserRole(token).equals("po")) {
+                return Response.status(200).entity(categoryBean.getNumberOfTasksByCategory(title)).build();
             } else {
                 return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
             }

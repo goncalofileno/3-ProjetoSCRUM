@@ -90,6 +90,14 @@ public class CategoryBean {
         return true;
     }
 
+    //Function that receives a category title and returns the number of tasks with that category
+    public int getNumberOfTasksByCategory(String title) {
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(title);
+        List<TaskEntity> taskEntities = taskDao.findTasksByCategory(categoryEntity);
+        return taskEntities.size();
+    }
+
+
     //Function that verifys all categories in the database my sql and generates a unique id for new category
     public int generateIdDataBase() {
         int id = 1;

@@ -1,5 +1,6 @@
 package com.scrum;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -8,39 +9,27 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 public class TaskPopulator {
 
-    private String username;
-    private String password;
+    private String token;
     private int numberOfTasks;
 
     public TaskPopulator() {
     }
 
-    public TaskPopulator(String username, String password, int numberOfTasks) {
-        this.username = username;
-        this.password = password;
+    public TaskPopulator(String token, int numberOfTasks) {
+        this.token = token;
         this.numberOfTasks = numberOfTasks;
     }
 
-    public String getUsername() {
-        return username;
+    public String getToken() {
+        return token;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public int getNumberOfTasks() {
@@ -52,7 +41,7 @@ public class TaskPopulator {
     }
 
     //Function that populates the tasks
-    public void populate() {
+    public void populate(String token) {
         System.out.println("Populating " + numberOfTasks + " tasks");
         for (int i = 0; i < numberOfTasks; i++) {
             try {
@@ -70,7 +59,7 @@ public class TaskPopulator {
                     }
                     reader.close();
                     String taskData = response.toString();
-                    addTask(parseTask(taskData));
+                    addTask(parseTask(taskData, token), token);
                 } else {
                     System.out.println("Failed to fetch task data. Response code: " + responseCode);
                 }
@@ -82,18 +71,22 @@ public class TaskPopulator {
     }
 
     //Function that parses the task data
-    public Task parseTask(String jsonData) {
+    public Task parseTask(String jsonData, String token){
         Task task = null;
         try {
             JSONObject jsonObject = new JSONObject(jsonData);
             String title = jsonObject.getString("activity");
             String description = jsonObject.getString("type");
 
+            List<String> categories = getCategories(token);
+            Random random = new Random();
+            String category = categories.get(random.nextInt(categories.size()));
+
             int priority = generatePriority();
             String initialDate = generateDate();
             String finalDate = generateDate(initialDate);
 
-            task = new Task(title, description, priority, initialDate, finalDate);
+            task = new Task(title, description, priority, initialDate, finalDate, category);
 
         } catch (JSONException e) {
             System.out.println("Failed to parse task data" + e.getMessage());
@@ -102,15 +95,15 @@ public class TaskPopulator {
     }
 
     //Function that adds the task
-    public void addTask(Task task) {
+    public void addTask(Task task, String token){
         try {
             URL url = new URL("http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/add");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("username", username);
-            connection.setRequestProperty("password", password);
+            connection.setRequestProperty("token", token);
             connection.setDoOutput(true);
+            System.out.println("Adding task: " + task + " for user with toke " + token);
             connection.getOutputStream().write(task.toString().getBytes());
             connection.getOutputStream().flush();
             connection.getOutputStream().close();
@@ -119,7 +112,7 @@ public class TaskPopulator {
             BufferedReader reader;
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                System.out.println("Task added successfully: " + task + " for user " + username);
+                System.out.println("Task added successfully: " + task + " for user with toke " + token);
             } else {
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
             }
@@ -167,5 +160,37 @@ public class TaskPopulator {
         }
         c.add(Calendar.DATE, 1);
         return formatter.format(c.getTime());
+    }
+
+    public List<String> getCategories(String token) {
+        List<String> categories = new ArrayList<>();
+        try {
+            URL url = new URL("http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("token", token);
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                StringBuilder response = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                JSONArray jsonArray = new JSONArray(response.toString());
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    categories.add(jsonObject.getString("title"));
+                }
+            } else {
+                System.out.println("Failed to fetch categories. Response code: " + responseCode);
+            }
+        } catch (Exception e) {
+            System.out.println("Failed to fetch categories" + e.getMessage());
+        }
+        return categories;
     }
 }

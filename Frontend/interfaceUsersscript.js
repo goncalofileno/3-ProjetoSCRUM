@@ -734,19 +734,21 @@ async function displayCategories() {
   // Start of the table
   let table = [
     "<div class='table t-design'>",
-    "<div class='row header'><div>Title</div><div>Description</div><div>Owner</div></div>",
+    "<div class='row header'><div>Title</div><div>Description</div><div>Owner</div><div>Number of Tasks</div></div>",
   ];
 
   // Generate the rows
-  let rows = categories.map(
-    (category) => `
-    <div class="row element">
-      <div>${category.title}</div>
-      <div>${category.description}</div>
-      <div>${category.owner}</div>
-    </div>
-  `
-  );
+  let rows = await Promise.all(categories.map(async (category) => {
+    const tasks = await getTasksByCategory(category.title);
+    return `
+      <div class="row element">
+        <div>${category.title}</div>
+        <div>${category.description}</div>
+        <div>${category.owner}</div>
+        <div>${tasks}</div>
+      </div>
+    `;
+  }));
 
   // Add the rows to the table
   table.push(...rows);
@@ -876,4 +878,23 @@ async function createCategory(){
   document.body.classList.remove("modal-open");
   window.location.reload();
 
+}
+
+async function getTasksByCategory(title) {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/tasksNumber?title=${title}`, {
+    method: "GET",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "token": token
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch number of tasks");
+  }
+
+  const data = await response.json();
+  return data;
 }

@@ -8,7 +8,6 @@ public class Main {
         if (generatorType == null) {
             System.out.println("Please provide a generator type");
         } else if (generatorType.equals("add_users")) {
-
             try {
                 boolean isNumberOfUsersProvided = args.length > 1;
                 if (!isNumberOfUsersProvided) {
@@ -28,16 +27,15 @@ public class Main {
             }
         } else if (generatorType.equals("add_tasks")) {
             try {
-                boolean isNumberOfArgsTasksProvided = args.length == 3;
+                boolean isNumberOfArgsTasksProvided = args.length == 2;
                 if (!isNumberOfArgsTasksProvided) {
                     System.out.println("Please provide the username, password and number of tasks to be added");
                 }
-                String username = args[1];
-                String password = args[2];
-                int numberOfTasks = Integer.parseInt(args[3]);
+                String token = args[1];
+                int numberOfTasks = Integer.parseInt(args[2]);
 
-                TaskPopulator taskPopulator = new TaskPopulator(username, password, numberOfTasks);
-                taskPopulator.populate();
+                TaskPopulator taskPopulator = new TaskPopulator(token, numberOfTasks);
+                taskPopulator.populate(token);
 
             } catch (NumberFormatException e) {
                 System.out.println("Invalid number of tasks");

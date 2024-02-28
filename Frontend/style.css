@@ -1335,6 +1335,7 @@ aside::after {
 .row.header {
   background-color: #205d88;
   color: white;
+  z-index: 1;
 }
 .table img {
   width: 30px;

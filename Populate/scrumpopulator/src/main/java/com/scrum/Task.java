@@ -6,16 +6,18 @@ public class Task {
     private int priority;
     private String initialDate;
     private String finalDate;
+    private String category;
 
     public Task() {
     }
 
-    public Task(String title, String description, int priority, String initialDate, String finalDate) {
+    public Task(String title, String description, int priority, String initialDate, String finalDate, String category) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.initialDate = initialDate;
         this.finalDate = finalDate;
+        this.category = category;
     }
 
     @Override
@@ -25,7 +27,8 @@ public class Task {
                 ", \"description\":\"" + description + "\"" +
                 ", \"priority\":" + priority  +
                 ", \"initialDate\":\"" + initialDate + "\"" +
-                ", \"finalDate\":\"" + finalDate + "\"}";
+                ", \"finalDate\":\"" + finalDate + "\"" +
+                ", \"category\":\"" + category + "\"}";
     }
 
     public String getTitle() {
@@ -67,4 +70,13 @@ public class Task {
     public void setFinalDate(String finalDate) {
         this.finalDate = finalDate;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
 }
