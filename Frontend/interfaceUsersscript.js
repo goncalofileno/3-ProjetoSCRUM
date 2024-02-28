@@ -85,6 +85,9 @@ window.onload = async function () {
   localStorage.setItem("deletedTasks", "false");
   localStorage.setItem("deletedCategory", "false");
 };
+addUserButton.addEventListener("click", function () {
+  window.location.href = "register.html";
+});
 
 addCategoryButton.addEventListener("click", function () {
   document.getElementById("modalTitle").innerText = "New Category";
@@ -94,7 +97,7 @@ addCategoryButton.addEventListener("click", function () {
   localStorage.setItem("editCategory", "false");
 
   newTaskModal.style.display = "block";
-  
+
   document.body.classList.add("modal-open");
 });
 
@@ -207,7 +210,9 @@ editCategory.addEventListener("click", function () {
 
   // Populate the input fields with the category data
   titleElement.value = localStorage.getItem("selectedCategoryTitle");
-  descriptionElement.value = localStorage.getItem("selectedCategoryDescription");
+  descriptionElement.value = localStorage.getItem(
+    "selectedCategoryDescription"
+  );
 
   // Change the modal title and button text
   document.getElementById("modalTitle").innerText = "Edit Category";
@@ -217,7 +222,6 @@ editCategory.addEventListener("click", function () {
 
   newTaskModal.style.display = "block";
   document.body.classList.add("modal-open");
-  
 });
 
 restoreAllTasksButton.addEventListener("click", async function () {
@@ -278,10 +282,12 @@ window.addEventListener("click", function (event) {
   }
 });
 
-editProfileButton.addEventListener("click", function () {
-  //Redireciona para a página de editar perfil
-  window.location.href = "editProfile.html";
-});
+document
+  .getElementById("editProfileButton")
+  .addEventListener("click", function () {
+    localStorage.setItem("selectedUser", localStorage.getItem("username"));
+    window.location.href = "editProfile.html";
+  });
 
 botaoLogout = document.getElementById("logoutButton");
 botaoLogout.addEventListener("click", function () {
@@ -392,7 +398,6 @@ async function deleteAllTasks() {
 // contextMenu --
 const deleteUser = document.getElementById("deleteUser");
 const deleteAllTasksContext = document.getElementById("deleteAllTasksContext");
-const changeRole = document.getElementById("changeRole");
 const editUser = document.getElementById("editUser");
 const selectedUser = localStorage.getItem("selectedUser");
 
@@ -405,17 +410,20 @@ deleteUser.addEventListener("click", function (e) {
 
 // getItem for use the selectedUser actual
 editUser.addEventListener("click", function () {
+  window.location.href = "editProfile.html";
   console.log(localStorage.getItem("selectedUser") + " foi editado");
 });
 deleteUser.addEventListener("click", function () {
+  deleteUserPermanently();
+  //open modal asking if the user wants to delete the user
   console.log(localStorage.getItem("selectedUser") + " foi apagado");
 });
 deleteAllTasksContext.addEventListener("click", function () {
+  deleteAllTasks();
+  //open modal asking if the user wants to delete the user
   console.log(localStorage.getItem("selectedUser") + "Delete all tasks");
 });
-changeRole.addEventListener("click", function () {
-  console.log(localStorage.getItem("selectedUser") + "Change role");
-});
+
 // -- -- -- -- -- -- -- -- --
 // Function to get the full role name from the role abbreviation
 function getRoleFullName(role) {
@@ -766,7 +774,10 @@ async function displayCategories() {
       e.preventDefault();
       // Save the category title and description in local storage
       localStorage.setItem("selectedCategoryTitle", categories[index].title);
-      localStorage.setItem("selectedCategoryDescription", categories[index].description);
+      localStorage.setItem(
+        "selectedCategoryDescription",
+        categories[index].description
+      );
       // Show the context menu
       const contextMenu = document.getElementById("contextMenu2");
       contextMenu.style.top = `${e.clientY}px`;
@@ -795,7 +806,6 @@ async function deleteCategory() {
 
   alert(data.message);
 
-
   await displayCategories();
 }
 
@@ -808,15 +818,19 @@ async function updateCategory() {
   const description = descriptionElement.value.trim();
 
   // Only send the request if the title or description has changed
-  if (title !== localStorage.getItem("selecteCategoryTitle") || description !== localStorage.getItem("selecteCategoryDescription")) {
+  if (
+    title !== localStorage.getItem("selecteCategoryTitle") ||
+    description !== localStorage.getItem("selecteCategoryDescription")
+  ) {
     const category = {
       title: title,
       description: description,
-      owner: localStorage.getItem("username")
+      owner: localStorage.getItem("username"),
     };
 
     const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/update?title=" + localStorage.getItem("selectedCategoryTitle"),
+      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/update?title=" +
+        localStorage.getItem("selectedCategoryTitle"),
       {
         method: "PUT",
         headers: {
@@ -824,12 +838,12 @@ async function updateCategory() {
           "Content-Type": "application/json",
           token: localStorage.getItem("token"),
         },
-        body: JSON.stringify(category)
+        body: JSON.stringify(category),
       }
     );
 
     const data = await response.json();
-    
+
     alert(data.message);
 
     newTaskModal.style.display = "none";
@@ -839,7 +853,7 @@ async function updateCategory() {
   }
 }
 
-async function createCategory(){
+async function createCategory() {
   const title = document.getElementById("taskTitle").value.trim();
   const description = document.getElementById("taskDescription").value.trim();
   const owner = localStorage.getItem("username");
@@ -875,5 +889,64 @@ async function createCategory(){
   newTaskModal.style.display = "none";
   document.body.classList.remove("modal-open");
   window.location.reload();
+}
 
+function deleteAllTasks() {
+  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/deleteTasks", {
+    method: "DELETE",
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      token: localStorage.getItem("token"),
+      selectedUser: localStorage.getItem("selectedUser"),
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.message === "All tasks deleted") {
+        alert("All tasks deleted");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      if (error.message.includes("401")) {
+        alert("Unauthorized");
+      }
+    });
+}
+
+function deleteUserPermanently() {
+  fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/delete", {
+    method: "DELETE",
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      token: localStorage.getItem("token"),
+      selectedUser: localStorage.getItem("selectedUser"),
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      // remove child from the table
+      displayUsers();
+      return response.json();
+    })
+    .then((data) => {
+      if (data.message === "User deleted") {
+        alert("User deleted");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      if (error.message.includes("401")) {
+        alert("Unauthorized");
+      }
+    });
 }
