@@ -14,6 +14,12 @@ window.onload = function () {
         element.style.display = "block";
       }
     );
+  } else {
+    Array.from(document.getElementsByClassName("ownerOption")).forEach(
+      (element) => {
+        element.style.display = "none";
+      }
+    );
   }
 };
 
