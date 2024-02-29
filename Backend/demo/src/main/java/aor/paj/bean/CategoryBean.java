@@ -151,4 +151,14 @@ public class CategoryBean {
         return id;
     }
 
+    public void createDefaultCategoryIfNotExistent() {
+        if (!categoryDao.findCategoryByName("Backlog")) {
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setTitle("Backlog");
+            categoryDto.setDescription("Backlog category");
+            categoryDto.setOwner("admin");
+            addCategory(categoryDto);
+        }
+
+    }
 }

@@ -1103,13 +1103,18 @@ function deleteUserPermanently() {
     })
     .then((data) => {
       if (data.message === "User deleted") {
-        alert("User deleted");
+        // alert("User deleted");
+        location.reload();
       }
     })
     .catch((error) => {
       console.error("Error:", error);
       if (error.message.includes("401")) {
         alert("Unauthorized");
+      } else if (error.message.includes("403")) {
+        alert("Forbidden");
+      } else if (error.message.includes("400")) {
+        alert("Bad Request");
       }
     });
 }

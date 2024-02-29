@@ -58,7 +58,11 @@ public class UserBean {
             //Encrypt the password
             userEntity.setPassword(BCrypt.hashpw(userEntity.getPassword(), BCrypt.gensalt()));
             userEntity.setId(generateIdDataBase());
-            userEntity.setRole("dev");
+            if(userEntity.getUsername().equals("admin")){
+                userEntity.setRole("po");
+            }else {
+                userEntity.setRole("dev");
+            }
             userEntity.setActive(true);
             userDao.persist(userEntity);
 
@@ -241,6 +245,9 @@ public class UserBean {
         return userDtos;
     }
     public boolean changeStatus(String username, boolean status){
+        if(username.equals("admin")){
+            return false;
+        }
         UserEntity userEntity = userDao.findUserByUsername(username);
         if(userEntity != null){
             userEntity.setActive(status);
@@ -256,6 +263,9 @@ public class UserBean {
     }
 
     public boolean deleteUser(String username) {
+        if(username.equals("admin") || username.equals("deleted")){
+            return false;
+        }
         UserEntity userEntity = userDao.findUserByUsername(username);
         if (userEntity != null) {
             changeTaskOwner(username,"deleted");
@@ -263,7 +273,6 @@ public class UserBean {
             return true;
             }
         return false;
-
     }
 
     public boolean changeTaskOwner(String oldUsername, String newUsername){
@@ -293,6 +302,33 @@ public class UserBean {
         return false;
     }
 
+    public void createDefaultUsersIfNotExistent() {
+        if (userDao.findUserByUsername("admin") == null) {
+            UserDto userDto = new UserDto();
+            userDto.setUsername("admin");
+            userDto.setPassword("admin");
+            userDto.setFirstname("Admin");
+            userDto.setLastname("Admin");
+            userDto.setEmail("admin@admin");
+            userDto.setPhone("000000000");
+            userDto.setPhotoURL("https://cdn1.vectorstock.com/i/1000x1000/29/70/admin-text-rubber-stamp-vector-11362970.jpg");
+            addUser(userDto);
+        }
+
+        if (userDao.findUserByUsername("deleted") == null) {
+            UserDto userDto = new UserDto();
+            userDto.setUsername("deleted");
+            userDto.setPassword("deleted");
+            userDto.setFirstname("deleted");
+            userDto.setLastname("deleted");
+            userDto.setEmail("deleted@deleted");
+            userDto.setPhone("000000000");
+            userDto.setPhotoURL("https://www.creativefabrica.com/wp-content/uploads/2022/09/22/Deleted-Stamp-Graphics-39045356-2-580x363.jpg");
+            addUser(userDto);
+            changeStatus("deleted",false);
+        }
+
+    }
 
 //    public UserPartialDto getUserPartial(String username, String password) {
 //        UserDto userDto = getUsers().stream()

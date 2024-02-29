@@ -62,4 +62,12 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
         }
     }
 
+    public boolean findCategoryByName(String aDefault) {
+        try {
+            return em.createNamedQuery("Category.findCategoryByTitle").setParameter("title", aDefault)
+                    .getSingleResult() != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
