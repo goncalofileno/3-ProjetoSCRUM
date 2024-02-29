@@ -174,12 +174,16 @@ document
     // Close the modal
     document.getElementById("deleteWarning").style.display = "none";
 
-    if (localStorage.getItem("optionDelete") === 2) {
+    if (localStorage.getItem("optionDelete") == 2) {
       await deleteOneTask();
     } else if (localStorage.getItem("optionDelete") == 1) {
       await deleteCategory();
     } else if (localStorage.getItem("optionDelete") == 3) {
       await deleteAllTasks();
+    } else if (localStorage.getItem("optionDelete") == 4) {
+      await deleteUserPermanently();
+    } else if (localStorage.getItem("optionDelete") == 5) {
+      await deleteAllTasksUser();
     }
 
     let numTasks = await document.querySelectorAll(
