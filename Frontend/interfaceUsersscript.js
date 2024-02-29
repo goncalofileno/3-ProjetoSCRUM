@@ -449,6 +449,10 @@ deleteAllTasksContext.addEventListener("click", function () {
   document.getElementById("deleteWarning").style.display = "block";
   localStorage.setItem("optionDelete", 5);
 });
+document.getElementById("displayUsername").addEventListener("click", () => {
+  if (localStorage.setItem("selectedUser", localStorage.getItem("username")));
+  window.location.href = "editProfile.html";
+});
 
 // -- -- -- -- -- -- -- -- --
 // Function to get the full role name from the role abbreviation
@@ -785,7 +789,7 @@ async function displayCategories() {
   // After defining the table headers
   let table = [
     "<div class='table t-design'>",
-    "<div class='row header'><div id='titleHeader'>Title</div><div id='descriptionHeader'>Description</div><div id='ownerHeader'>Owner</div><div id='tasksHeader'>Number of Tasks</div></div>",
+    "<div class='row header'><div id='titleHeader'>Title</div><div id='descriptionHeader'>Description</div><div id='ownerHeader' class='small-collumn'>Owner</div><div id='tasksHeader' class='small-collumn'>Number of Tasks</div></div>",
   ];
 
   // Generate the rows
@@ -804,8 +808,8 @@ async function displayCategories() {
       <div class="row element">
         <div>${category.title}</div>
         <div>${category.description}</div>
-        <div><img src="${photoUrl}" alt="User Photo" style="border-radius: 50%; border: 1px solid black; width: 30px; height: 30px; margin-right: 0.3rem"> ${category.owner}</div>
-        <div>${category.numTasks}</div> <!-- Display numTasks instead of tasks -->
+        <div class="small-collumn"> <img src="${photoUrl}" alt="User Photo" style="border-radius: 50%; border: 1px solid black; width: 30px; height: 30px; margin-right: 0.3rem"> ${category.owner}</div>
+        <div class="small-collumn">${category.numTasks}</div> <!-- Display numTasks instead of tasks -->
       </div>
     `;
     })
@@ -1103,15 +1107,21 @@ async function sortTable(field) {
   }
 
   // Check if the field is "tasks"
-  if (field === 'tasks') {
+  if (field === "tasks") {
     // If so, sort by the number of tasks
-    categories.sort((a, b) => (a.numTasks - b.numTasks) * (isAscending ? 1 : -1));
+    categories.sort(
+      (a, b) => (a.numTasks - b.numTasks) * (isAscending ? 1 : -1)
+    );
   } else if (typeof categories[0][field] === "string") {
     // If the values are strings, sort alphabetically
-    categories.sort((a, b) => a[field].localeCompare(b[field]) * (isAscending ? 1 : -1));
+    categories.sort(
+      (a, b) => a[field].localeCompare(b[field]) * (isAscending ? 1 : -1)
+    );
   } else {
     // If the values are not strings (assuming numbers), sort numerically
-    categories.sort((a, b) => (Number(a[field]) - Number(b[field])) * (isAscending ? 1 : -1));
+    categories.sort(
+      (a, b) => (Number(a[field]) - Number(b[field])) * (isAscending ? 1 : -1)
+    );
   }
   // Redisplay the categories
   await displayCategories();
