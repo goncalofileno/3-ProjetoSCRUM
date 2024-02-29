@@ -172,7 +172,10 @@ function updateUser() {
 }
 
 document.getElementById("cancelButton").addEventListener("click", function () {
-  if (localStorage.getItem("role") === "po") {
+  if (
+    localStorage.getItem("role") === "po" &&
+    localStorage.getItem("selectedButton") != 0
+  ) {
     window.location.href = "interfaceUsers.html";
   } else window.location.href = "interface.html";
 });

@@ -74,38 +74,44 @@ public class CategoryService {
     public Response addCategory(@HeaderParam("token") String token, CategoryDto category) {
         if (userBean.isValidUserByToken(token)) {
             if (userBean.getUserRole(token).equals("po")) {
-                if (categoryBean.addCategory(category)) {
-                    return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category added"))).build();
-                } else {
-                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category already exists"))).build();
-                }
+                if (categoryBean.isValidCategory(category)) {
+                    if (categoryBean.addCategory(category)) {
+                        return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category added"))).build();
+                    }
+                } else
+                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid category"))).build();
             } else {
                 return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
             }
         } else {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
+        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
+
 
     //service that receives a token, category dto and a category title, validates the token, checks if toke user role its po, checks if its a valid category and if so, updates the category in the database
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateCategory(@HeaderParam("token") String token, CategoryDto category, @QueryParam("title") String title) {
+    public Response updateCategory(@HeaderParam("token") String token, CategoryDto
+            category, @QueryParam("title") String title) {
         if (userBean.isValidUserByToken(token)) {
             if (userBean.getUserRole(token).equals("po")) {
-                if (categoryBean.updateCategory(category, title)) {
-                    return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category updated"))).build();
-                } else {
-                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category already exists"))).build();
-                }
+                if (categoryBean.isValidCategoryUpdate(category, title)) {
+                    if (categoryBean.updateCategory(category, title)) {
+                        return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category updated"))).build();
+                    }
+                } else
+                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid category"))).build();
             } else {
                 return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
             }
         } else {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
+        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
 
     //Service that receives a token and a category title, validates the token, checks if toke user role its po, and sends back the number of tasks with the category sended in the title

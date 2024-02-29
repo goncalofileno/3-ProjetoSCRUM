@@ -66,6 +66,24 @@ window.onload = async function () {
     deleteAllTasksButton.style.display = "none";
     addCategoryButton.style.display = "block";
   }
+  // Get the labelUser element
+  const labelUser = document.getElementById("labelUser");
+  const role = localStorage.getItem("role");
+  // Update the welcome message based on the role
+  switch (role) {
+    case "dev":
+      labelUser.textContent = "Welcome Developer, ";
+      break;
+    case "sm":
+      labelUser.textContent = "Welcome Scrum Master, ";
+      break;
+    case "po":
+      labelUser.textContent = "Welcome Product Owner, ";
+      break;
+    default:
+      labelUser.textContent = "Welcome, ";
+      break;
+  }
 
   //Vai buscar o userPartial do sessionStorage img e nome do user logado
   const userPartial = JSON.parse(sessionStorage.getItem("userPartial"));
@@ -198,6 +216,9 @@ document
     localStorage.setItem("optionDelete", 0);
   });
 
+document.getElementById("logo").addEventListener("click", () => {
+  window.location.href = "interface.html";
+});
 document
   .getElementById("noButtonDelete")
   .addEventListener("click", function () {
@@ -289,12 +310,12 @@ window.addEventListener("click", function (event) {
   }
 });
 
-document
-  .getElementById("editProfileButton")
-  .addEventListener("click", function () {
-    localStorage.setItem("selectedUser", localStorage.getItem("username"));
-    window.location.href = "editProfile.html";
-  });
+// document
+//   .getElementById("editProfileButton")
+//   .addEventListener("click", function () {
+//     localStorage.setItem("selectedUser", localStorage.getItem("username"));
+//     window.location.href = "editProfile.html";
+//   });
 
 botaoLogout = document.getElementById("logoutButton");
 botaoLogout.addEventListener("click", function () {
@@ -489,7 +510,7 @@ async function displayUsers() {
       <div>${user.username}</div>
       <div>${user.firstname}</div>
       <div>${user.lastname}</div>
-      <div>${user.email}</div>
+      <div class="email">${user.email}</div>
       <div>${user.phone}</div>
       <div>${getRoleFullName(user.role)}</div>
       <div>
@@ -525,7 +546,7 @@ async function displayUsers() {
       <div>${user.username}</div>
       <div>${user.firstname}</div>
       <div>${user.lastname}</div>
-      <div>${user.email}</div>
+      <div class="email">${user.email}</div>
       <div>${user.phone}</div>
       <div>${getRoleFullName(user.role)}</div>
     </div>
@@ -734,39 +755,45 @@ function displayDateTime() {
   dateTimeDisplay.textContent = dateTimeString;
 }
 
+var categories = null;
+
 async function displayCategories() {
   document.getElementById("tableContainer").innerHTML = "";
-  // Fetch categories from the server
-  const response = await fetch(
-    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all",
-    {
-      method: "GET",
-      headers: {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-        token: localStorage.getItem("token"),
-      },
+  // Fetch categories from the server only if they haven't been provided
+  if (!categories) {
+    const response = await fetch(
+      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all",
+      {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+          token: localStorage.getItem("token"),
+        },
+      }
+    );
+    if (!response.ok) {
+      alert("Failed to fetch categories");
+      return;
     }
-  );
-  if (!response.ok) {
-    alert("Failed to fetch categories");
-    return;
+    categories = await response.json();
   }
-  let categories = await response.json();
 
   // Get the tableContainer element
   const tableContainer = document.getElementById("tableContainer");
 
-  // Start of the table
+  // After defining the table headers
   let table = [
     "<div class='table t-design'>",
-    "<div class='row header'><div>Title</div><div>Description</div><div>Owner</div><div>Number of Tasks</div></div>",
+    "<div class='row header'><div id='titleHeader'>Title</div><div id='descriptionHeader'>Description</div><div id='ownerHeader'>Owner</div><div id='tasksHeader'>Number of Tasks</div></div>",
   ];
 
   // Generate the rows
   let rows = await Promise.all(
     categories.map(async (category) => {
       const tasks = await getTasksByCategory(category.title);
+      category.numTasks = tasks; // Update numTasks property
+
       // Fetch the user photo
       const photoUrl = await getUserPhoto(
         localStorage.getItem("token"),
@@ -778,7 +805,7 @@ async function displayCategories() {
         <div>${category.title}</div>
         <div>${category.description}</div>
         <div><img src="${photoUrl}" alt="User Photo" style="border-radius: 50%; border: 1px solid black; width: 30px; height: 30px; margin-right: 0.3rem"> ${category.owner}</div>
-        <div>${tasks}</div>
+        <div>${category.numTasks}</div> <!-- Display numTasks instead of tasks -->
       </div>
     `;
     })
@@ -792,6 +819,20 @@ async function displayCategories() {
   let tableHTML = table.join("");
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
+
+  // Add event listeners to the headers
+  document
+    .getElementById("titleHeader")
+    .addEventListener("click", () => sortTable("title"));
+  document
+    .getElementById("descriptionHeader")
+    .addEventListener("click", () => sortTable("description"));
+  document
+    .getElementById("ownerHeader")
+    .addEventListener("click", () => sortTable("owner"));
+  document
+    .getElementById("tasksHeader")
+    .addEventListener("click", () => sortTable("tasks"));
 
   // Now that the new rows are in the DOM, you can add event listeners to them
   let rowElement = tableContainer.querySelectorAll(".row.element");
@@ -813,36 +854,8 @@ async function displayCategories() {
       contextMenu.style.display = "block";
     });
   });
-  // // Add the rows to the table
-  // table.push(...rows);
-  // // End of the table
-  // table.push("</div>");
-  // // Join the table array into a string and return it
-  // let tableHTML = table.join("");
-  // // Add the table to the DOM
-  // tableContainer.innerHTML = tableHTML;
-
-  // // Now that the new rows are in the DOM, you can add event listeners to them
-  // let rowElement = tableContainer.querySelectorAll(".row.element");
-  // rowElement.forEach((row, index) => {
-  //   row.addEventListener("contextmenu", function (e) {
-  //     // This function will be called when a row is clicked
-  //     // `this` refers to the clicked row
-  //     e.preventDefault();
-  //     // Save the category title and description in local storage
-  //     localStorage.setItem("selectedCategoryTitle", categories[index].title);
-  //     localStorage.setItem(
-  //       "selectedCategoryDescription",
-  //       categories[index].description
-  //     );
-  //     // Show the context menu
-  //     const contextMenu = document.getElementById("contextMenu2");
-  //     contextMenu.style.top = `${e.clientY}px`;
-  //     contextMenu.style.left = `${e.clientX}px`;
-  //     contextMenu.style.display = "block";
-  //   });
-  // });
 }
+
 async function deleteCategory() {
   const title = localStorage.getItem("selectedCategoryTitle");
   const response = await fetch(
@@ -1074,3 +1087,32 @@ async function getUserPhoto(token, username) {
 backButton.addEventListener("click", function () {
   window.location.href = "interface.html";
 });
+
+let lastSortedField = null;
+let isAscending = true;
+
+async function sortTable(field) {
+  // Check if the same field is being sorted again
+  if (lastSortedField === field) {
+    // If so, reverse the sort direction
+    isAscending = !isAscending;
+  } else {
+    // If a different field is being sorted, sort in ascending order
+    isAscending = true;
+    lastSortedField = field;
+  }
+
+  // Check if the field is "tasks"
+  if (field === 'tasks') {
+    // If so, sort by the number of tasks
+    categories.sort((a, b) => (a.numTasks - b.numTasks) * (isAscending ? 1 : -1));
+  } else if (typeof categories[0][field] === "string") {
+    // If the values are strings, sort alphabetically
+    categories.sort((a, b) => a[field].localeCompare(b[field]) * (isAscending ? 1 : -1));
+  } else {
+    // If the values are not strings (assuming numbers), sort numerically
+    categories.sort((a, b) => (Number(a[field]) - Number(b[field])) * (isAscending ? 1 : -1));
+  }
+  // Redisplay the categories
+  await displayCategories();
+}

@@ -129,7 +129,7 @@ const botaoLogout = document.getElementById("logoutButton");
 //Obtem a div que mostra a data e hora
 const dateTimeDisplay = document.getElementById("dateTimeDisplay");
 
-const editProfileButton = document.getElementById("editProfileButton");
+// const editProfileButton = document.getElementById("editProfileButton");
 const taskInitialDateinfo = document.getElementById("taskInitialDateinfo");
 const taskFinalDateinfo = document.getElementById("taskFinalDateinfo");
 const taskCategoryinfo = document.getElementById("taskCategoryinfo");
@@ -150,6 +150,10 @@ window.addEventListener("click", function (event) {
   if (contextMenu.style.display === "block") {
     contextMenu.style.display = "none";
   }
+});
+
+document.getElementById("logo").addEventListener("click", () => {
+  window.location.href = "interface.html";
 });
 
 categoryFilter.addEventListener("change", function () {
@@ -343,7 +347,6 @@ submitTaskButton.addEventListener("click", async function () {
     console.log(newTask);
 
     await addTask(newTask);
-    // newTaskModal.style.display = "none"; // Comxment this line
   }
 
   await displayTasks();
@@ -352,8 +355,6 @@ submitTaskButton.addEventListener("click", async function () {
   categoryFilter.value = "";
   ownerFilter.value = "";
   console.log("Tasks are printed");
-
-  // document.body.classList.remove("modal-open"); // Comment this line
 });
 
 //Listener para quando o botão de "Yes" do deleteWarning modal é clicado
@@ -460,11 +461,11 @@ okButton.addEventListener("click", function (event) {
   document.getElementById("modalOverlay2").style.display = "none";
 });
 
-//Listener para quando o botão de "Edit Profile" é clicado
-editProfileButton.addEventListener("click", function () {
-  localStorage.setItem("selectedUser", localStorage.getItem("username"));
-  window.location.href = "editProfile.html";
-});
+// //Listener para quando o botão de "Edit Profile" é clicado
+// editProfileButton.addEventListener("click", function () {
+//   localStorage.setItem("selectedUser", localStorage.getItem("username"));
+//   window.location.href = "editProfile.html";
+// });
 
 //Função que permite que um elemento seja largado sobre outro elemento, prevenindo o comportamento padrão do browser
 function allowDrop(event) {
@@ -769,7 +770,9 @@ async function addTask(task) {
   }).then((response) => {
     if (response.status === 200) {
       console.log(JSON.stringify(task));
-      alert("Task is added successfully :)");
+      // alert("Task is added successfully :)");
+      document.body.classList.remove("modal-open"); // Comment this line
+      newTaskModal.style.display = "none"; // Comment this line
     } else {
       return response.text(); // read the response body as text
     }
