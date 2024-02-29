@@ -1179,6 +1179,7 @@ async function sortTable(field) {
   // Redisplay the categories
   await displayCategories();
 }
+<<<<<<< HEAD
 
 function sortTasks(tasks, field, ascending = true) {
   return tasks.sort((a, b) => {
@@ -1232,3 +1233,5 @@ function sortUsers(users, index, sortOrder) {
     return 0;
   });
 }
+=======
+>>>>>>> origin/master
