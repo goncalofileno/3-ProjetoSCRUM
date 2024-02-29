@@ -66,6 +66,24 @@ window.onload = async function () {
     deleteAllTasksButton.style.display = "none";
     addCategoryButton.style.display = "block";
   }
+  // Get the labelUser element
+  const labelUser = document.getElementById("labelUser");
+  const role = localStorage.getItem("role");
+  // Update the welcome message based on the role
+  switch (role) {
+    case "dev":
+      labelUser.textContent = "Welcome Developer, ";
+      break;
+    case "sm":
+      labelUser.textContent = "Welcome Scrum Master, ";
+      break;
+    case "po":
+      labelUser.textContent = "Welcome Product Owner, ";
+      break;
+    default:
+      labelUser.textContent = "Welcome, ";
+      break;
+  }
 
   //Vai buscar o userPartial do sessionStorage img e nome do user logado
   const userPartial = JSON.parse(sessionStorage.getItem("userPartial"));
@@ -198,6 +216,9 @@ document
     localStorage.setItem("optionDelete", 0);
   });
 
+document.getElementById("logo").addEventListener("click", () => {
+  window.location.href = "interface.html";
+});
 document
   .getElementById("noButtonDelete")
   .addEventListener("click", function () {
@@ -289,12 +310,12 @@ window.addEventListener("click", function (event) {
   }
 });
 
-document
-  .getElementById("editProfileButton")
-  .addEventListener("click", function () {
-    localStorage.setItem("selectedUser", localStorage.getItem("username"));
-    window.location.href = "editProfile.html";
-  });
+// document
+//   .getElementById("editProfileButton")
+//   .addEventListener("click", function () {
+//     localStorage.setItem("selectedUser", localStorage.getItem("username"));
+//     window.location.href = "editProfile.html";
+//   });
 
 botaoLogout = document.getElementById("logoutButton");
 botaoLogout.addEventListener("click", function () {
@@ -489,7 +510,7 @@ async function displayUsers() {
       <div>${user.username}</div>
       <div>${user.firstname}</div>
       <div>${user.lastname}</div>
-      <div>${user.email}</div>
+      <div class="email">${user.email}</div>
       <div>${user.phone}</div>
       <div>${getRoleFullName(user.role)}</div>
       <div>
@@ -525,7 +546,7 @@ async function displayUsers() {
       <div>${user.username}</div>
       <div>${user.firstname}</div>
       <div>${user.lastname}</div>
-      <div>${user.email}</div>
+      <div class="email">${user.email}</div>
       <div>${user.phone}</div>
       <div>${getRoleFullName(user.role)}</div>
     </div>

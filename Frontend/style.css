@@ -66,11 +66,12 @@ body.modal-open::before {
   left: 0;
   width: 170px;
   height: 120px;
+
   margin: 30px;
   filter: brightness(70%);
   z-index: 1;
-  pointer-events: none;
-  user-select: none; /* Impede que o user selecione a imagem */
+  /* pointer-events: none; */
+  /* user-select: none;  Impede que o user selecione a imagem */
 }
 /* container do login */
 .container {
@@ -223,6 +224,7 @@ footer a {
   transition: font-size 0.3s ease;
   display: flex;
   align-items: center;
+  margin-top: 1rem;
 }
 
 #editProfileButton {
@@ -1357,7 +1359,7 @@ aside::after {
   color: (248, 233, 219, 0.7);
   position: sticky;
   top: 0;
-  z-index: 10; /* Sobrepor os botões*/
+  z-index: 3; /* Sobrepor os botões*/
 }
 .row.header {
   background-color: #205d88;
@@ -1398,8 +1400,8 @@ aside::after {
   min-width: 100px;
   padding: 10px;
   overflow: auto;
-  scrollbar-width: thin;
-  scrollbar-color: trasparent transparent;
+  /* scrollbar-width: thin; */
+  scrollbar-color: transparent transparent;
 }
 
 .userPhoto {
@@ -1520,6 +1522,9 @@ aside::after {
 .container-option {
   display: flex;
   justify-content: space-around;
+}
+.email {
+  justify-content: flex-start !important;
 }
 #backButton {
   margin-top: 200%;
