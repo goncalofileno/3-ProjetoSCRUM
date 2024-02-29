@@ -464,7 +464,10 @@ function getRoleFullName(role) {
       return role; // return the original role if it's not one of the above
   }
 }
-async function displayUsers() {
+
+let users = []; // Define users at the top level of your script
+
+async function fetchUsers() {
   // Fetch users from the server
   const response = await fetch(
     "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/all", // Change this to your users API endpoint
@@ -481,7 +484,17 @@ async function displayUsers() {
     alert("Failed to fetch users");
     return;
   }
-  let users = await response.json();
+  users = await response.json();
+}
+
+let lastClickedIndex = null;
+let sortOrder = 1;
+
+async function displayUsers() {
+  // Call fetchUsers if users is empty
+  if (users.length === 0) {
+    await fetchUsers();
+  }
 
   // Get the tableContainer element
   const tableContainer = document.getElementById("tableContainer");
@@ -562,6 +575,23 @@ async function displayUsers() {
   let tableHTML = table.join("");
   // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
+
+  // Add event listeners to the table headers
+  let headers = tableContainer.querySelectorAll(".row.header div");
+
+  // In your event listener:
+headers.forEach((header, index) => {
+  header.addEventListener("click", function () {
+    if (lastClickedIndex === index) {
+      sortOrder *= -1; // Reverse the sort order
+    } else {
+      sortOrder = 1; // Reset the sort order
+    }
+    lastClickedIndex = index;
+    sortUsers(users, index, sortOrder);
+    displayUsers(); // Don't pass users
+  });
+});
   // Add event listeners to the slider buttons
   let sliderButtons = tableContainer.querySelectorAll(".active-slider");
   sliderButtons.forEach((sliderButton) => {
@@ -628,7 +658,6 @@ async function displayUsers() {
 
 async function displayDeletedTasks() {
   document.getElementById("tableContainer").innerHTML = "";
-  // Fetch tasks from the server
   const response = await fetch(
     "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/all",
     {
@@ -645,23 +674,21 @@ async function displayDeletedTasks() {
     return;
   }
   let tasks = await response.json();
-
-  // Filter out tasks that are active
   tasks = tasks.filter((task) => task.active === false);
 
-  // Get the tableContainer element
-  const tableContainer = document.getElementById("tableContainer");
+  // Sort tasks by the last sorted field, if any
+  if (lastSortedField !== null) {
+    tasks = sortTasks(tasks, lastSortedField, isAscending);
+  }
 
-  // Start of the table
+  const tableContainer = document.getElementById("tableContainer");
   let table = [
     "<div class='table t-design'>",
     "<div class='row header'><div>Title</div><div>Description</div><div>Initial Date</div><div>Final Date</div><div>Owner</div><div>Priority</div><div>Category</div></div>",
   ];
 
-  // Generate the rows
   let rows = await Promise.all(
     tasks.map(async (task) => {
-      // Determine the priority string and icon based on the task's priority
       let priorityString;
       let priorityIcon;
       if (task.priority === 300) {
@@ -678,7 +705,6 @@ async function displayDeletedTasks() {
         priorityIcon = "resources/Icons/unknown_priority.png";
       }
 
-      // Fetch the user photo
       const photoUrl = await getUserPhoto(
         localStorage.getItem("token"),
         task.owner
@@ -691,31 +717,58 @@ async function displayDeletedTasks() {
           <div>${task.initialDate}</div>
           <div>${task.finalDate}</div>
           <div><img src="${photoUrl}" alt="User Photo" style="border-radius: 50%; border: 1px solid black; width: 30px; height: 30px; margin-right: 0.4rem"> ${task.owner}</div>
-          <div>${priorityString} <img src="${priorityIcon}" alt="Priority Icon" style="height: 20px; width: 20px; margin-left: 0.3rem"></div> <!-- Display the priority string and icon -->
+          <div>${priorityString} <img src="${priorityIcon}" alt="Priority Icon" style="height: 20px; width: 20px; margin-left: 0.3rem"></div>
           <div>${task.category}</div>
         </div>
       `;
     })
   );
 
-  // Add the rows to the table
   table.push(...rows);
-  // End of the table
   table.push("</div>");
-  // Join the table array into a string and return it
   let tableHTML = table.join("");
-  // Add the table to the DOM
   tableContainer.innerHTML = tableHTML;
-  // Now that the new rows are in the DOM, you can add event listeners to them
+
+  // Add event listeners to the headers
+  // Add event listeners to the headers
+  const headers = tableContainer.querySelectorAll(".row.header div");
+  headers.forEach((header, index) => {
+    header.addEventListener("click", () => {
+      // Determine the field to sort by
+      let field = header.textContent.toLowerCase();
+
+      // Create a mapping between display names and actual property names
+      const fieldMapping = {
+        "initial date": "initialDate",
+        "final date": "finalDate",
+        // Add other mappings as needed
+      };
+
+      // Use the mapping if it exists
+      if (fieldMapping[field]) {
+        field = fieldMapping[field];
+      }
+
+      // Check if the same field is being sorted again
+      if (lastSortedField === field) {
+        // If so, reverse the sort direction
+        isAscending = !isAscending;
+      } else {
+        // If a different field is being sorted, sort in ascending order
+        isAscending = true;
+        lastSortedField = field;
+      }
+
+      // Redisplay the tasks
+      displayDeletedTasks();
+    });
+  });
+
   let rowElement = tableContainer.querySelectorAll(".row.element");
   rowElement.forEach((row, index) => {
     row.addEventListener("contextmenu", function (e) {
-      // This function will be called when a row is clicked
-      // `this` refers to the clicked row
       e.preventDefault();
-      // Save the task name in local storage
       localStorage.setItem("selectedTask", tasks[index].title);
-      // Show the context menu
       const contextMenu = document.getElementById("contextMenu");
       const restoreTaskOption = document.getElementById("restoreTask");
       const deleteTaskOption = document.getElementById("deleteTask");
@@ -1103,16 +1156,75 @@ async function sortTable(field) {
   }
 
   // Check if the field is "tasks"
-  if (field === 'tasks') {
+  if (field === "tasks") {
     // If so, sort by the number of tasks
-    categories.sort((a, b) => (a.numTasks - b.numTasks) * (isAscending ? 1 : -1));
+    categories.sort(
+      (a, b) => (a.numTasks - b.numTasks) * (isAscending ? 1 : -1)
+    );
   } else if (typeof categories[0][field] === "string") {
     // If the values are strings, sort alphabetically
-    categories.sort((a, b) => a[field].localeCompare(b[field]) * (isAscending ? 1 : -1));
+    categories.sort(
+      (a, b) => a[field].localeCompare(b[field]) * (isAscending ? 1 : -1)
+    );
   } else {
     // If the values are not strings (assuming numbers), sort numerically
-    categories.sort((a, b) => (Number(a[field]) - Number(b[field])) * (isAscending ? 1 : -1));
+    categories.sort(
+      (a, b) => (Number(a[field]) - Number(b[field])) * (isAscending ? 1 : -1)
+    );
   }
   // Redisplay the categories
   await displayCategories();
+}
+
+function sortTasks(tasks, field, ascending = true) {
+  return tasks.sort((a, b) => {
+    let aValue = a[field];
+    let bValue = b[field];
+
+    // Check if the values are date strings in the "yyyy-mm-dd" format
+    if (
+      /^\d{4}-\d{2}-\d{2}$/.test(aValue) &&
+      /^\d{4}-\d{2}-\d{2}$/.test(bValue)
+    ) {
+      // If so, convert them to Date objects
+      aValue = new Date(aValue);
+      bValue = new Date(bValue);
+    } else if (typeof aValue === "string") {
+      // If the values are strings, convert them to lowercase for case-insensitive sorting
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+    }
+
+    // Compare the values
+    if (aValue < bValue) {
+      return ascending ? -1 : 1;
+    } else if (aValue > bValue) {
+      return ascending ? 1 : -1;
+    } else {
+      return 0;
+    }
+  });
+}
+
+function sortUsers(users, index, sortOrder) {
+  // Assuming that users is an array of objects and index corresponds to the object keys
+  const keys = [
+    "photoURL",
+    "username",
+    "firstname",
+    "lastname",
+    "email",
+    "phone",
+    "role",
+    "active",
+  ];
+  users.sort((a, b) => {
+    if (a[keys[index]] < b[keys[index]]) {
+      return -1 * sortOrder;
+    }
+    if (a[keys[index]] > b[keys[index]]) {
+      return 1 * sortOrder;
+    }
+    return 0;
+  });
 }
