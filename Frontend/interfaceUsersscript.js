@@ -431,11 +431,6 @@ const selectedUser = localStorage.getItem("selectedUser");
 
 restoreAllTasksButton.addEventListener("click", function () {});
 
-deleteUser.addEventListener("click", function (e) {
-  console.log(div);
-  console.log("Delete user");
-});
-
 // getItem for use the selectedUser actual
 editUser.addEventListener("click", function () {
   window.location.href = "editProfile.html";
@@ -584,18 +579,18 @@ async function displayUsers() {
   let headers = tableContainer.querySelectorAll(".row.header div");
 
   // In your event listener:
-headers.forEach((header, index) => {
-  header.addEventListener("click", function () {
-    if (lastClickedIndex === index) {
-      sortOrder *= -1; // Reverse the sort order
-    } else {
-      sortOrder = 1; // Reset the sort order
-    }
-    lastClickedIndex = index;
-    sortUsers(users, index, sortOrder);
-    displayUsers(); // Don't pass users
+  headers.forEach((header, index) => {
+    header.addEventListener("click", function () {
+      if (lastClickedIndex === index) {
+        sortOrder *= -1; // Reverse the sort order
+      } else {
+        sortOrder = 1; // Reset the sort order
+      }
+      lastClickedIndex = index;
+      sortUsers(users, index, sortOrder);
+      displayUsers(); // Don't pass users
+    });
   });
-});
   // Add event listeners to the slider buttons
   let sliderButtons = tableContainer.querySelectorAll(".active-slider");
   sliderButtons.forEach((sliderButton) => {
@@ -1179,7 +1174,6 @@ async function sortTable(field) {
   // Redisplay the categories
   await displayCategories();
 }
-<<<<<<< HEAD
 
 function sortTasks(tasks, field, ascending = true) {
   return tasks.sort((a, b) => {
@@ -1233,5 +1227,3 @@ function sortUsers(users, index, sortOrder) {
     return 0;
   });
 }
-=======
->>>>>>> origin/master
