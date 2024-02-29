@@ -421,14 +421,12 @@ editUser.addEventListener("click", function () {
   console.log(localStorage.getItem("selectedUser") + " foi editado");
 });
 deleteUser.addEventListener("click", function () {
-  deleteUserPermanently();
-  //open modal asking if the user wants to delete the user
-  console.log(localStorage.getItem("selectedUser") + " foi apagado");
+  document.getElementById("deleteWarning").style.display = "block";
+  localStorage.setItem("optionDelete", 4);
 });
 deleteAllTasksContext.addEventListener("click", function () {
-  deleteAllTasksUser();
-  //open modal asking if the user wants to delete the user
-  console.log(localStorage.getItem("selectedUser") + "Delete all tasks");
+  document.getElementById("deleteWarning").style.display = "block";
+  localStorage.setItem("optionDelete", 5);
 });
 
 // -- -- -- -- -- -- -- -- --
