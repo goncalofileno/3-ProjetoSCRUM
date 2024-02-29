@@ -10,6 +10,8 @@ window.onload = async function () {
   // Get the role from local storage
   const role = localStorage.getItem("role");
 
+  nameButton(role);
+
   if (role === "dev") {
     document.getElementById("usersButton").style.display = "none";
     document.getElementById("deletedTasksButton").style.display = "none";
@@ -144,12 +146,27 @@ const resetFiltersButton = document.getElementById("resetFilters");
 const deletedTasksButton = document.getElementById("deletedTasksButton");
 const categoryButton = document.getElementById("taskCategoryButton");
 
+function nameButton(role) {
+  if (role == "dev") {
+  } else if (role == "sm") {
+    document.getElementById("usersButton").innerHTML = "User List";
+  } else if (role == "po") {
+    document.getElementById("usersButton").innerHTML = "User Management";
+    document.getElementById("taskCategoryButton").innerHTML =
+      "Category Management";
+  }
+}
 //Listener para quando se clica na em qualquer sitio da página
 window.addEventListener("click", function (event) {
   //Se o popup menu estiver aberto e se clicar fora do popup menu, o popup menu é fechado
   if (contextMenu.style.display === "block") {
     contextMenu.style.display = "none";
   }
+});
+
+document.getElementById("displayUsername").addEventListener("click", () => {
+  if (localStorage.setItem("selectedUser", localStorage.getItem("username")));
+  window.location.href = "editProfile.html";
 });
 
 document.getElementById("logo").addEventListener("click", () => {
@@ -658,6 +675,11 @@ function createTaskElement(task) {
   const category = document.createElement("div");
   category.textContent = task.category;
   category.textContent = task.category;
+  document.querySelectorAll(".category-label").forEach(function (label) {
+    if (label.textContent.length > 14) {
+      label.textContent = label.textContent.substring(0, 14) + "...";
+    }
+  });
   category.classList.add("category-label");
   infoBlock.appendChild(category);
 
