@@ -76,12 +76,49 @@ public class CategoryBean {
         return true;
     }
 
-    //Function that receives a categorydto, converts it to categoryentity using categorydto.getOwner() to get the userentity and adds the category to the database mysql
-    public boolean addCategory(CategoryDto categoryDto) {
-        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(categoryDto.getTitle());
-        if (categoryEntity != null) {
+    //Function that receives a categorydto, checks if the category exists, and if all fields are not null or empty or over 255 chars.
+    public boolean isValidCategory(CategoryDto categoryDto) {
+        if (categoryDto.getTitle() == null || categoryDto.getDescription() == null) {
             return false;
         }
+        if (categoryDto.getTitle().isEmpty() || categoryDto.getDescription().isEmpty()) {
+            return false;
+        }
+        if (categoryDto.getTitle().length() > 255 || categoryDto.getDescription().length() > 255) {
+            return false;
+        }
+        if(categoryDao.findCategoryByTitle(categoryDto.getTitle()) != null){
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean isValidCategoryUpdate(CategoryDto categoryDto, String originalTitle){
+        if (categoryDto.getTitle() == null || categoryDto.getDescription() == null) {
+            return false;
+        }
+        if (categoryDto.getTitle().isEmpty() || categoryDto.getDescription().isEmpty()) {
+            return false;
+        }
+        if (categoryDto.getTitle().length() > 255 || categoryDto.getDescription().length() > 255) {
+            return false;
+        }
+        if(categoryDao.findCategoryByTitle(categoryDto.getTitle()) != null && !categoryDto.getTitle().equals(originalTitle)){
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+
+
+
+    //Function that receives a categorydto, converts it to categoryentity using categorydto.getOwner() to get the userentity and adds the category to the database mysql
+    public boolean addCategory(CategoryDto categoryDto) {
+        CategoryEntity categoryEntity = new CategoryEntity();
         UserEntity userEntity = userDao.findUserByUsername(categoryDto.getOwner());
         categoryEntity = CategoryMapper.convertCategoryDtoToCategoryEntity(categoryDto);
         categoryEntity.setOwner(userEntity);
