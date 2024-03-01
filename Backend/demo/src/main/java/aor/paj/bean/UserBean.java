@@ -311,7 +311,7 @@ public class UserBean {
             userDto.setLastname("Admin");
             userDto.setEmail("admin@admin");
             userDto.setPhone("000000000");
-            userDto.setPhotoURL("https://cdn1.vectorstock.com/i/1000x1000/29/70/admin-text-rubber-stamp-vector-11362970.jpg");
+            userDto.setPhotoURL("https://t4.ftcdn.net/jpg/04/75/00/99/360_F_475009987_zwsk4c77x3cTpcI3W1C1LU4pOSyPKaqi.jpg");
             addUser(userDto);
         }
 
@@ -323,7 +323,7 @@ public class UserBean {
             userDto.setLastname("deleted");
             userDto.setEmail("deleted@deleted");
             userDto.setPhone("000000000");
-            userDto.setPhotoURL("https://www.creativefabrica.com/wp-content/uploads/2022/09/22/Deleted-Stamp-Graphics-39045356-2-580x363.jpg");
+            userDto.setPhotoURL("https://www.shutterstock.com/image-vector/trash-can-icon-symbol-delete-600nw-1454137346.jpg");
             addUser(userDto);
             changeStatus("deleted",false);
         }
