@@ -40,7 +40,23 @@ public class Main {
             } catch (NumberFormatException e) {
                 System.out.println("Invalid number of tasks");
             }
-        } else {
+        }else if(generatorType.equals("add_categories")){
+            try {
+                boolean isNumberOfCategoriesProvided = args.length == 2;
+                if (!isNumberOfCategoriesProvided) {
+                    System.out.println("Please provide the token and the number of categories to be added");
+                }
+                String token = args[1];
+                int numberOfCategories = Integer.parseInt(args[2]);
+
+                CategoryPopulator categoryPopulator = new CategoryPopulator(token, numberOfCategories);
+                categoryPopulator.populate(token);
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number of categories");
+            }
+        }
+        else {
             System.out.println("Invalid generator type");
         }
 
