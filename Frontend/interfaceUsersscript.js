@@ -515,24 +515,32 @@ async function displayUsers() {
     ];
 
     // Generate the rows
-    var rows = users.map(
-      (user) => `
-    <div class="row element">
-      <div><img src="${user.photoURL}" class="userPhoto"></div>
-      <div>${user.username}</div>
-      <div>${user.firstname}</div>
-      <div>${user.lastname}</div>
-      <div class="email">${user.email}</div>
-      <div>${user.phone}</div>
-      <div>${getRoleFullName(user.role)}</div>
-      <div>
-        <input type="checkbox" id="active-${
-          user.username
-        }" class="active-slider" ${user.active ? "checked" : ""}>
-      </div>
+    // Generate the rows
+    var rows = users
+      .filter(
+        (user) =>
+          user.username !== "admin" &&
+          user.username !== "deleted" &&
+          user.username !== localStorage.getItem("username")
+      )
+      .map(
+        (user) => `
+  <div class="row element">
+    <div><img src="${user.photoURL}" class="userPhoto"></div>
+    <div>${user.username}</div>
+    <div>${user.firstname}</div>
+    <div>${user.lastname}</div>
+    <div class="email">${user.email}</div>
+    <div>${user.phone}</div>
+    <div>${getRoleFullName(user.role)}</div>
+    <div>
+      <input type="checkbox" id="active-${
+        user.username
+      }" class="active-slider" ${user.active ? "checked" : ""}>
     </div>
-  `
-    );
+  </div>
+`
+      );
   } else {
     // Get the only currently active users with the activeUsers
     var activeUsers = users.filter((user) => user.active === true);
@@ -550,9 +558,15 @@ async function displayUsers() {
       </div>`, // Change this to your user fields
     ];
 
-    // Generate the rows
-    var rows = activeUsers.map(
-      (user) => `
+    var rows = users
+      .filter(
+        (user) =>
+          user.username !== "admin" &&
+          user.username !== "deleted" &&
+          user.username !== localStorage.getItem("username")
+      )
+      .map(
+        (user) => `
     <div class="row element">
       <div><img src="${user.photoURL}" class="userPhoto"></div>
       <div>${user.username}</div>
@@ -563,7 +577,7 @@ async function displayUsers() {
       <div>${getRoleFullName(user.role)}</div>
     </div>
   `
-    );
+      );
   }
 
   // Add the rows to the table
