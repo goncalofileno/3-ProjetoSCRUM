@@ -368,29 +368,36 @@ submitTaskButton.addEventListener("click", async function () {
     // Format today's date
     var formattedToday = yyyy + "-" + mm + "-" + dd;
 
-    if (finalDate === "") {
-      finalDate = null;
-    }
-    let newTask = {
-      title: title,
-      description: description,
-      priority: priority,
-      initialDate: initialDate ? initialDate : formattedToday,
-      finalDate: finalDate ? finalDate : null,
-      category: category,
-    };
+    if (finalDate === "" || finalDate === null) {
+      newTask = {
+        title: title,
+        description: description,
+        priority: priority,
+        initialDate: initialDate ? initialDate : formattedToday,
 
+        category: category,
+      };
+    } else {
+      newTask = {
+        title: title,
+        description: description,
+        priority: priority,
+        initialDate: initialDate ? initialDate : formattedToday,
+        finalDate: finalDate,
+        category: category,
+      };
+    }
     console.log(newTask);
 
     await addTask(newTask);
-  }
 
-  await displayTasks();
-  await populateUsersOwners();
-  await populateActiveCategories();
-  categoryFilter.value = "";
-  ownerFilter.value = "";
-  console.log("Tasks are printed");
+    await displayTasks();
+    await populateUsersOwners();
+    await populateActiveCategories();
+    categoryFilter.value = "";
+    ownerFilter.value = "";
+    console.log("Tasks are printed");
+  }
 });
 
 //Listener para quando o botão de "Yes" do deleteWarning modal é clicado
