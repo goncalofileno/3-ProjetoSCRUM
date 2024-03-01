@@ -15,6 +15,7 @@ import jakarta.ejb.EJB;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,9 @@ public class TaskBean {
         taskEntity.setId(generateTaskId());
         taskEntity.setStatus(State.TODO.getValue());
         taskEntity.setCategory(categoryEntity);
+        if(taskEntity.getInitialDate() == null) {
+            taskEntity.setInitialDate(LocalDate.now());
+        }
         System.out.println("TaskEntity: " + taskEntity);
         taskDao.persist(taskEntity);
         return true;

@@ -33,7 +33,7 @@ public class TaskEntity implements Serializable {
     @Column(name = "initialDate", nullable = false, unique = false, updatable = false)
     private LocalDate initialDate;
 
-    @Column(name = "finalDate", nullable = false, unique = false, updatable = true)
+    @Column(name = "finalDate", nullable = true, unique = false, updatable = true)
     private LocalDate finalDate;
 
     @Column(name = "status", nullable = false, unique = false, updatable = true)
