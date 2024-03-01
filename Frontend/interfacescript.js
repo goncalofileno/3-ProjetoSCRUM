@@ -375,8 +375,13 @@ submitTaskButton.addEventListener("click", async function () {
       title: title,
       description: description,
       priority: priority,
+<<<<<<< HEAD
       initialDate: initialDate ? initialDate : formattedToday,
       finalDate: finalDate ? finalDate : "",
+=======
+      initialDate: initialDate,
+      finalDate: finalDate ? finalDate : null,
+>>>>>>> 6035e2b8fd6126b0bd9b03ce17ebaa254f6e486e
       category: category,
     };
 
