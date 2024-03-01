@@ -3,7 +3,7 @@ window.onload = async function () {
   if (!localStorage.getItem("token")) {
     window.location.href = "index.html";
   }
-  
+
   await getUserPartial();
 
   const userPartial = JSON.parse(sessionStorage.getItem("userPartial"));
@@ -25,7 +25,7 @@ window.onload = async function () {
 
   let task;
 
-  await getTaskToEdit(taskId);  
+  await getTaskToEdit(taskId);
 
   task = JSON.parse(sessionStorage.getItem("taskToEdit"));
 
@@ -155,10 +155,11 @@ confirmEditButton.addEventListener("click", function () {
     priority: setIntPriority(selectedPriority),
     status: setIntStatus(selectedSectionName),
     category: selectedCategory,
-    initialDate: editedInitialDate,
-    finalDate: editedFinalDate,
+    initialDate: editedInitialDate ? editedInitialDate : "",
+    finalDate: editedFinalDate ? editedFinalDate : "",
   };
 
+  console.log("Nova data enviada:" + task.initialDate);
   let taskId = sessionStorage.getItem("taskID");
 
   updateTask(task, taskId);
@@ -308,6 +309,7 @@ function displayDateTime() {
 
 function updateTask(task, taskId) {
   console.log(task);
+  console.log(task.initialDate + "data inicial AQUI");
   console.log(taskId);
   fetch(
     `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/update?id=${taskId}`,
@@ -315,7 +317,7 @@ function updateTask(task, taskId) {
       method: "PUT",
       headers: new Headers({
         "Content-Type": "application/json",
-        "token": localStorage.getItem("token"),
+        token: localStorage.getItem("token"),
       }),
       body: JSON.stringify(task),
     }
@@ -344,14 +346,17 @@ function updateTask(task, taskId) {
 }
 
 async function populateCategories() {
-  const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all", {
-    method: "GET",
-    headers: {
-      Accept: "*/*",
-      "Content-Type": "application/json",
-      token: localStorage.getItem("token"),
-    },
-  });
+  const response = await fetch(
+    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all",
+    {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
 
   if (!response.ok) {
     alert("Failed to fetch categories");
@@ -412,6 +417,4 @@ async function getTaskToEdit(taskId) {
     .catch((error) => {
       console.error("Error:", error);
     });
-
 }
-

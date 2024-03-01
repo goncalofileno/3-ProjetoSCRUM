@@ -238,13 +238,6 @@ categoryButton.addEventListener("click", () => {
 
 //Listener para quando o botão Add Task é clicado
 addTaskButton.addEventListener("click", function () {
-  // Clear the input fields of the modal
-  document.getElementById("taskTitle").value = "";
-  document.getElementById("taskDescription").value = "";
-  document.getElementById("editTaskPriority").value = "low";
-  document.getElementById("initialDate").value = "";
-  document.getElementById("finalDate").value = "";
-
   // Get today's date
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");
@@ -252,7 +245,15 @@ addTaskButton.addEventListener("click", function () {
   const yyyy = today.getFullYear();
 
   // Format today's date
-  const formattedToday = yyyy + "-" + mm + "-" + dd;
+  var formattedToday = yyyy + "-" + mm + "-" + dd;
+  console.log(formattedToday);
+
+  // Clear the input fields of the modal
+  document.getElementById("taskTitle").value = "";
+  document.getElementById("taskDescription").value = "";
+  document.getElementById("editTaskPriority").value = "low";
+  document.getElementById("initialDate").value = formattedToday; // Set the initial date to today's date
+  document.getElementById("finalDate").value = "";
 
   // Get the date inputs
   const initialDateInput = document.getElementById("initialDate");
@@ -335,15 +336,21 @@ submitTaskButton.addEventListener("click", async function () {
   } else {
     priority = 300;
   }
-
+  // Remove dates from the input fields
   if (
     title === "" ||
     description === "" ||
     priority === "" ||
-    initialDate === "" ||
-    finalDate === "" ||
     category === ""
   ) {
+    // If the initial date is empty, set it to today's date
+    if (initialDate === "") {
+      initialDate = formattedToday;
+    }
+    // If the final date is empty, set it to null
+    else if (finalDate === "") {
+      finalDate = null;
+    }
     // Show the warning modal
     warningModal.style.display = "block";
     warningModal.style.zIndex = "1000"; // Add this line
@@ -352,26 +359,45 @@ submitTaskButton.addEventListener("click", async function () {
   } else if (new Date(finalDate) < new Date(initialDate)) {
     alert("The final date must be after the initial date");
   } else {
-    let newTask = {
-      title: title,
-      description: description,
-      priority: priority,
-      initialDate: initialDate,
-      finalDate: finalDate,
-      category: category,
-    };
+    // Get today's date
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    const yyyy = today.getFullYear();
 
+    // Format today's date
+    var formattedToday = yyyy + "-" + mm + "-" + dd;
+
+    if (finalDate === "" || finalDate === null) {
+      newTask = {
+        title: title,
+        description: description,
+        priority: priority,
+        initialDate: initialDate ? initialDate : formattedToday,
+
+        category: category,
+      };
+    } else {
+      newTask = {
+        title: title,
+        description: description,
+        priority: priority,
+        initialDate: initialDate ? initialDate : formattedToday,
+        finalDate: finalDate,
+        category: category,
+      };
+    }
     console.log(newTask);
 
     await addTask(newTask);
-  }
 
-  await displayTasks();
-  await populateUsersOwners();
-  await populateActiveCategories();
-  categoryFilter.value = "";
-  ownerFilter.value = "";
-  console.log("Tasks are printed");
+    await displayTasks();
+    await populateUsersOwners();
+    await populateActiveCategories();
+    categoryFilter.value = "";
+    ownerFilter.value = "";
+    console.log("Tasks are printed");
+  }
 });
 
 //Listener para quando o botão de "Yes" do deleteWarning modal é clicado
