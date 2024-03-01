@@ -148,9 +148,6 @@ confirmEditButton.addEventListener("click", function () {
   const editedInitialDate = document.getElementById("initialDate").value;
   const editedFinalDate = document.getElementById("finalDate").value;
 
-  const originalInitialDate = JSON.parse(
-    sessionStorage.getItem("taskToEdit")
-  ).initialDate;
   //Cria um objeto com os valores dos campos que podem ser editados
   let task = {
     title: editedTitulo,
@@ -158,13 +155,11 @@ confirmEditButton.addEventListener("click", function () {
     priority: setIntPriority(selectedPriority),
     status: setIntStatus(selectedSectionName),
     category: selectedCategory,
-    initialDate: editedInitialDate ? editedInitialDate : originalInitialDate,
-    finalDate: editedFinalDate,
+    initialDate: editedInitialDate ? editedInitialDate : "",
+    finalDate: editedFinalDate ? editedFinalDate : "",
   };
 
-  console.log(task + " task");
-  console.log(task.initialDate + " task.intialDate");
-
+  console.log("Nova data enviada:" + task.initialDate);
   let taskId = sessionStorage.getItem("taskID");
 
   updateTask(task, taskId);
@@ -314,6 +309,7 @@ function displayDateTime() {
 
 function updateTask(task, taskId) {
   console.log(task);
+  console.log(task.initialDate + "data inicial AQUI");
   console.log(taskId);
   fetch(
     `http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/update?id=${taskId}`,

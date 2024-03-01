@@ -359,12 +359,24 @@ submitTaskButton.addEventListener("click", async function () {
   } else if (new Date(finalDate) < new Date(initialDate)) {
     alert("The final date must be after the initial date");
   } else {
+    // Get today's date
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    const yyyy = today.getFullYear();
+
+    // Format today's date
+    var formattedToday = yyyy + "-" + mm + "-" + dd;
+
+    if (finalDate === "") {
+      finalDate = null;
+    }
     let newTask = {
       title: title,
       description: description,
       priority: priority,
-      initialDate: initialDate,
-      finalDate: finalDate ? finalDate : null,
+      initialDate: initialDate ? initialDate : formattedToday,
+      finalDate: finalDate ? finalDate : "",
       category: category,
     };
 
