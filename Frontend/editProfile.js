@@ -51,6 +51,8 @@ function getUserDataDB() {
     });
 }
 function fillForm(data) {
+  console.log(data + "fillForm");
+
   document.getElementById("username").placeholder = data.username;
   document.getElementById("email").placeholder = data.email;
   document.getElementById("firstname").placeholder = data.firstname;
@@ -58,12 +60,13 @@ function fillForm(data) {
   document.getElementById("phone").placeholder = data.phone;
   document.getElementById("photo").placeholder = data.photoURL;
   document.getElementById("photoPreview").src = data.photoURL;
-  if (
-    localStorage.getItem("username") !== localStorage.getItem("selectedUser") &&
-    localStorage.getItem("role") === "po"
-  ) {
-    document.getElementById("role").value = data.role;
-  }
+  document.getElementById("role").value = data.role;
+  // if (
+  //   localStorage.getItem("username") !== localStorage.getItem("selectedUser") &&
+  //   localStorage.getItem("role") === "po"
+  // ) {
+  //   document.getElementById("role").value = data.role;
+  // }
 }
 
 // Get the modal and the cancel button
@@ -192,6 +195,9 @@ function getUserfromUpdatedFormValues() {
   let phone = getValueOrPlaceholder("phone");
   let photoURL = getValueOrPlaceholder("photo");
   let role = document.getElementById("role").value;
+
+  console.log(username, email, firstname, lastname, phone, photoURL, role);
+
   // get the role from the dropdown
 
   // turns it into a User
