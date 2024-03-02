@@ -1,77 +1,92 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>TaskCraft</title>
-        <link rel="icon" href="resources/Logos/tab_logo.png" />
-        <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
-    <body>
-        <header>
-            <div id="dateTimeDisplay"></div>
-            <div id="userDisplay">
-                <span id="labelUser">Welcome, </span><span
-                    id="displayUsername"></span>
-                <img id="userIcon" src="resources/Avatars/avatar1.png"
-                    alt="User Icon" draggable="false">
-            </div>
-        </header>
-        <aside>
-            <img id="logo" src="resources/Logos/logo.png" alt="TaskCraft Logo"
-                draggable="false">
-        </aside>
-        <div id="editTaskModal" class="modal">
-            <h1>Edit Task</h1>
-            <div class="input-container">
-                <label for="editTaskTitle">Title:</label>
-                <textarea type="text" id="editarTarefaTitulo" name="title"
-                    required></textarea>
-                <label for="editTaskDescription">Description:</label>
-                <textarea type="text" id="editarTarefaDescricao"
-                    name="description"
-                    required></textarea>
-            </div>
-            <div class="input-container">
-                <label for="initialDate">Initial Date:</label>
-                <input type="date" id="initialDate" name="initialDate" required>
-            </div>
-            <div class="input-container">
-                <label for="finalDate">Final Date:</label>
-                <input type="date" id="finalDate" name="finalDate" required>
-            </div>
-            <div class="center-container">
-                <label for="editTaskStatus">Status:</label>
-                <select id="editTaskStatus" name="status">
-                    <option value="ToDo">To Do</option>
-                    <option value="Doing">Doing</option>
-                    <option value="Done">Done</option>
-                </select>
+  <head>
+    <title>TaskCraft</title>
+    <link rel="icon" href="resources/Logos/tab_logo.png" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div id="dateTimeDisplay"></div>
+      <div id="userDisplay">
+        <span id="labelUser">Welcome, </span>
+        <span id="displayUsername"></span>
+        <img
+          id="userIcon"
+          src="resources/Avatars/avatar1.png"
+          alt="User Icon"
+          draggable="false"
+        />
+      </div>
+    </header>
+    <aside>
+      <img
+        id="logo"
+        src="resources/Logos/logo.png"
+        alt="TaskCraft Logo"
+        draggable="false"
+      />
+    </aside>
+    <div id="editTaskModal" class="modal">
+      <h1>Edit Task</h1>
+      <div class="input-container">
+        <label for="editTaskTitle">Title:</label>
+        <textarea
+          type="text"
+          id="editarTarefaTitulo"
+          name="title"
+          required
+        ></textarea>
+        <label for="editTaskDescription">Description:</label>
+        <textarea
+          type="text"
+          id="editarTarefaDescricao"
+          name="description"
+          required
+        ></textarea>
+      </div>
+      <div class="input-container">
+        <label for="initialDate">Initial Date:</label>
+        <input type="date" id="initialDate" name="initialDate" required />
+      </div>
+      <div class="input-container">
+        <label for="finalDate">Final Date:</label>
+        <input type="date" id="finalDate" name="finalDate" required />
+      </div>
+      <div class="center-container">
+        <label for="editTaskStatus">Status:</label>
+        <select id="editTaskStatus" name="status">
+          <option value="ToDo">To Do</option>
+          <option value="Doing">Doing</option>
+          <option value="Done">Done</option>
+        </select>
 
-                <label for="editTaskPriority">Priority:</label>
-                <select id="editTaskPriority" name="priority">
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
+        <label for="editTaskPriority">Priority:</label>
+        <select id="editTaskPriority" name="priority">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
 
-                <label for="editTaskCategory">Category:</label>
-                <select id="editTaskCategory" name="category"></select>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="CancelaEditarTarefa">Cancel</button>
-                <button type="button" id="GuardaEditarTarefa">Save</button>
-            </div>
-        </div>
+        <label for="editTaskCategory">Category:</label>
+        <select id="editTaskCategory" name="category"></select>
+      </div>
+      <div class="buttons-container">
+        <button type="button" id="CancelaEditarTarefa">Cancel</button>
+        <button type="button" id="GuardaEditarTarefa">Save</button>
+      </div>
+    </div>
 
-        <div id="confirmationModal" class="modal">
-            <div class="modal-content">
-                <h4>Confirm Edit</h4>
-                <p>Are you sure you want to edit this task?</p>
-            </div>
-            <div class="modal-footer">
-                <button id="cancelEditButton" class="modal-close">No</button>
-                <button id="confirmEditButton" class="modal-close">Yes</button>
-            </div>
-        </div>
-        <script src="editTaskscript.js"></script>
-    </body>
+    <div id="confirmationModal" class="modal">
+      <div class="modal-content">
+        <h4>Confirm Edit</h4>
+        <p>Are you sure you want to edit this task?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelEditButton" class="modal-close">No</button>
+        <button id="confirmEditButton" class="modal-close">Yes</button>
+      </div>
+    </div>
+    <script src="editTaskscript.js"></script>
+  </body>
 </html>

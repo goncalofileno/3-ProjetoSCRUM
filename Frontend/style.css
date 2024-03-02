@@ -826,7 +826,7 @@ aside::after {
 /*caraacteristicas do botão de confirmação e cancelamento do modal de edição de tarefa*/
 #GuardaEditarTarefa,
 #CancelaEditarTarefa {
-  width: 50%;
+  /* width: 50%; */
   height: 20%;
 }
 
