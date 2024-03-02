@@ -54,7 +54,6 @@ function loginUser(username, password) {
       window.location.href = "interface.html";
     })
     .catch((error) => {
-      console.error("Error:", error);
       if (error.message.includes("401")) {
         alert("Unauthorized");
       } else if (error.message.includes("403")) {
