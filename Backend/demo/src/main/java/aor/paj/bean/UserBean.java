@@ -311,7 +311,7 @@ public class UserBean {
             addUser(userDto);
         }
 
-        if (userDao.findUserByUsername("deleted") == null) {
+        if (userDao.findUserByUsername("User deleted") == null) {
             UserDto userDto = new UserDto();
             userDto.setUsername("User deleted");
             userDto.setPassword("deleted");
