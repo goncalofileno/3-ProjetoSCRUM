@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1709404307552" clover="3.2.0">
+  <project timestamp="1709404307552" name="All files">
+    <metrics statements="33" coveredstatements="23" conditionals="21" coveredconditionals="16" methods="7" coveredmethods="6" elements="61" coveredelements="45" complexity="0" loc="33" ncloc="33" packages="1" files="1" classes="1"/>
+    <file name="isolateinterfaceUsersscript.js" path="/Users/ricardocarvalho/projects/3-ProjetoSCRUM/Frontend/test/isolateinterfaceUsersscript.js">
+      <metrics statements="33" coveredstatements="23" conditionals="21" coveredconditionals="16" methods="7" coveredmethods="6"/>
+      <line num="2" count="4" type="cond" truecount="4" falsecount="0"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="10" count="1" type="stmt"/>
+      <line num="15" count="2" type="stmt"/>
+      <line num="18" count="2" type="stmt"/>
+      <line num="28" count="2" type="stmt"/>
+      <line num="30" count="2" type="stmt"/>
+      <line num="31" count="2" type="stmt"/>
+      <line num="35" count="2" type="stmt"/>
+      <line num="36" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="45" count="1" type="stmt"/>
+      <line num="46" count="1" type="stmt"/>
+      <line num="47" count="1" type="stmt"/>
+      <line num="49" count="1" type="stmt"/>
+      <line num="51" count="2" type="stmt"/>
+      <line num="55" count="2" type="stmt"/>
+      <line num="66" count="2" type="cond" truecount="1" falsecount="1"/>
+      <line num="67" count="2" type="stmt"/>
+      <line num="68" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="69" count="0" type="stmt"/>
+      <line num="71" count="0" type="stmt"/>
+      <line num="74" count="0" type="stmt"/>
+      <line num="75" count="0" type="stmt"/>
+      <line num="76" count="0" type="stmt"/>
+      <line num="77" count="0" type="stmt"/>
+      <line num="78" count="0" type="stmt"/>
+      <line num="82" count="2" type="cond" truecount="1" falsecount="1"/>
+      <line num="83" count="0" type="stmt"/>
+      <line num="84" count="2" type="cond" truecount="1" falsecount="1"/>
+      <line num="85" count="0" type="stmt"/>
+      <line num="90" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>
