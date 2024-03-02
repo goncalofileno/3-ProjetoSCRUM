@@ -60,7 +60,7 @@ window.onload = async function () {
     deleteAllTasksButton.style.display = "none";
     addCategoryButton.style.display = "none";
   } else if (localStorage.getItem("selectedButton") == 3) {
-    document.getElementById("tableContainer").innerHTML = displayCategories();
+    displayCategories();
     addUserButton.style.display = "none";
     restoreAllTasksButton.style.display = "none";
     deleteAllTasksButton.style.display = "none";
@@ -196,6 +196,7 @@ document
       await deleteOneTask();
     } else if (localStorage.getItem("optionDelete") == 1) {
       await deleteCategory();
+      window.location.href = "interfaceUsers.html";
     } else if (localStorage.getItem("optionDelete") == 3) {
       await deleteAllTasks();
     } else if (localStorage.getItem("optionDelete") == 4) {
@@ -887,18 +888,19 @@ async function displayCategories() {
   tableContainer.innerHTML = tableHTML;
 
   // Add event listeners to the headers
-  document
-    .getElementById("titleHeader")
-    .addEventListener("click", () => sortTable("title"));
-  document
-    .getElementById("descriptionHeader")
-    .addEventListener("click", () => sortTable("description"));
-  document
-    .getElementById("ownerHeader")
-    .addEventListener("click", () => sortTable("owner"));
-  document
-    .getElementById("tasksHeader")
-    .addEventListener("click", () => sortTable("tasks"));
+  const headers = ["titleHeader", "descriptionHeader", "ownerHeader", "tasksHeader"];
+  headers.forEach(header => {
+    const element = document.getElementById(header);
+    element.addEventListener("click", () => sortTable(header.replace("Header", "")));
+    element.addEventListener("mouseover", function() {
+      this.style.cursor = "pointer";
+      this.style.color = "white";
+    });
+    element.addEventListener("mouseout", function() {
+      this.style.cursor = "default";
+      this.style.color = "black";
+    });
+  });
 
   // Now that the new rows are in the DOM, you can add event listeners to them
   let rowElement = tableContainer.querySelectorAll(".row.element");
