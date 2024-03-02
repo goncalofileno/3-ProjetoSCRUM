@@ -104,18 +104,13 @@ public class CategoryBean {
         if (categoryDto.getTitle().length() > 255 || categoryDto.getDescription().length() > 255) {
             return false;
         }
-        if(categoryDao.findCategoryByTitle(categoryDto.getTitle()) != null && !categoryDto.getTitle().equals(originalTitle)){
+        if(categoryDao.findCategoryByTitle(categoryDto.getTitle()) != null && !categoryDto.getTitle().toLowerCase().equals(originalTitle.toLowerCase())){
             return false;
         }
 
         return true;
     }
-
-
-
-
-
-
+    
     //Function that receives a categorydto, converts it to categoryentity using categorydto.getOwner() to get the userentity and adds the category to the database mysql
     public boolean addCategory(CategoryDto categoryDto) {
         CategoryEntity categoryEntity = new CategoryEntity();

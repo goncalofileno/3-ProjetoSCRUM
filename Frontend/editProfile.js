@@ -149,7 +149,11 @@ function updateUser() {
     .then((data) => {
       if (data.message === "User is updated") {
         alert("User updated successfully");
-        window.location.href = "interface.html";
+        if(localStorage.getItem("username") != localStorage.getItem("selectedUser")){
+          window.location.href = "interfaceUsers.html";
+        } else {
+          window.location.href = "interface.html";
+        }
       } else {
         if (data.message === "Invalid email format") {
           document.getElementById("email").value = "";

@@ -252,15 +252,12 @@ addTaskButton.addEventListener("click", function () {
   document.getElementById("taskTitle").value = "";
   document.getElementById("taskDescription").value = "";
   document.getElementById("editTaskPriority").value = "low";
-  document.getElementById("initialDate").value = formattedToday; // Set the initial date to today's date
+  document.getElementById("initialDate").value = ""; // Clear the initial date
   document.getElementById("finalDate").value = "";
 
   // Get the date inputs
   const initialDateInput = document.getElementById("initialDate");
   const finalDateInput = document.getElementById("finalDate");
-
-  // Set the min attribute of the initialDate input to today's date
-  initialDateInput.setAttribute("min", formattedToday);
 
   // Update the min attribute of the finalDate input when the initialDate changes
   initialDateInput.addEventListener("change", function () {
