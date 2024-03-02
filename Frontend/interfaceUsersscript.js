@@ -520,7 +520,7 @@ async function displayUsers() {
       .filter(
         (user) =>
           user.username !== "admin" &&
-          user.username !== "deleted" &&
+          user.username !== "User deleted" &&
           user.username !== localStorage.getItem("username")
       )
       .map(
