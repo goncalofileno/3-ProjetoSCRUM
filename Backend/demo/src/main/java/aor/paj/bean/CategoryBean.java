@@ -104,7 +104,7 @@ public class CategoryBean {
         if (categoryDto.getTitle().length() > 255 || categoryDto.getDescription().length() > 255) {
             return false;
         }
-        if(categoryDao.findCategoryByTitle(categoryDto.getTitle()) != null && !categoryDto.getTitle().equals(originalTitle)){
+        if(categoryDao.findCategoryByTitle(categoryDto.getTitle()) != null && !categoryDto.getTitle().toLowerCase().equals(originalTitle.toLowerCase())){
             return false;
         }
 

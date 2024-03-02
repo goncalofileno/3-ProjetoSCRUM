@@ -767,8 +767,7 @@ aside::after {
 .dropdown-btn-category {
   max-width: 180px !important;
 }
-.taskCategory {
-}
+
 
 #editTaskCategory {
   display: flex;
