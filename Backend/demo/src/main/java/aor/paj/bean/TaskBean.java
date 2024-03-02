@@ -31,12 +31,6 @@ public class TaskBean {
     @EJB
     CategoryDao categoryDao;
 
-    private ArrayList<UserDto> userDtos;
-
-    public TaskBean() {
-        this.userDtos = JsonUtils.getUsers();
-    }
-
 
    //Function that receives a token and a taskdto and creates a task with the user token as owner and adds the task to the database mysql
     public boolean addTask(String token, TaskDto taskDto) {
@@ -175,24 +169,5 @@ public class TaskBean {
         }
         return true;
     }
-
-    //Return the list of users in the json file
-    public ArrayList<UserDto> getUsers() {
-        userDtos = JsonUtils.getUsers();
-        return userDtos;
-    }
-
-    //Function that returns the list of tasks of the user by username
-    public ArrayList<TaskDto> getTasks(String username) {
-        for (UserDto u : userDtos) {
-            if (u.getUsername().equals(username)) {
-                return u.getTasks();
-            }
-        }
-        return null;
-    }
-
-
-
 
 }
