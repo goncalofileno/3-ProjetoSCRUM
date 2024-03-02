@@ -313,10 +313,10 @@ public class UserBean {
 
         if (userDao.findUserByUsername("deleted") == null) {
             UserDto userDto = new UserDto();
-            userDto.setUsername("deleted");
+            userDto.setUsername("User deleted");
             userDto.setPassword("deleted");
-            userDto.setFirstname("deleted");
-            userDto.setLastname("deleted");
+            userDto.setFirstname("User deleted");
+            userDto.setLastname("User deleted");
             userDto.setEmail("deleted@deleted");
             userDto.setPhone("000000000");
             userDto.setPhotoURL("https://www.shutterstock.com/image-vector/trash-can-icon-symbol-delete-600nw-1454137346.jpg");
