@@ -588,33 +588,38 @@ async function displayTasks(selectedCategory = "", selectedOwner = "") {
   doingSection.innerHTML = "";
   doneSection.innerHTML = "";
 
+  // Prepare the base URL
+  let url = "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/all";
+
+  // Prepare the query parameters
+  const params = new URLSearchParams({
+    category: selectedCategory,
+    owner: selectedOwner
+  });
+
+  // If there are any parameters, add them to the URL
+  if (params.toString()) {
+    url += "?" + params.toString();
+  }
+
   // Fetch tasks from the server
-  const response = await fetch(
-    "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/all",
-    {
-      method: "GET",
-      headers: {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-        token: localStorage.getItem("token"),
-      },
-    }
-  );
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      token: localStorage.getItem("token"),
+    },
+  });
+
   if (!response.ok) {
     alert("Failed to fetch tasks");
     return;
   }
+
   let tasks = await response.json();
 
   tasks = tasks.filter((task) => task.active === true);
-
-  // Filter tasks based on the selected filter values
-  tasks = tasks.filter((task) => {
-    return (
-      (selectedCategory === "" || task.category === selectedCategory) &&
-      (selectedOwner === "" || task.owner === selectedOwner)
-    );
-  });
 
   tasks.sort((a, b) => {
     // Sort by priority first

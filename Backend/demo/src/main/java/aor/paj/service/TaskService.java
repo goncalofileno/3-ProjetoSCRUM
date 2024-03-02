@@ -21,6 +21,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.Path;
 
+import java.util.List;
 import java.util.Objects;
 
 @Path("/task")
@@ -53,14 +54,25 @@ public class TaskService {
         }
     }
 
-    //Service that gets all tasks from database
     @GET
     @Path("/all")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasks(@HeaderParam("token") String token) {
+    public Response getTasks(@HeaderParam("token") String token, @QueryParam("category") String category, @QueryParam("owner") String owner) {
         if (userBean.isValidUserByToken(token)) {
-            return Response.status(200).entity(taskBean.getAllTasks()).build();
+            System.out.println("category: " + category);
+            System.out.println("owner: " + owner);
+            List<TaskDto> tasks;
+            if (category != null && !category.isEmpty() && owner != null && !owner.isEmpty()) {
+                tasks = taskBean.getTasksByCategoryAndOwner(category, owner);
+            } else if (category != null && !category.isEmpty()) {
+                tasks = taskBean.getTasksByCategory(category);
+            } else if (owner != null && !owner.isEmpty()) {
+                tasks = taskBean.getTasksByOwner(owner);
+            } else {
+                tasks = taskBean.getAllTasks();
+            }
+            return Response.status(200).entity(tasks).build();
         } else {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }

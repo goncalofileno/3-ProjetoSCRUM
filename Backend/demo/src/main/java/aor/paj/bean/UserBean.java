@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
 import aor.paj.dto.UserDto;
 import aor.paj.dto.UserPartialDto;
 import aor.paj.dto.UserPasswordUpdateDto;
 import aor.paj.dto.UserUpdateDto;
+import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.mapper.UserMapper;
@@ -30,6 +32,9 @@ public class UserBean {
 
     @EJB
     TaskDao taskDao;
+
+    @EJB
+    CategoryDao categoryDao;
 
 
     //Function that generates a unique id for new user checking in database mysql if the id already exists
@@ -265,9 +270,25 @@ public class UserBean {
         UserEntity userEntity = userDao.findUserByUsername(username);
         if (userEntity != null) {
             changeTaskOwner(username,"User deleted");
+            changeCategoryOwner(username,"User deleted");
             userDao.remove(userEntity);
+
             return true;
             }
+        return false;
+    }
+
+    public boolean changeCategoryOwner(String oldUsername, String newUsername){
+        UserEntity oldUserEntity = userDao.findUserByUsername(oldUsername);
+        UserEntity newUserEntity = userDao.findUserByUsername(newUsername);
+        if(oldUserEntity != null && newUserEntity != null) {
+            List<CategoryEntity> categories = categoryDao.findCategoryByOwnerID(oldUserEntity.getId());
+            for (CategoryEntity category : categories) {
+                category.setOwner(newUserEntity);
+                categoryDao.merge(category);
+                return true;
+            }
+        }
         return false;
     }
 

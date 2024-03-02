@@ -2,6 +2,7 @@ package aor.paj.dao;
 
 import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
+import aor.paj.entity.UserEntity;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.NoResultException;
 
@@ -66,6 +67,13 @@ public class TaskDao extends AbstractDao<TaskEntity>{
         }
     }
 
+    public List<TaskEntity> getTasksByCategoryAndOwner(UserEntity owner, CategoryEntity category){
+        try {
+            return em.createNamedQuery("Task.findTaskByCategoryAndOwner").setParameter("category", category).setParameter("owner", owner).getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
     //Function that returns all the tasks of database mysql
     public List<TaskEntity> getAllTasks() {

@@ -170,4 +170,38 @@ public class TaskBean {
         return true;
     }
 
+    //Function that returns list of tasks filtered by category and owner from the database mysql
+    public List<TaskDto> getTasksByCategoryAndOwner(String owner, String category){
+        UserEntity userEntity = userDao.findUserByUsername(owner);
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(category);
+        List<TaskEntity> taskEntities = taskDao.getTasksByCategoryAndOwner(userEntity, categoryEntity);
+        ArrayList<TaskDto> taskDtos = new ArrayList<>();
+        for (TaskEntity taskEntity : taskEntities) {
+            taskDtos.add(TaskMapper.convertTaskEntityToTaskDto(taskEntity));
+        }
+        return taskDtos;
+    }
+
+    //Function that returns list of tasks filtered by category from the database mysql
+    public List<TaskDto> getTasksByCategory(String category){
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(category);
+        List<TaskEntity> taskEntities = taskDao.findTasksByCategory(categoryEntity);
+        ArrayList<TaskDto> taskDtos = new ArrayList<>();
+        for (TaskEntity taskEntity : taskEntities) {
+            taskDtos.add(TaskMapper.convertTaskEntityToTaskDto(taskEntity));
+        }
+        return taskDtos;
+    }
+
+    //Function that returns list of tasks filtered by owner from the database mysql
+    public List<TaskDto> getTasksByOwner(String owner){
+        UserEntity userEntity = userDao.findUserByUsername(owner);
+        List<TaskEntity> taskEntities = taskDao.findTaskByOwnerId(userEntity.getId());
+        ArrayList<TaskDto> taskDtos = new ArrayList<>();
+        for (TaskEntity taskEntity : taskEntities) {
+            taskDtos.add(TaskMapper.convertTaskEntityToTaskDto(taskEntity));
+        }
+        return taskDtos;
+    }
+
 }

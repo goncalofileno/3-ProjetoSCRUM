@@ -70,4 +70,13 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
             return false;
         }
     }
+
+    public List<CategoryEntity> findCategoryByOwnerID(int id) {
+        try {
+            return em.createNamedQuery("Category.findCategoryByOwnerID").setParameter("id", id)
+                    .getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
