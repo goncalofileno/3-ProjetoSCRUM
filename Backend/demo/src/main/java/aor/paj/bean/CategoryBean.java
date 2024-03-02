@@ -110,12 +110,7 @@ public class CategoryBean {
 
         return true;
     }
-
-
-
-
-
-
+    
     //Function that receives a categorydto, converts it to categoryentity using categorydto.getOwner() to get the userentity and adds the category to the database mysql
     public boolean addCategory(CategoryDto categoryDto) {
         CategoryEntity categoryEntity = new CategoryEntity();
