@@ -35,9 +35,15 @@ public class TaskMapper {
         taskDto.setFinalDate(taskEntity.getFinalDate());
         taskDto.setStatus(taskEntity.getStatus());
         taskDto.setPriority(taskEntity.getPriority());
-        taskDto.setCategory(taskEntity.getCategory().getTitle());
-        taskDto.setOwner(taskEntity.getOwner().getUsername());
-        taskDto.setActive(taskEntity.getActive());
+        if(taskEntity.getActive() != null) {
+            taskDto.setActive(taskEntity.getActive());
+        }
+        if(taskEntity.getCategory() != null) {
+            taskDto.setCategory(taskEntity.getCategory().getTitle());
+        }
+        if(taskEntity.getOwner() != null) {
+            taskDto.setOwner(taskEntity.getOwner().getUsername());
+        }
 
         return taskDto;
     }

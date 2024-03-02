@@ -47,9 +47,6 @@ public class UserBean {
         } while (idAlreadyExists);
         return id;
     }
-    public UserBean() {
-        this.userDtos = JsonUtils.getUsers();
-    }
 
     //Add a user to the database mysql, encrypting the password, role to "dev" and generating a id
     public boolean addUser(UserDto user) {
@@ -168,7 +165,6 @@ public class UserBean {
             System.out.println("A task nao pertence ao user");
         }
         return false;
-
     }
 
     //Return the list of users in the json file
@@ -329,17 +325,4 @@ public class UserBean {
         }
 
     }
-
-//    public UserPartialDto getUserPartial(String username, String password) {
-//        UserDto userDto = getUsers().stream()
-//                .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
-//                .findFirst()
-//                .orElse(null);
-//
-//        if (userDto != null) {
-//            return mapUserToUserPartialDTO(userDto);
-//        } else {
-//            return null;
-//        }
-//    }
 }
