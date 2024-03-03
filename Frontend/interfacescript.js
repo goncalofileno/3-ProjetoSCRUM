@@ -5,6 +5,11 @@ window.onload = async function () {
     window.location.href = "index.html";
   }
 
+  if (!window.location.hash) {
+    window.location = window.location + "#loaded";
+    window.location.reload();
+  }
+
   localStorage.setItem("selectedButton", 0);
 
   // Get the role from local storage
@@ -65,7 +70,8 @@ window.onload = async function () {
   document.getElementById("ownerFilter").value = "";
 
   //Chama a função para mostrar as tarefas
-  displayTasks();
+  setTimeout(displayTasks, 100);
+  
 };
 
 window.onclose = function () {

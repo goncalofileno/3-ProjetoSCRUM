@@ -155,7 +155,7 @@ guardaEditarTarefaButton.addEventListener("click", function () {
   }
 });
 
-confirmEditButton.addEventListener("click", function () {
+confirmEditButton.addEventListener("click", async function () {
   //Obtem os valores dos campos que podem ser editados
   const editedTitulo = document.getElementById("editarTarefaTitulo").value;
   const editedDescricao = document.getElementById(
@@ -181,7 +181,7 @@ confirmEditButton.addEventListener("click", function () {
   console.log("Nova data enviada:" + task.initialDate);
   let taskId = sessionStorage.getItem("taskID");
 
-  updateTask(task, taskId);
+  await updateTask(task, taskId);
 
   //Redireciona para interface.html
   window.location.href = "interface.html";

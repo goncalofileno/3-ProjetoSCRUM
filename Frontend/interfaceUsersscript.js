@@ -23,34 +23,21 @@ addUserButton.style.display = "none";
 window.onload = async function () {
   if (localStorage.getItem("token") == null) {
     window.location.href = "http://localhost:8080/demo-1.0-SNAPSHOT/";
-    //se o user é Product Owner, o botão de adicionar user é mostrado.
   }
 
-  // let selectedButton = await localStorage.getItem("selectedButton");
-  // console.log("Selected button: " + selectedButton);
-
   if (localStorage.getItem("selectedButton") == 2) {
-    await displayDeletedTasks();
+    await setTimeout(displayDeletedTasks, 200);
 
-    let numTasks = document.querySelectorAll(
-      "#tableContainer .row.element"
-    ).length;
+    // Wait for the DOM to update after displayDeletedTasks is called
+    await new Promise((r) => setTimeout(r, 300));
 
-    console.log("Numero de tasks: " + numTasks);
-
-    if (localStorage.getItem("role") === "sm") {
-      restoreAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
-      deleteAllTasksButton.style.display = "none";
-      addUserButton.style.display = "none";
-      addCategoryButton.style.display = "none";
-    } else if (localStorage.getItem("role") === "po") {
-      restoreAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
-      deleteAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
-      addUserButton.style.display = "none";
-      addCategoryButton.style.display = "none";
-    }
+    // Update button visibility
+    updateButtonVisibility();
   } else if (localStorage.getItem("selectedButton") == 1) {
-    document.getElementById("tableContainer").innerHTML = displayUsers();
+    document.getElementById("tableContainer").innerHTML = setTimeout(
+      displayUsers,
+      200
+    );
 
     if (localStorage.getItem("role") === "po") {
       addUserButton.style.display = "block";
@@ -60,12 +47,13 @@ window.onload = async function () {
     deleteAllTasksButton.style.display = "none";
     addCategoryButton.style.display = "none";
   } else if (localStorage.getItem("selectedButton") == 3) {
-    displayCategories();
+    setTimeout(displayCategories, 200);
     addUserButton.style.display = "none";
     restoreAllTasksButton.style.display = "none";
     deleteAllTasksButton.style.display = "none";
     addCategoryButton.style.display = "block";
   }
+
   // Get the labelUser element
   const labelUser = document.getElementById("labelUser");
   const role = localStorage.getItem("role");
@@ -169,14 +157,7 @@ restoreTask.addEventListener("click", async function () {
 
   await displayDeletedTasks();
 
-  let numTasks = document.querySelectorAll(
-    "#tableContainer .row.element"
-  ).length;
-
-  if (numTasks < 1) {
-    restoreAllTasksButton.style.display = "none";
-    deleteAllTasksButton.style.display = "none";
-  }
+  updateButtonVisibility();
 });
 
 deleteTask.addEventListener("click", function () {
@@ -404,6 +385,7 @@ async function deleteAllTasks() {
   if (response.ok) {
     const data = await response.json();
     console.log(data);
+    createModal(data.message);
     // Handle successful deletion of all tasks here
   } else {
     console.error("Failed to delete all tasks");
@@ -562,7 +544,7 @@ async function displayUsers() {
       .filter(
         (user) =>
           user.username !== "admin" &&
-          user.username !== "deleted" &&
+          user.username !== "User deleted" &&
           user.username !== localStorage.getItem("username")
       )
       .map(
@@ -594,7 +576,8 @@ async function displayUsers() {
 
   headers.forEach((header, index) => {
     header.addEventListener("click", async function () {
-      if (index === 7) { // If the "Active" column is clicked
+      if (index === 7) {
+        // If the "Active" column is clicked
         users = []; // Clear the users array
         await fetchUsers(); // Fetch the users again
       }
@@ -604,7 +587,7 @@ async function displayUsers() {
         sortOrder = 1; // Reset the sort order
       }
       lastClickedIndex = index;
-      
+
       sortUsers(users, index, sortOrder);
       displayUsers(); // Don't pass users
     });
@@ -676,6 +659,44 @@ async function displayUsers() {
       });
     });
   }
+
+  // Add event listeners to the user photos
+  let userPhotos = tableContainer.querySelectorAll(".userPhoto");
+  userPhotos.forEach((userPhoto) => {
+    userPhoto.addEventListener("click", function (e) {
+      e.stopPropagation(); // Prevent the document click event from firing
+
+      // Remove any existing big photo
+      let existingBigPhoto = document.querySelector(".bigPhotoWrapper");
+      if (existingBigPhoto) {
+        document.body.removeChild(existingBigPhoto);
+      }
+
+      // Create a new div element
+      let bigPhotoWrapper = document.createElement("div");
+      bigPhotoWrapper.classList.add("bigPhotoWrapper");
+      bigPhotoWrapper.style.left = `${e.pageX - 100}px`; // Subtract half the width to center the image at the cursor
+      bigPhotoWrapper.style.top = `${e.pageY - 100}px`; // Subtract half the height to center the image at the cursor
+
+      // Create a new image element
+      let bigPhoto = document.createElement("img");
+      bigPhoto.src = this.src;
+      bigPhoto.classList.add("bigPhoto");
+
+      // Append the new image to the div
+      bigPhotoWrapper.appendChild(bigPhoto);
+      // Append the new div to the body
+      document.body.appendChild(bigPhotoWrapper);
+    });
+  });
+
+  // Add a click event listener to the document to remove the big photo when the user clicks anywhere on the page
+  document.addEventListener("click", function () {
+    let bigPhotoWrapper = document.querySelector(".bigPhotoWrapper");
+    if (bigPhotoWrapper) {
+      document.body.removeChild(bigPhotoWrapper);
+    }
+  });
   return tableHTML;
 }
 ///////////////////////// TABLE //////////////////////////
@@ -1298,4 +1319,21 @@ function createModal(message) {
     // Display the modal
     modal.style.display = "flex";
   });
+}
+
+// Function to update button visibility based on number of tasks
+function updateButtonVisibility() {
+  let numTasks = document.querySelectorAll("#tableContainer .row.element").length;
+
+  if (localStorage.getItem("role") === "sm") {
+    restoreAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
+    deleteAllTasksButton.style.display = "none";
+    addUserButton.style.display = "none";
+    addCategoryButton.style.display = "none";
+  } else if (localStorage.getItem("role") === "po") {
+    restoreAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
+    deleteAllTasksButton.style.display = numTasks > 1 ? "block" : "none";
+    addUserButton.style.display = "none";
+    addCategoryButton.style.display = "none";
+  }
 }
