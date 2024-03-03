@@ -1395,6 +1395,7 @@ aside::after {
 }
 .row {
   display: flex;
+  cursor: pointer;
 }
 .row > div:first-child {
   width: 50px;
