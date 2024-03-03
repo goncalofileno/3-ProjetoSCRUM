@@ -1,0 +1,945 @@
+{
+	"info": {
+		"_postman_id": "b6d5840d-33fd-4018-b652-28ae45d91eda",
+		"name": "SCRUM 3ºProjeto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33147723",
+		"_collection_link": "https://interstellar-zodiac-353379.postman.co/workspace/d47bd515-721e-41cd-a357-1112ba036e5e/collection/32810800-b6d5840d-33fd-4018-b652-28ae45d91eda?action=share&source=collection_link&creator=33147723"
+	},
+	"item": [
+		{
+			"name": "Registo",
+			"item": [
+				{
+					"name": "Registo Válido 200",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"goncalo\",\n    \"password\": \"goncalo\",\n    \"email\": \"goncalo@gmail.com\",\n    \"firstname\": \"goncalo\",\n    \"lastname\": \"fileno\",\n    \"phone\": \"914438462\",\n    \"photoURL\": \"https://play-lh.googleusercontent.com/C9CAt9tZr8SSi4zKCxhQc9v4I6AOTqRmnLchsu1wVDQL0gsQ3fmbCVgQmOVM1zPru8UH=w240-h480-rw\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add"
+					},
+					"response": []
+				},
+				{
+					"name": "Registo Inválido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"joaom\",\n    \"password\": \"joaom\",\n    \"email\": \"joaomorais@gmail.com\",\n    \"firstname\": \"João\",\n    \"lastname\": \"Morais\",\n    \"phone\": \"914438462\",\n    \"photoURL\": \"https://www.google.pt/\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login Válido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response was successful",
+									"if (responseCode.code === 200) {",
+									"    // Parse the response body JSON",
+									"    var responseBody = pm.response.json();",
+									"    ",
+									"    // Extract the token from the response body",
+									"    var token = responseBody.token;",
+									"    ",
+									"    // Set the \"token\" variable with the value of the token",
+									"    pm.variables.set(\"token\", token);",
+									"} else {",
+									"    // Log an error if the response code is not 200",
+									"    console.log(\"Failed to get token. Response code: \" + responseCode.code);",
+									"}",
+									"pm.variables.get(\"token\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "username",
+								"value": "admin",
+								"type": "text"
+							},
+							{
+								"key": "password",
+								"value": "admin",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/login"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Logout",
+			"item": [
+				{
+					"name": "Logout Válido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/logout"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Nova Task Válida",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\":\"Task5\",\n\"description\":\"teste1\",\n\"priority\":200,\n\"initialDate\":\"2024-04-14\",\n\"finalDate\":\"2024-04-15\",\n\"category\":\"Backlog\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/add"
+					},
+					"response": []
+				},
+				{
+					"name": "Devolve todas as Tasks",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/all"
+					},
+					"response": []
+				},
+				{
+					"name": "Update task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\n        \"category\": \"Backlog\",\n        \"description\": \"teste5\",\n        \"finalDate\": \"2024-04-15\",\n        \"initialDate\": \"2024-04-14\",\n        \"owner\": \"admin\",\n        \"priority\": 200,\n        \"status\": 100,\n        \"title\": \"Task4\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/update?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"task",
+								"update"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/delete?name=Task5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"task",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Task5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete all Tasks",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/deleteAll"
+					},
+					"response": []
+				},
+				{
+					"name": "Desativar Task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/desactivate?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"task",
+								"desactivate"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pedido de Task",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/get?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"task",
+								"get"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurar Task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/restore?name=Task5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"task",
+								"restore"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Task5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurar Tasks",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/restoreAll"
+					},
+					"response": []
+				},
+				{
+					"name": "Permissão para editar Task",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "id",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/hasPermissionToEdit"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Devolve os detalhes do User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "selectedUser",
+								"value": "admin",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getDetails"
+					},
+					"response": []
+				},
+				{
+					"name": "Devolve todos os Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"user",
+								"all"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualiza o User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "selectedUser",
+								"value": "admin",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@admin\",\n    \"firstname\": \"Admin\",\n    \"lastname\": \"AdminLastNames\",\n    \"phone\": \"000000000\",\n    \"photoURL\": \"https://t4.ftcdn.net/jpg/04/75/00/99/360_F_475009987_zwsk4c77x3cTpcI3W1C1LU4pOSyPKaqi.jpg\",\n    \"role\": \"po\",\n    \"username\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/update"
+					},
+					"response": []
+				},
+				{
+					"name": "Pede photo do User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "username",
+								"value": "admin",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getPhoto"
+					},
+					"response": []
+				},
+				{
+					"name": "Recebe os Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getUsersOwners"
+					},
+					"response": []
+				},
+				{
+					"name": "Update password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"oldPassword\":\"admin\",\n    \"newPassword\":\"admin1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/updatePassword"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Get All Categorys",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/all"
+					},
+					"response": []
+				},
+				{
+					"name": "Recebe todas Tasks ativas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/active"
+					},
+					"response": []
+				},
+				{
+					"name": "Apaga categoria c/ Tasks",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/delete?title=Backlog",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"category",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Backlog"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Apaga categoria s/Tasks",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/delete?title=Backlog1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"category",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Backlog1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Categoria",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\n        \"description\": \"Backlog category\",\n        \"id\": 0,\n        \"owner\": \"admin\",\n        \"title\": \"Backlog2\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/add"
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/category/tasksNumber?title=Backlog",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"category",
+								"tasksNumber"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Backlog"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "po - ProductOwner",
+			"item": [
+				{
+					"name": "Update user ative",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/updateactive?username=goncalo&active=false",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"user",
+								"updateactive"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "goncalo"
+								},
+								{
+									"key": "active",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cria user com role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "f02d0dc2-4f6d-45dc-8566-8cbc812a15e8",
+								"type": "text"
+							},
+							{
+								"key": "role",
+								"value": "po",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"ownerChild\",\n    \"password\": \"ownerChild\",\n    \"email\": \"ownerChild@gmail.com\",\n    \"firstname\": \"child\",\n    \"lastname\": \"byowner\",\n    \"phone\": \"914432462\",\n    \"photoURL\": \"https://e1.pxfuel.com/desktop-wallpaper/181/66/desktop-wallpaper-cute-baby-boy-for-facebook-profile-baby-wall-1024x768-cute-boy-profile.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete all tasks from a user",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "5596d820-ac79-4cb9-afc4-5902b2cc38b8",
+								"type": "text"
+							},
+							{
+								"key": "selectedUser",
+								"value": "goncalo",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/deleteTasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"user",
+								"deleteTasks"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "1c25f762-0470-445a-a7e3-da7dbf65eaff",
+									"disabled": true
+								},
+								{
+									"key": "username",
+									"value": "deleted",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "4eae3770-02c4-403f-bd15-ac0c181eb550",
+								"type": "text"
+							},
+							{
+								"key": "selectedUser",
+								"value": "admin1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"demo-1.0-SNAPSHOT",
+								"rest",
+								"user",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "1c25f762-0470-445a-a7e3-da7dbf65eaff",
+									"disabled": true
+								},
+								{
+									"key": "username",
+									"value": "deleted",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Requests feitos sendo Product Owner."
+		}
+	]
+}

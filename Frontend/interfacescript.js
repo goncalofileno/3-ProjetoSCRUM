@@ -594,7 +594,7 @@ async function displayTasks(selectedCategory = "", selectedOwner = "") {
   // Prepare the query parameters
   const params = new URLSearchParams({
     category: selectedCategory,
-    owner: selectedOwner
+    owner: selectedOwner,
   });
 
   // If there are any parameters, add them to the URL
@@ -676,6 +676,7 @@ function createTaskElement(task) {
 
   //Cria um elemento img para o icon da prioridade
   const priorityIcon = document.createElement("img");
+  priorityIcon.draggable = false;
   priorityIcon.classList.add("priority-icon");
 
   //Define o icon da prioridade de acordo com a prioridade da tarefa

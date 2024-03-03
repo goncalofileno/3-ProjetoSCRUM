@@ -81,6 +81,8 @@ public class CategoryPopulator {
             String description = jsonObject.getString("activity");
             String title = jsonObject.getString("type");
 
+            title = title.substring(0, 1).toUpperCase() + title.substring(1);
+
             category = new Category(0, title, description, "admin");
 
             System.out.println("category: " + category + " for user with token " + token);
