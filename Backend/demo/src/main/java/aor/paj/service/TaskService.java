@@ -60,8 +60,6 @@ public class TaskService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTasks(@HeaderParam("token") String token, @QueryParam("category") String category, @QueryParam("owner") String owner) {
         if (userBean.isValidUserByToken(token)) {
-            System.out.println("category: " + category);
-            System.out.println("owner: " + owner);
             List<TaskDto> tasks;
             if (category != null && !category.isEmpty() && owner != null && !owner.isEmpty()) {
                 tasks = taskBean.getTasksByCategoryAndOwner(category, owner);
@@ -84,7 +82,6 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTask(@HeaderParam("token") String token, @QueryParam("id") int id, @QueryParam("status") int status) {
-        System.out.println("A tentar editar task de tabela");
         if (userBean.isValidUserByToken(token) && TaskValidator.isValidStatus(status)) {
             taskBean.updateTaskStatus(id, status);
             return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is updated"))).build();
@@ -142,15 +139,9 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTask(@HeaderParam("token") String token, TaskDto t, @QueryParam("id") int id) {
-        System.out.println("A tentar editar task");
-        System.out.println("Token: " + token);
-        System.out.println("Task no serviço: " + t.toString());
         if (userBean.isValidUserByToken(token)) {
-            System.out.println("Utilizador valido a editar");
             if(userBean.hasPermissionToEdit(token, id)){
-                System.out.println("Utilizador tem permissao para editar em serviço");
                 if (TaskValidator.isValidTaskEdit(t)) {
-                    System.out.println("Task enviada para editar é valida");
                     taskBean.updateTask(t, id);
                     return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is updated"))).build();
                 } else {

@@ -78,7 +78,6 @@ class TaskBeanTest {
         TaskEntity taskEntity = new TaskEntity(); // Create a new TaskEntity object
         taskEntity.setId(id); // Set the id of the TaskEntity object
         taskEntity.setActive(true); // Set the active status of the TaskEntity object to true
-
         // When
         when(taskDao.findTaskById(id)).thenReturn(taskEntity);
         // Define the behavior of the mock object taskDao. When the method findTaskById is called with the id, it returns the taskEntity
