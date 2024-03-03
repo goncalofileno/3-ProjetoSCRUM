@@ -196,7 +196,6 @@ document
       await deleteOneTask();
     } else if (localStorage.getItem("optionDelete") == 1) {
       await deleteCategory();
-      
     } else if (localStorage.getItem("optionDelete") == 3) {
       await deleteAllTasks();
     } else if (localStorage.getItem("optionDelete") == 4) {
@@ -593,17 +592,28 @@ async function displayUsers() {
   // Add event listeners to the table headers
   let headers = tableContainer.querySelectorAll(".row.header div");
 
-  // In your event listener:
   headers.forEach((header, index) => {
-    header.addEventListener("click", function () {
+    header.addEventListener("click", async function () {
+      if (index === 7) { // If the "Active" column is clicked
+        users = []; // Clear the users array
+        await fetchUsers(); // Fetch the users again
+      }
       if (lastClickedIndex === index) {
         sortOrder *= -1; // Reverse the sort order
       } else {
         sortOrder = 1; // Reset the sort order
       }
       lastClickedIndex = index;
+      
       sortUsers(users, index, sortOrder);
       displayUsers(); // Don't pass users
+    });
+    // Add mouseover and mouseout event listeners
+    header.addEventListener("mouseover", function () {
+      this.style.cursor = "pointer";
+    });
+    header.addEventListener("mouseout", function () {
+      this.style.cursor = "default";
     });
   });
   // Add event listeners to the slider buttons
@@ -776,6 +786,14 @@ async function displayDeletedTasks() {
       // Redisplay the tasks
       displayDeletedTasks();
     });
+
+    header.addEventListener("mouseover", function () {
+      this.style.cursor = "pointer";
+    });
+
+    header.addEventListener("mouseout", function () {
+      this.style.cursor = "default";
+    });
   });
 
   let rowElement = tableContainer.querySelectorAll(".row.element");
@@ -888,17 +906,22 @@ async function displayCategories() {
   tableContainer.innerHTML = tableHTML;
 
   // Add event listeners to the headers
-  const headers = ["titleHeader", "descriptionHeader", "ownerHeader", "tasksHeader"];
-  headers.forEach(header => {
+  const headers = [
+    "titleHeader",
+    "descriptionHeader",
+    "ownerHeader",
+    "tasksHeader",
+  ];
+  headers.forEach((header) => {
     const element = document.getElementById(header);
-    element.addEventListener("click", () => sortTable(header.replace("Header", "")));
-    element.addEventListener("mouseover", function() {
+    element.addEventListener("click", () =>
+      sortTable(header.replace("Header", ""))
+    );
+    element.addEventListener("mouseover", function () {
       this.style.cursor = "pointer";
-      this.style.color = "white";
     });
-    element.addEventListener("mouseout", function() {
+    element.addEventListener("mouseout", function () {
       this.style.cursor = "default";
-      this.style.color = "black";
     });
   });
 
@@ -1233,7 +1256,7 @@ function sortUsers(users, index, sortOrder) {
 function createModal(message) {
   return new Promise((resolve) => {
     // Add the 'modal-open' class to the body
-    document.body.classList.add('modal-open');
+    document.body.classList.add("modal-open");
 
     // Create the modal container
     const modal = document.createElement("div");
@@ -1258,7 +1281,7 @@ function createModal(message) {
     button.addEventListener("click", () => {
       document.body.removeChild(modal);
       // Remove the 'modal-open' class from the body
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove("modal-open");
       resolve();
     });
 
