@@ -251,46 +251,4 @@ public class TaskService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
-
-
-
-//    //Service that sends a task object that has the id that is received
-//    @GET
-//    @Path("/get")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getTask(@HeaderParam("username") String username, @HeaderParam("password") String password, @QueryParam("id") int id) {
-//        if (UserValidator.isValidUser(taskBean.getUsers(), username, password) && taskBean.taskBelongsToUser(username, id)) {
-//            return Response.status(200).entity(taskBean.getTask(username, id)).build();
-//        } else {
-//            return getResponse(username, password, id);
-//        }
-//    }
-//
-//    //Service that receives a task id and deletes the whole task from the user that is logged
-//    @DELETE
-//    @Path("/delete")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response removeTask(@HeaderParam("username") String username, @HeaderParam("password") String password, @QueryParam("id") int id) {
-//        if (UserValidator.isValidUser(taskBean.getUsers(), username, password) && taskBean.taskBelongsToUser(username, id)) {
-//            taskBean.removeTask(username, id);
-//            return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is deleted"))).build();
-//        } else {
-//            return getResponse(username, password, id);
-//        }
-//    }
-//
-//    //Function to handle the response of some services
-//    public Response getResponse(@HeaderParam("username") String username, @HeaderParam("password") String password, @QueryParam("id") int id) {
-//        if (username == null || password == null) {
-//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-//        } else if (!UserValidator.isValidUser(taskBean.getUsers(), username, password)) {
-//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Credentials"))).build();
-//        } else if (!taskBean.taskBelongsToUser(username, id)) {
-//            return Response.status(403).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Forbidden"))).build();
-//        } else {
-//            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid status"))).build();
-//        }
-//    }
 }

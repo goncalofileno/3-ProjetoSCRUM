@@ -109,9 +109,7 @@ public class UserBean {
     public String login(String username, String password) {
         UserEntity userEntity = userDao.findUserByUsername(username);
         if (userEntity != null) {
-            System.out.println(userEntity.getPassword() + " UserBean password");
             if (BCrypt.checkpw(password, userEntity.getPassword())) {
-                System.out.println("password correct");
                 String token = generateNewToken();
                 userEntity.setToken(token);
                 userDao.merge(userEntity);
@@ -142,7 +140,6 @@ public class UserBean {
     //Function that receives the token and sets it to null, logging out the user
     public void logout(String token) {
         UserEntity userEntity = userDao.findUserByToken(token);
-        System.out.println(userEntity.toString());
         if (userEntity != null) {
             userEntity.setToken(null);
             userDao.merge(userEntity);
@@ -161,13 +158,11 @@ public class UserBean {
             if (userEntity.getRole().equals("sm") || userEntity.getRole().equals("po")) {
                 return true;
             }
-            System.out.println("O user nao e sm ou po");
             for(int i = 0; i < taskDao.findTaskByOwnerId(userEntity.getId()).size(); i++){
                 if(taskDao.findTaskByOwnerId(userEntity.getId()).get(i).getId() == taskId){
                     return true;
                 }
             }
-            System.out.println("A task nao pertence ao user");
         }
         return false;
     }
@@ -181,7 +176,6 @@ public class UserBean {
         for(UserEntity ue : userEntities){
             userDtos.add(UserMapper.convertUserEntityToUserDto(ue));
         }
-        System.out.println(userDtos);
         return userDtos;
     }
 
@@ -209,7 +203,6 @@ public class UserBean {
             if (BCrypt.checkpw(userPasswordUpdateDto.getOldPassword(), userEntity.getPassword())) {
                 String encryptedPassword = BCrypt.hashpw(userPasswordUpdateDto.getNewPassword(), BCrypt.gensalt());
                 userEntity.setPassword(encryptedPassword);
-                System.out.println(userEntity.toString());
                 userDao.merge(userEntity);
                 return true;
             }

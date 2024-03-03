@@ -52,8 +52,6 @@ public class UserValidator {
         return false;
     }
 
-
-
     //Checks if the user and password match checing in database my sql
     public static boolean userPasswordMatch(String username, String password) {
         UserEntity user = userDao.findUserByUsername(username);
