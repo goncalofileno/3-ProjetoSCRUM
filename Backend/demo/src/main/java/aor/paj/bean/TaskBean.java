@@ -46,7 +46,6 @@ public class TaskBean {
         if(taskEntity.getInitialDate() == null) {
             taskEntity.setInitialDate(LocalDate.now());
         }
-        System.out.println("TaskEntity: " + taskEntity);
         taskDao.persist(taskEntity);
         return true;
     }
@@ -128,7 +127,6 @@ public class TaskBean {
         taskEntity.setPriority(taskDto.getPriority());
         taskEntity.setCategory(categoryDao.findCategoryByTitle(taskDto.getCategory()));
         taskDao.merge(taskEntity);
-        System.out.println("a task foi editada");
     }
 
     //Function that receives a task name and sets the task active to true in the database mysql
@@ -162,7 +160,6 @@ public class TaskBean {
     public boolean deleteAllTasks() {
         List<TaskEntity> taskEntities = taskDao.getAllTasks();
         for (TaskEntity taskEntity : taskEntities) {
-            System.out.println("TaskEntity: " + taskEntity);
             if (!taskEntity.getActive()) {
                 taskDao.remove(taskEntity);
             }

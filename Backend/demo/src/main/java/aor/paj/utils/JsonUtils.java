@@ -20,30 +20,4 @@ public class JsonUtils {
         return jsonb.toJson(object);
     }
 
-    public static ArrayList<UserDto> getUsers() {
-        ArrayList<UserDto> userDtos;
-        File f = new File(filename);
-        if (f.exists()) {
-            try {
-                FileReader filereader = new FileReader(f);
-                userDtos = jsonb.fromJson(filereader, new ArrayList<UserDto>() {
-                }.getClass().getGenericSuperclass());
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            userDtos = new ArrayList<>();
-        }
-        return userDtos;
-    }
-
-
-    public static void writeIntoJsonFile(List<UserDto> userDtos) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(filename);
-            jsonb.toJson(userDtos, fileOutputStream);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

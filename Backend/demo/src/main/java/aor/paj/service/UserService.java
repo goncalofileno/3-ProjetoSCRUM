@@ -63,7 +63,6 @@ public class UserService {
             String role = userBean.getUserByToken(userToken).getRole();
             if(role.equals("po")){
                 userBean.addUserPO(u, roleNewUser);
-                System.out.println(roleNewUser);
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("A new user is created")).toString()).build();
             }
 
@@ -83,7 +82,6 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@HeaderParam("username") String username, @HeaderParam("password") String password) {
         String token = userBean.login(username, password);
-        System.out.println(token);
         if (token != null) {
             if(userBean.getUserByUsername(username).isActive()){
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new TokenAndRoleDto(token, userBean.getUserByUsername(username).getRole(), userBean.getUserByToken(token).getUsername()))).build();
@@ -98,7 +96,6 @@ public class UserService {
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout(@HeaderParam("token") String token) {
-        System.out.println(token);
         if (userBean.isValidUserByToken(token)) {
             userBean.logout(token);
             return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User is logged out")).toString()).build();
@@ -112,20 +109,16 @@ public class UserService {
     public Response getAllUsers(@HeaderParam("token") String token) {
 
         if (token == null || token.isEmpty()) {
-            System.out.println("Token is null or empty");
             return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
         }
 
         if (!userBean.isValidUserByToken(token)) {
-            System.out.println("Token is invalid");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
 
-        System.out.println("Token is valid");
         List<UserDto> userDtos = userBean.getAllUsersDB();
 
         if (userDtos == null || userDtos.isEmpty()) {
-            System.out.println("No users found");
             return Response.status(404).entity(JsonUtils.convertObjectToJson(new ResponseMessage("No users found"))).build();
         }
 
@@ -179,10 +172,8 @@ public class UserService {
     @Path("/hasPermissionToEdit")
     @Produces(MediaType.APPLICATION_JSON)
     public Response hasPermissionToEdit(@HeaderParam("token") String token, @HeaderParam("taskId") int taskId) {
-        System.out.println("Token e task id: " + token + " " + taskId);
         if (userBean.isValidUserByToken(token)) {
             if (userBean.hasPermissionToEdit(token, taskId)) {
-                System.out.println("User has permission to edit");
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User has permission to edit"))).build();
             } else {
                 return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("You dont have permission to edit this task."))).build();
@@ -192,18 +183,6 @@ public class UserService {
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
 
-
-    //Service that receives username and password and sends the user object
-//    @GET
-//    @Path("/get")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getUser(@HeaderParam("username") String username, @HeaderParam("password") String password) {
-//        if (UserValidator.isValidUser(userBean.getUsers(), username, password)) {
-//            return Response.status(200).entity(userBean.getUser(username)).build();
-//        }
-//        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-//    }
-
     //Service that receives username and password and sends the user object without the password
     @GET
     @Path("/getDetails")
@@ -211,7 +190,6 @@ public class UserService {
     public Response getUserDetails(@HeaderParam("token") String token, @HeaderParam("selectedUser") String selectedUser) {
 //        ~
         if (!userBean.isValidUserByToken(token)) {
-            System.out.println("Token is invalid");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
 
         } else if (userBean.isValidUserByToken(token) && userBean.getUserByToken(token).getRole().equals("po") || userBean.getUserByToken(token).getUsername().equals(selectedUser)) {
@@ -236,21 +214,16 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(UserUpdateDto u, @HeaderParam("token") String token, @HeaderParam("selectedUser") String selectedUser) {
         if (!userBean.isValidUserByToken(token)) {
-            System.out.println("Token is invalid");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         } else if (userBean.isValidUserByToken(token) && userBean.getUserByToken(token).getRole().equals("po") || userBean.getUserByToken(token).getUsername().equals(selectedUser)) {
             if (!UserValidator.isValidEmail(u.getEmail())) {
-                System.out.println("Invalid email format");
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid email format"))).build();
             } else if (!u.getEmail().equals(userBean.getUserByUsername(selectedUser).getEmail()) && UserValidator.emailExists(userBean.getAllUsersDB(),u.getEmail())
                     && (!userBean.getUserByToken(token).getEmail().equals(u.getEmail()) || !userBean.getUserByUsername(selectedUser).getEmail().equals(u.getEmail()))) {
-                System.out.println("Email already exists");
                 return Response.status(409).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Email already exists"))).build();
             } else if (!UserValidator.isValidPhoneNumber(u.getPhone())) {
-                System.out.println("Invalid phone number format");
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid phone number format"))).build();
             } else if (!UserValidator.isValidURL(u.getPhotoURL())) {
-                System.out.println("Invalid URL format");
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid URL format"))).build();
             } else {
                 userBean.updateUser(u);
@@ -267,16 +240,10 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePassword(UserPasswordUpdateDto u, @HeaderParam("token") String token) {
-//        if (token == null || token.isEmpty()) {
-//            System.out.println("Token is null or empty");
-//            return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid token"))).build();
-//        }
         if (!userBean.isValidUserByToken(token)) {
-            System.out.println("Token is invalid");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }else if(userBean.isValidUserByToken(token)){
             boolean updateTry = userBean.updatePassword(u, token);
-            System.out.println(updateTry);
             if(!updateTry){
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Old password is incorrect"))).build();
             }else{
@@ -291,20 +258,14 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response changeStatus(@HeaderParam("token") String token, @QueryParam("username") String username, @QueryParam("active") boolean active) {
         if(!userBean.isValidUserByToken(token) && !userBean.getUserByToken(token).getRole().equals("po")){
-            System.out.println("Unauthorized");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }else if(userBean.getUserByToken(token).getRole().equals("po")){
-            System.out.println("Authorized");
             if(userBean.changeStatus(username, active)){
-
-                System.out.println("Status changed");
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Status changed")).toString()).build();
             }else{
-                System.out.println("Status not changed");
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Status not changed")).toString()).build();
             }
         }
-        System.out.println("Invalid Parameters");
         return Response .status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters")).toString()).build();
     }
 
@@ -314,19 +275,14 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@HeaderParam("token") String token, @HeaderParam("selectedUser") String selectedUser) {
         if(!userBean.isValidUserByToken(token) && !userBean.getUserByToken(token).getRole().equals("po")){
-            System.out.println("Unauthorized");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }else if(userBean.getUserByToken(token).getRole().equals("po")){
-            System.out.println("Authorized");
             if(userBean.deleteUser(selectedUser)){
-                System.out.println("User deleted");
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User deleted")).toString()).build();
             }else{
-                System.out.println("User not deleted");
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User not deleted")).toString()).build();
             }
         }
-        System.out.println("Invalid Parameters");
         return Response .status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters")).toString()).build();
     }
 
@@ -336,71 +292,16 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteTasks(@HeaderParam("token") String token, @HeaderParam("selectedUser") String selectedUser) {
         if(!userBean.isValidUserByToken(token) && !userBean.getUserByToken(token).getRole().equals("po")){
-            System.out.println("Unauthorized");
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }else if(userBean.getUserByToken(token).getRole().equals("po")){
-            System.out.println("Authorized");
             if(userBean.deleteTasks(selectedUser)){
-                System.out.println("Tasks deleted");
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Tasks deleted")).toString()).build();
             }else{
-                System.out.println("Tasks not deleted");
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Tasks not deleted")).toString()).build();
             }
         }
-        System.out.println("Invalid Parameters");
         return Response .status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters")).toString()).build();
     }
-//        if (!UserValidator.isNullorBlank(u)) {
-//            if (UserValidator.isValidUser(userBean.getUsers(), username, password)) {
-//                if (!userBean.getUser(username).getPassword().equals(password)) {
-//                    return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-//                }
-//                if(!u.getOldPassword().equals(userBean.getUser(username).getPassword())) {
-//                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Old password is incorrect"))).build();
-//                }
-//                if (u.getNewPassword().equals(u.getOldPassword())) {
-//                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("New password is the same as the old password"))).build();
-//                }
-//                userBean.updatePassword(u, username);
-//                return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Password is updated")).toString()).build();
-//            }
-//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-//        }
-//        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid Parameters"))).build();
-//    }
-
-
-    //Service that only sends the first name of user and photo for the header
-//    @GET
-//    @Path("/getPartial")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getUserPartial(@HeaderParam("username") String username, @HeaderParam("password") String password) {
-//        if (UserValidator.isValidUser(userBean.getUsers(), username, password)) {
-//            UserDto userDto = userBean.getUser(username);
-//            UserPartialDto userPartialDTO = userBean.mapUserToUserPartialDTO(userDto);
-//            return Response.status(200).entity(userPartialDTO).build();
-//        } else {
-//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-//        }
-//    }
-
-    //Service that receives a UserUpdateDto object, authenticates the user, sees if the user that is logged is the same as the one that is being updated and updates the user checking the parameteres
-//
-
-
-
-    //Service that when logout its pressed, the file its updated
-//    @POST
-//    @Path("/logout")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response logout(@HeaderParam("username") String username, @HeaderParam("password") String password) {
-//        if (UserValidator.isValidUser(userBean.getUsers(), username, password)) {
-//            JsonUtils.writeIntoJsonFile(userBean.getUsers());
-//            return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("User is logged out")).toString()).build();
-//        }
-//        return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized")).toString()).build();
-//    }
 
 }
 
