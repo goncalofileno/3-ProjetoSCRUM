@@ -168,7 +168,7 @@ public class TaskBean {
     }
 
     //Function that returns list of tasks filtered by category and owner from the database mysql
-    public List<TaskDto> getTasksByCategoryAndOwner(String owner, String category){
+    public List<TaskDto> getTasksByCategoryAndOwner(String category, String owner){
         UserEntity userEntity = userDao.findUserByUsername(owner);
         CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(category);
         List<TaskEntity> taskEntities = taskDao.getTasksByCategoryAndOwner(userEntity, categoryEntity);

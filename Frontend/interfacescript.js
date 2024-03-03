@@ -58,8 +58,8 @@ window.onload = async function () {
   setInterval(displayDateTime, 1000); // Atualiza a cada segundo
 
   populateCategories();
-  populateUsersOwners();
-  populateActiveCategories();
+  // populateUsersOwners();
+  // populateActiveCategories();
 
   document.getElementById("categoryFilter").value = "";
   document.getElementById("ownerFilter").value = "";
@@ -581,8 +581,50 @@ function generateUniqueID() {
   return id;
 }
 
+// Function to populate the category filter
+function populateCategoryFilter(tasks) {
+  const categoryFilter = document.getElementById("categoryFilter");
+  categoryFilter.innerHTML = ""; // Clear the filter
+
+  // Add a "Select Category" option with no value
+  const selectOption = document.createElement("option");
+  selectOption.value = "";
+  selectOption.textContent = "Select Category";
+  categoryFilter.appendChild(selectOption);
+
+  const categories = [...new Set(tasks.map((task) => task.category))]; // Get unique categories
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.appendChild(option);
+  });
+}
+
+// Function to populate the owner filter
+function populateOwnerFilter(tasks) {
+  const ownerFilter = document.getElementById("ownerFilter");
+  ownerFilter.innerHTML = ""; // Clear the filter
+
+  // Add a "Select Owner" option with no value
+  const selectOption = document.createElement("option");
+  selectOption.value = "";
+  selectOption.textContent = "Select Owner";
+  ownerFilter.appendChild(selectOption);
+
+  const owners = [...new Set(tasks.map((task) => task.owner))]; // Get unique owners
+  owners.forEach((owner) => {
+    const option = document.createElement("option");
+    option.value = owner;
+    option.textContent = owner;
+    ownerFilter.appendChild(option);
+  });
+}
+
 //Função que imprime as tarefas nas secções correspondentes
 async function displayTasks(selectedCategory = "", selectedOwner = "") {
+  console.log("Selected category:", selectedCategory);
+  console.log("Selected owner:", selectedOwner);
   // Clear all task sections
   todoSection.innerHTML = "";
   doingSection.innerHTML = "";
@@ -618,6 +660,32 @@ async function displayTasks(selectedCategory = "", selectedOwner = "") {
   }
 
   let tasks = await response.json();
+
+  console.log("Tasks:", tasks);
+
+  // // Filter tasks based on selected category and owner
+  // tasks = tasks.filter((task) => {
+  //   let matchesCategory = selectedCategory
+  //     ? task.category === selectedCategory
+  //     : true;
+  //   let matchesOwner = selectedOwner ? task.owner === selectedOwner : true;
+  //   return matchesCategory && matchesOwner;
+  // });
+
+  // ... rest of the code ...
+
+  // Populate the filters
+  if (!selectedCategory && !selectedOwner) {
+    // If no arguments are provided, update both filters
+    populateCategoryFilter(tasks);
+    populateOwnerFilter(tasks);
+  } else if (selectedCategory && !selectedOwner) {
+    // If only category is provided, update the owner filter
+    populateOwnerFilter(tasks);
+  } else if (!selectedCategory && selectedOwner) {
+    // If only owner is provided, update the category filter
+    populateCategoryFilter(tasks);
+  }
 
   tasks = tasks.filter((task) => task.active === true);
 
@@ -742,7 +810,11 @@ function createTaskElement(task) {
     modalTaskTitle.textContent = task.title;
     modalTaskDescription.textContent = task.description;
     taskInitialDateinfo.textContent = task.initialDate;
-    taskFinalDateinfo.textContent = task.finalDate;
+    if (task.finalDate == null) {
+      taskFinalDateinfo.textContent = "No final date assigned.";
+    } else {
+      taskFinalDateinfo.textContent = task.finalDate;
+    }
     taskCategoryinfo.textContent = task.category;
     taskOwnerinfo.textContent = task.owner;
 
@@ -986,7 +1058,7 @@ async function populateActiveCategories() {
 function createModal(message) {
   return new Promise((resolve) => {
     // Add the 'modal-open' class to the body
-    document.body.classList.add('modal-open');
+    document.body.classList.add("modal-open");
 
     // Create the modal container
     const modal = document.createElement("div");
@@ -1011,7 +1083,7 @@ function createModal(message) {
     button.addEventListener("click", () => {
       document.body.removeChild(modal);
       // Remove the 'modal-open' class from the body
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove("modal-open");
       resolve();
     });
 
