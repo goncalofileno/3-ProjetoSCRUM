@@ -54,6 +54,25 @@ window.onload = async function () {
     }
   });
 
+  // Get the labelUser element
+  const labelUser = document.getElementById("labelUser");
+  const role = localStorage.getItem("role");
+  // Update the welcome message based on the role
+  switch (role) {
+    case "dev":
+      labelUser.textContent = "Welcome Developer, ";
+      break;
+    case "sm":
+      labelUser.textContent = "Welcome Scrum Master, ";
+      break;
+    case "po":
+      labelUser.textContent = "Welcome Product Owner, ";
+      break;
+    default:
+      labelUser.textContent = "Welcome, ";
+      break;
+  }
+
   //Mostra o modal de edição e escurece o fundo
   document.getElementById("editTaskModal").style.display = "block";
   document.body.classList.add("modal-open");

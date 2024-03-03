@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1709404307552" clover="3.2.0">
-  <project timestamp="1709404307552" name="All files">
+<coverage generated="1709422241607" clover="3.2.0">
+  <project timestamp="1709422241607" name="All files">
     <metrics statements="33" coveredstatements="23" conditionals="21" coveredconditionals="16" methods="7" coveredmethods="6" elements="61" coveredelements="45" complexity="0" loc="33" ncloc="33" packages="1" files="1" classes="1"/>
     <file name="isolateinterfaceUsersscript.js" path="/Users/ricardocarvalho/projects/3-ProjetoSCRUM/Frontend/test/isolateinterfaceUsersscript.js">
       <metrics statements="33" coveredstatements="23" conditionals="21" coveredconditionals="16" methods="7" coveredmethods="6"/>

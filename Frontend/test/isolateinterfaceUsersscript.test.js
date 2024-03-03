@@ -172,7 +172,7 @@ test("loginUser should send a POST request to /user/login", () => {
   username = "admin1";
   password = "admin1";
   // Call the function
-  loginUser("admin1", "admin1");
+  loginUser(username, password);
 
   // Check if fetch was called with the correct arguments
   expect(fetch).toHaveBeenCalledWith(`${apiURL}/user/login`, {
