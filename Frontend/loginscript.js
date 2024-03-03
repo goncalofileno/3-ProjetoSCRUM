@@ -55,9 +55,53 @@ function loginUser(username, password) {
     })
     .catch((error) => {
       if (error.message.includes("401")) {
-        alert("Unauthorized");
+        createModal("Invalid username or password.");
       } else if (error.message.includes("403")) {
-        alert("Forbidden user. Please contact the administrator.");
+        createModal("User is desactivated, please contact the admin.");
       }
     });
+}
+
+function createModal(message) {
+  // Add the 'modal-open' class to the body
+  document.body.classList.add('modal-open');
+
+  // Create the modal container
+  const modal = document.createElement("div");
+  modal.className = "modal";
+
+  // Create the modal content
+  const content = document.createElement("div");
+  content.style.display = "flex";
+  content.style.flexDirection = "column";
+  content.style.alignItems = "center";
+  content.style.justifyContent = "center";
+
+  // Create the message element
+  const messageElement = document.createElement("p");
+  messageElement.textContent = message;
+
+  // Create the "OK" button
+  const button = document.createElement("button");
+  button.textContent = "OK";
+
+  // Add an event listener to the "OK" button to remove the modal when clicked
+  button.addEventListener("click", () => {
+    document.body.removeChild(modal);
+    // Remove the 'modal-open' class from the body
+    document.body.classList.remove('modal-open');
+  });
+
+  // Append the message and button to the content
+  content.appendChild(messageElement);
+  content.appendChild(button);
+
+  // Append the content to the modal
+  modal.appendChild(content);
+
+  // Append the modal to the body
+  document.body.appendChild(modal);
+
+  // Display the modal
+  modal.style.display = "flex";
 }

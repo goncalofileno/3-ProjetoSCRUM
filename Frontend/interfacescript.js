@@ -354,7 +354,7 @@ submitTaskButton.addEventListener("click", async function () {
     // Add the darkening of the page background
     document.getElementById("modalOverlay2").style.display = "block";
   } else if (new Date(finalDate) < new Date(initialDate)) {
-    alert("The final date must be after the initial date");
+    createModal("The final date must be after the initial date");
   } else {
     // Get today's date
     const today = new Date();
@@ -420,7 +420,7 @@ yesButton.addEventListener("click", async function () {
   const data = await response.json(); // parse the response body
 
   if (!response.ok) {
-    alert(`Failed to deactivate task: ${data.message}`); // display the message from the service
+    createModal(`Failed to deactivate task: ${data.message}`); // display the message from the service
     return;
   }
 
@@ -468,7 +468,7 @@ editTaskOption.addEventListener("click", async () => {
     //Redireciona para a página de editar tarefa
     window.location.href = "editTaskPage.html";
   } else {
-    alert("You do not have permission to edit this task");
+    createModal("You do not have permission to edit this task");
   }
 });
 
@@ -538,7 +538,7 @@ async function drop(event) {
   } else if (targetSection.id === "done") {
     newStatus = 300;
   } else {
-    alert("Invalid drop target");
+    createModal("Invalid drop target");
     return;
   }
 
@@ -556,7 +556,7 @@ async function drop(event) {
   );
 
   if (!response.ok) {
-    alert("Failed to update task status");
+    createModal("Failed to update task status");
     return;
   } else {
     const category = categoryFilter.value;
@@ -613,7 +613,7 @@ async function displayTasks(selectedCategory = "", selectedOwner = "") {
   });
 
   if (!response.ok) {
-    alert("Failed to fetch tasks");
+    createModal("Failed to fetch tasks");
     return;
   }
 
@@ -844,7 +844,7 @@ async function getUserPartial() {
   );
 
   if (response.status === 401) {
-    alert("Unauthorized");
+    createModal("Unauthorized");
     return;
   }
 
@@ -883,7 +883,7 @@ async function logout(token) {
     .catch((error) => {
       console.error("Error:", error);
       if (error.message.includes("401")) {
-        alert("Unauthorized");
+        createModal("Unauthorized");
       }
     });
 }
@@ -902,7 +902,7 @@ async function populateCategories() {
   );
 
   if (!response.ok) {
-    alert("Failed to fetch categories");
+    createModal("Failed to fetch categories");
     return;
   }
 
@@ -981,4 +981,48 @@ async function populateActiveCategories() {
       });
     })
     .catch((error) => console.error("Error:", error));
+}
+
+function createModal(message) {
+  // Add the 'modal-open' class to the body
+  document.body.classList.add('modal-open');
+
+  // Create the modal container
+  const modal = document.createElement("div");
+  modal.className = "modal";
+
+  // Create the modal content
+  const content = document.createElement("div");
+  content.style.display = "flex";
+  content.style.flexDirection = "column";
+  content.style.alignItems = "center";
+  content.style.justifyContent = "center";
+
+  // Create the message element
+  const messageElement = document.createElement("p");
+  messageElement.textContent = message;
+
+  // Create the "OK" button
+  const button = document.createElement("button");
+  button.textContent = "OK";
+
+  // Add an event listener to the "OK" button to remove the modal when clicked
+  button.addEventListener("click", () => {
+    document.body.removeChild(modal);
+    // Remove the 'modal-open' class from the body
+    document.body.classList.remove('modal-open');
+  });
+
+  // Append the message and button to the content
+  content.appendChild(messageElement);
+  content.appendChild(button);
+
+  // Append the content to the modal
+  modal.appendChild(content);
+
+  // Append the modal to the body
+  document.body.appendChild(modal);
+
+  // Display the modal
+  modal.style.display = "flex";
 }

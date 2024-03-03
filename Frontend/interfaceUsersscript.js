@@ -196,7 +196,7 @@ document
       await deleteOneTask();
     } else if (localStorage.getItem("optionDelete") == 1) {
       await deleteCategory();
-      window.location.href = "interfaceUsers.html";
+      
     } else if (localStorage.getItem("optionDelete") == 3) {
       await deleteAllTasks();
     } else if (localStorage.getItem("optionDelete") == 4) {
@@ -351,7 +351,7 @@ async function logout() {
     .catch((error) => {
       console.error("Error:", error);
       if (error.message.includes("401")) {
-        alert("Unauthorized");
+        createModal("Unauthorized access.");
       }
     });
 }
@@ -481,7 +481,7 @@ async function fetchUsers() {
     }
   );
   if (!response.ok) {
-    alert("Failed to fetch users");
+    createModal("Failed to fetch users");
     return;
   }
   users = await response.json();
@@ -631,7 +631,7 @@ async function displayUsers() {
       );
 
       if (!response.ok) {
-        alert("Failed to update user's active status");
+        createModal("Failed to update the user's active status");
         // Revert the slider button to its original state
         this.checked = !newActiveStatus;
       }
@@ -684,7 +684,7 @@ async function displayDeletedTasks() {
     }
   );
   if (!response.ok) {
-    alert("Failed to fetch tasks");
+    createModal("Failed to fetch tasks");
     return;
   }
   let tasks = await response.json();
@@ -840,7 +840,7 @@ async function displayCategories() {
       }
     );
     if (!response.ok) {
-      alert("Failed to fetch categories");
+      createModal("Failed to fetch categories");
       return;
     }
     categories = await response.json();
@@ -941,7 +941,9 @@ async function deleteCategory() {
 
   const data = await response.json();
 
-  alert(data.message);
+  createModal(data.message);
+
+  await (window.location.href = "interfaceUsers.html");
 
   await displayCategories();
 }
@@ -980,7 +982,7 @@ async function updateCategory() {
 
     const data = await response.json();
 
-    alert(data.message);
+    createModal(data.message);
 
     newTaskModal.style.display = "none";
     document.body.classList.remove("modal-open");
@@ -1020,7 +1022,7 @@ async function createCategory() {
 
   const data = await response.json();
 
-  alert(data.message);
+  createModal(data.message);
 
   newTaskModal.style.display = "none";
   document.body.classList.remove("modal-open");
@@ -1067,13 +1069,13 @@ function deleteAllTasksUser() {
     })
     .then((data) => {
       if (data.message === "All tasks deleted") {
-        alert("All tasks deleted");
+        createModal("All tasks deleted");
       }
     })
     .catch((error) => {
       console.error("Error:", error);
       if (error.message.includes("401")) {
-        alert("Unauthorized");
+        createModal("Unauthorized access.");
       }
     });
 }
@@ -1105,11 +1107,11 @@ function deleteUserPermanently() {
     .catch((error) => {
       console.error("Error:", error);
       if (error.message.includes("401")) {
-        alert("Unauthorized");
+        createModal("Unauthorized access.");
       } else if (error.message.includes("403")) {
-        alert("Forbidden");
+        createModal("Forbidden access.");
       } else if (error.message.includes("400")) {
-        alert("Bad Request");
+        createModal("Bad request.");
       }
     });
 }
@@ -1226,4 +1228,48 @@ function sortUsers(users, index, sortOrder) {
     }
     return 0;
   });
+}
+
+function createModal(message) {
+  // Add the 'modal-open' class to the body
+  document.body.classList.add('modal-open');
+
+  // Create the modal container
+  const modal = document.createElement("div");
+  modal.className = "modal";
+
+  // Create the modal content
+  const content = document.createElement("div");
+  content.style.display = "flex";
+  content.style.flexDirection = "column";
+  content.style.alignItems = "center";
+  content.style.justifyContent = "center";
+
+  // Create the message element
+  const messageElement = document.createElement("p");
+  messageElement.textContent = message;
+
+  // Create the "OK" button
+  const button = document.createElement("button");
+  button.textContent = "OK";
+
+  // Add an event listener to the "OK" button to remove the modal when clicked
+  button.addEventListener("click", () => {
+    document.body.removeChild(modal);
+    // Remove the 'modal-open' class from the body
+    document.body.classList.remove('modal-open');
+  });
+
+  // Append the message and button to the content
+  content.appendChild(messageElement);
+  content.appendChild(button);
+
+  // Append the content to the modal
+  modal.appendChild(content);
+
+  // Append the modal to the body
+  document.body.appendChild(modal);
+
+  // Display the modal
+  modal.style.display = "flex";
 }

@@ -113,7 +113,7 @@ confirmButton.addEventListener("click", function () {
   } else {
     newPassword.value = "";
     confirmPassword.value = "";
-    alert("The new passwords do not match.");
+    createModal("Passwords do not match.");
   }
 });
 
@@ -148,7 +148,7 @@ function updateUser() {
     .then((response) => response.json())
     .then((data) => {
       if (data.message === "User is updated") {
-        alert("User updated successfully");
+        createModal("User is updated successfully :)");
         if(localStorage.getItem("username") != localStorage.getItem("selectedUser")){
           window.location.href = "interfaceUsers.html";
         } else {
@@ -157,19 +157,19 @@ function updateUser() {
       } else {
         if (data.message === "Invalid email format") {
           document.getElementById("email").value = "";
-          alert("Invalid email format");
+          createModal("Invalid email format");
         }
         if (data.message === "Invalid phone number format") {
           document.getElementById("phone").value = "";
-          alert("Invalid phone number format");
+          createModal("Invalid phone number format");
         }
         if (data.message === "Invalid URL format") {
           document.getElementById("photo").value = "";
-          alert("Invalid URL format");
+          createModal("Invalid URL format");
         }
         if (data.message === "Email already exists") {
           document.getElementById("email").value = "";
-          alert("Email already exists");
+          createModal("Email already exists");
         }
       }
     })
@@ -240,7 +240,7 @@ async function getUser() {
   );
 
   if (!response.ok) {
-    alert("Failed to fetch user");
+    createModal("Failed to get user details");
     return;
   }
 
@@ -266,15 +266,59 @@ function updatePassword(oldPassword, newPassword) {
   })
     .then((response) => {
       if (response.ok) {
-        alert("Password updated successfully");
+        createModal("Password updated successfully");
         modal.style.display = "none";
         backdrop.style.display = "none";
         window.location.href = "index.html";
       } else {
-        alert("Failed to update password");
+        createModal("Failed to update password");
       }
     })
     .catch((error) => {
       console.log("There was a problem with the fetch operation", error);
     });
+}
+
+function createModal(message) {
+  // Add the 'modal-open' class to the body
+  document.body.classList.add('modal-open');
+
+  // Create the modal container
+  const modal = document.createElement("div");
+  modal.className = "modal";
+
+  // Create the modal content
+  const content = document.createElement("div");
+  content.style.display = "flex";
+  content.style.flexDirection = "column";
+  content.style.alignItems = "center";
+  content.style.justifyContent = "center";
+
+  // Create the message element
+  const messageElement = document.createElement("p");
+  messageElement.textContent = message;
+
+  // Create the "OK" button
+  const button = document.createElement("button");
+  button.textContent = "OK";
+
+  // Add an event listener to the "OK" button to remove the modal when clicked
+  button.addEventListener("click", () => {
+    document.body.removeChild(modal);
+    // Remove the 'modal-open' class from the body
+    document.body.classList.remove('modal-open');
+  });
+
+  // Append the message and button to the content
+  content.appendChild(messageElement);
+  content.appendChild(button);
+
+  // Append the content to the modal
+  modal.appendChild(content);
+
+  // Append the modal to the body
+  document.body.appendChild(modal);
+
+  // Display the modal
+  modal.style.display = "flex";
 }
