@@ -199,14 +199,22 @@ footer a {
   display: inline-block; /* Permite que o elemento tenha uma largura máxima */
 }
 
-/*avatar do usuário*/
-#userIcon {
+#userIconContainer {
   position: fixed;
   top: 0.5rem;
-  right: 1rem;
-  width: 5rem;
-  height: 5rem;
-  border-radius: 50%;
+  right: 0.8rem;
+  width: 5.5rem; /* or any size you want */
+  height: 5.5rem; /* should be the same as width to make the container square */
+  border-radius: 50%; /* makes the container circular */
+  overflow: hidden; /* clips the image to the container's border radius */
+  border: 2px solid #205d88;
+}
+
+#userIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 /*botão de logout*/
 #logoutButton {
