@@ -1048,6 +1048,7 @@ async function getTasksByCategory(title) {
   const data = await response.json();
   return data;
 }
+
 function deleteAllTasksUser() {
   fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/deleteTasks", {
     method: "DELETE",
@@ -1076,28 +1077,6 @@ function deleteAllTasksUser() {
       }
     });
 }
-
-// async function getUserPhoto(token, username) {
-//   const response = await fetch(
-//     "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/getPhoto",
-//     {
-//       method: "GET",
-//       headers: {
-//         Accept: "application/json",
-//         "Content-Type": "application/json",
-//         token: token,
-//         username: username,
-//       },
-//     }
-//   );
-
-//   if (!response.ok) {
-//     throw new Error("Failed to fetch user photo");
-//   }
-
-//   const data = await response.json();
-//   return data;
-// }
 
 function deleteUserPermanently() {
   fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/delete", {
