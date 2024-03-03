@@ -53,55 +53,58 @@ function loginUser(username, password) {
       localStorage.setItem("username", username);
       window.location.href = "interface.html";
     })
-    .catch((error) => {
+    .catch(async (error) => {
       if (error.message.includes("401")) {
-        createModal("Invalid username or password.");
+        await createModal("Invalid username or password.");
       } else if (error.message.includes("403")) {
-        createModal("User is desactivated, please contact the admin.");
+        await createModal("User is desactivated, please contact the admin.");
       }
     });
 }
 
-function createModal(message) {
-  // Add the 'modal-open' class to the body
-  document.body.classList.add('modal-open');
+function  createModal(message) {
+  return new Promise((resolve) => {
+    // Add the 'modal-open' class to the body
+    document.body.classList.add('modal-open');
 
-  // Create the modal container
-  const modal = document.createElement("div");
-  modal.className = "modal";
+    // Create the modal container
+    const modal = document.createElement("div");
+    modal.className = "modal";
 
-  // Create the modal content
-  const content = document.createElement("div");
-  content.style.display = "flex";
-  content.style.flexDirection = "column";
-  content.style.alignItems = "center";
-  content.style.justifyContent = "center";
+    // Create the modal content
+    const content = document.createElement("div");
+    content.style.display = "flex";
+    content.style.flexDirection = "column";
+    content.style.alignItems = "center";
+    content.style.justifyContent = "center";
 
-  // Create the message element
-  const messageElement = document.createElement("p");
-  messageElement.textContent = message;
+    // Create the message element
+    const messageElement = document.createElement("p");
+    messageElement.textContent = message;
 
-  // Create the "OK" button
-  const button = document.createElement("button");
-  button.textContent = "OK";
+    // Create the "OK" button
+    const button = document.createElement("button");
+    button.textContent = "OK";
 
-  // Add an event listener to the "OK" button to remove the modal when clicked
-  button.addEventListener("click", () => {
-    document.body.removeChild(modal);
-    // Remove the 'modal-open' class from the body
-    document.body.classList.remove('modal-open');
+    // Add an event listener to the "OK" button to remove the modal when clicked
+    button.addEventListener("click", () => {
+      document.body.removeChild(modal);
+      // Remove the 'modal-open' class from the body
+      document.body.classList.remove('modal-open');
+      resolve();
+    });
+
+    // Append the message and button to the content
+    content.appendChild(messageElement);
+    content.appendChild(button);
+
+    // Append the content to the modal
+    modal.appendChild(content);
+
+    // Append the modal to the body
+    document.body.appendChild(modal);
+
+    // Display the modal
+    modal.style.display = "flex";
   });
-
-  // Append the message and button to the content
-  content.appendChild(messageElement);
-  content.appendChild(button);
-
-  // Append the content to the modal
-  modal.appendChild(content);
-
-  // Append the modal to the body
-  document.body.appendChild(modal);
-
-  // Display the modal
-  modal.style.display = "flex";
 }

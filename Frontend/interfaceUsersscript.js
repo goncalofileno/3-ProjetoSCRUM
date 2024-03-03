@@ -348,10 +348,10 @@ async function logout() {
         window.location.reload();
       }
     })
-    .catch((error) => {
+    .catch(async (error) => {
       console.error("Error:", error);
       if (error.message.includes("401")) {
-        createModal("Unauthorized access.");
+        await createModal("Unauthorized access.");
       }
     });
 }
@@ -481,7 +481,7 @@ async function fetchUsers() {
     }
   );
   if (!response.ok) {
-    createModal("Failed to fetch users");
+    await createModal("Failed to fetch users");
     return;
   }
   users = await response.json();
@@ -631,7 +631,7 @@ async function displayUsers() {
       );
 
       if (!response.ok) {
-        createModal("Failed to update the user's active status");
+        await createModal("Failed to update the user's active status");
         // Revert the slider button to its original state
         this.checked = !newActiveStatus;
       }
@@ -684,7 +684,7 @@ async function displayDeletedTasks() {
     }
   );
   if (!response.ok) {
-    createModal("Failed to fetch tasks");
+    await createModal("Failed to fetch tasks");
     return;
   }
   let tasks = await response.json();
@@ -840,7 +840,7 @@ async function displayCategories() {
       }
     );
     if (!response.ok) {
-      createModal("Failed to fetch categories");
+      await createModal("Failed to fetch categories");
       return;
     }
     categories = await response.json();
@@ -941,7 +941,7 @@ async function deleteCategory() {
 
   const data = await response.json();
 
-  createModal(data.message);
+  await createModal(data.message);
 
   await (window.location.href = "interfaceUsers.html");
 
@@ -982,7 +982,7 @@ async function updateCategory() {
 
     const data = await response.json();
 
-    createModal(data.message);
+    await createModal(data.message);
 
     newTaskModal.style.display = "none";
     document.body.classList.remove("modal-open");
@@ -1022,7 +1022,7 @@ async function createCategory() {
 
   const data = await response.json();
 
-  createModal(data.message);
+  await createModal(data.message);
 
   newTaskModal.style.display = "none";
   document.body.classList.remove("modal-open");
@@ -1067,20 +1067,20 @@ function deleteAllTasksUser() {
       }
       return response.json();
     })
-    .then((data) => {
+    .then(async (data) => {
       if (data.message === "All tasks deleted") {
-        createModal("All tasks deleted");
+        await createModal("All tasks deleted");
       }
     })
-    .catch((error) => {
+    .catch(async (error) => {
       console.error("Error:", error);
       if (error.message.includes("401")) {
-        createModal("Unauthorized access.");
+        await createModal("Unauthorized access.");
       }
     });
 }
 
-function deleteUserPermanently() {
+async function deleteUserPermanently() {
   fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/delete", {
     method: "DELETE",
     headers: {
@@ -1104,14 +1104,14 @@ function deleteUserPermanently() {
         location.reload();
       }
     })
-    .catch((error) => {
+    .catch(async (error) => {
       console.error("Error:", error);
       if (error.message.includes("401")) {
-        createModal("Unauthorized access.");
+        await createModal("Unauthorized access.");
       } else if (error.message.includes("403")) {
-        createModal("Forbidden access.");
+        await createModal("Forbidden access.");
       } else if (error.message.includes("400")) {
-        createModal("Bad request.");
+        await createModal("Bad request.");
       }
     });
 }
@@ -1231,45 +1231,48 @@ function sortUsers(users, index, sortOrder) {
 }
 
 function createModal(message) {
-  // Add the 'modal-open' class to the body
-  document.body.classList.add('modal-open');
+  return new Promise((resolve) => {
+    // Add the 'modal-open' class to the body
+    document.body.classList.add('modal-open');
 
-  // Create the modal container
-  const modal = document.createElement("div");
-  modal.className = "modal";
+    // Create the modal container
+    const modal = document.createElement("div");
+    modal.className = "modal";
 
-  // Create the modal content
-  const content = document.createElement("div");
-  content.style.display = "flex";
-  content.style.flexDirection = "column";
-  content.style.alignItems = "center";
-  content.style.justifyContent = "center";
+    // Create the modal content
+    const content = document.createElement("div");
+    content.style.display = "flex";
+    content.style.flexDirection = "column";
+    content.style.alignItems = "center";
+    content.style.justifyContent = "center";
 
-  // Create the message element
-  const messageElement = document.createElement("p");
-  messageElement.textContent = message;
+    // Create the message element
+    const messageElement = document.createElement("p");
+    messageElement.textContent = message;
 
-  // Create the "OK" button
-  const button = document.createElement("button");
-  button.textContent = "OK";
+    // Create the "OK" button
+    const button = document.createElement("button");
+    button.textContent = "OK";
 
-  // Add an event listener to the "OK" button to remove the modal when clicked
-  button.addEventListener("click", () => {
-    document.body.removeChild(modal);
-    // Remove the 'modal-open' class from the body
-    document.body.classList.remove('modal-open');
+    // Add an event listener to the "OK" button to remove the modal when clicked
+    button.addEventListener("click", () => {
+      document.body.removeChild(modal);
+      // Remove the 'modal-open' class from the body
+      document.body.classList.remove('modal-open');
+      resolve();
+    });
+
+    // Append the message and button to the content
+    content.appendChild(messageElement);
+    content.appendChild(button);
+
+    // Append the content to the modal
+    modal.appendChild(content);
+
+    // Append the modal to the body
+    document.body.appendChild(modal);
+
+    // Display the modal
+    modal.style.display = "flex";
   });
-
-  // Append the message and button to the content
-  content.appendChild(messageElement);
-  content.appendChild(button);
-
-  // Append the content to the modal
-  modal.appendChild(content);
-
-  // Append the modal to the body
-  document.body.appendChild(modal);
-
-  // Display the modal
-  modal.style.display = "flex";
 }

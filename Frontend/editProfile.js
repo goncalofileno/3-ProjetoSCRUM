@@ -107,13 +107,13 @@ inputs.forEach((input) => {
   });
 });
 
-confirmButton.addEventListener("click", function () {
+confirmButton.addEventListener("click", async function () {
   if (newPassword.value === confirmPassword.value) {
     updatePassword(oldPassword.value, newPassword.value); // Call the function to update the password
   } else {
     newPassword.value = "";
     confirmPassword.value = "";
-    createModal("Passwords do not match.");
+     await createModal("Passwords do not match.");
   }
 });
 
@@ -146,9 +146,9 @@ function updateUser() {
     body: JSON.stringify(userFromForm),
   })
     .then((response) => response.json())
-    .then((data) => {
+    .then(async (data) => {
       if (data.message === "User is updated") {
-        createModal("User is updated successfully :)");
+         await createModal("User is updated successfully :)");
         if(localStorage.getItem("username") != localStorage.getItem("selectedUser")){
           window.location.href = "interfaceUsers.html";
         } else {
@@ -157,19 +157,19 @@ function updateUser() {
       } else {
         if (data.message === "Invalid email format") {
           document.getElementById("email").value = "";
-          createModal("Invalid email format");
+           await createModal("Invalid email format");
         }
         if (data.message === "Invalid phone number format") {
           document.getElementById("phone").value = "";
-          createModal("Invalid phone number format");
+           await createModal("Invalid phone number format");
         }
         if (data.message === "Invalid URL format") {
           document.getElementById("photo").value = "";
-          createModal("Invalid URL format");
+           await createModal("Invalid URL format");
         }
         if (data.message === "Email already exists") {
           document.getElementById("email").value = "";
-          createModal("Email already exists");
+          await createModal("Email already exists");
         }
       }
     })
@@ -240,7 +240,7 @@ async function getUser() {
   );
 
   if (!response.ok) {
-    createModal("Failed to get user details");
+    await await createModal("Failed to get user details");
     return;
   }
 
@@ -264,14 +264,14 @@ function updatePassword(oldPassword, newPassword) {
       newPassword: newPassword,
     }),
   })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
-        createModal("Password updated successfully");
+        await createModal("Password updated successfully");
         modal.style.display = "none";
         backdrop.style.display = "none";
         window.location.href = "index.html";
       } else {
-        createModal("Failed to update password");
+        await createModal("Failed to update password");
       }
     })
     .catch((error) => {
@@ -280,45 +280,48 @@ function updatePassword(oldPassword, newPassword) {
 }
 
 function createModal(message) {
-  // Add the 'modal-open' class to the body
-  document.body.classList.add('modal-open');
+  return new Promise((resolve) => {
+    // Add the 'modal-open' class to the body
+    document.body.classList.add('modal-open');
 
-  // Create the modal container
-  const modal = document.createElement("div");
-  modal.className = "modal";
+    // Create the modal container
+    const modal = document.createElement("div");
+    modal.className = "modal";
 
-  // Create the modal content
-  const content = document.createElement("div");
-  content.style.display = "flex";
-  content.style.flexDirection = "column";
-  content.style.alignItems = "center";
-  content.style.justifyContent = "center";
+    // Create the modal content
+    const content = document.createElement("div");
+    content.style.display = "flex";
+    content.style.flexDirection = "column";
+    content.style.alignItems = "center";
+    content.style.justifyContent = "center";
 
-  // Create the message element
-  const messageElement = document.createElement("p");
-  messageElement.textContent = message;
+    // Create the message element
+    const messageElement = document.createElement("p");
+    messageElement.textContent = message;
 
-  // Create the "OK" button
-  const button = document.createElement("button");
-  button.textContent = "OK";
+    // Create the "OK" button
+    const button = document.createElement("button");
+    button.textContent = "OK";
 
-  // Add an event listener to the "OK" button to remove the modal when clicked
-  button.addEventListener("click", () => {
-    document.body.removeChild(modal);
-    // Remove the 'modal-open' class from the body
-    document.body.classList.remove('modal-open');
+    // Add an event listener to the "OK" button to remove the modal when clicked
+    button.addEventListener("click", () => {
+      document.body.removeChild(modal);
+      // Remove the 'modal-open' class from the body
+      document.body.classList.remove('modal-open');
+      resolve();
+    });
+
+    // Append the message and button to the content
+    content.appendChild(messageElement);
+    content.appendChild(button);
+
+    // Append the content to the modal
+    modal.appendChild(content);
+
+    // Append the modal to the body
+    document.body.appendChild(modal);
+
+    // Display the modal
+    modal.style.display = "flex";
   });
-
-  // Append the message and button to the content
-  content.appendChild(messageElement);
-  content.appendChild(button);
-
-  // Append the content to the modal
-  modal.appendChild(content);
-
-  // Append the modal to the body
-  document.body.appendChild(modal);
-
-  // Display the modal
-  modal.style.display = "flex";
 }
